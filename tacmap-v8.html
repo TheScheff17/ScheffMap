@@ -33,7 +33,8 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none;font-f
 .editor-header{display:flex;align-items:center;justify-content:space-between;padding:0 10px 6px;border-bottom:1px solid var(--border);flex-shrink:0}.editor-tabs{display:flex;gap:2px}
 .editor-tab{padding:4px 10px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;border-radius:4px 4px 0 0;background:transparent;color:var(--fg);opacity:.5;border:none;font-family:var(--font);touch-action:manipulation}.editor-tab.active{opacity:1;background:var(--btn-bg)}.editor-actions{display:flex;gap:4px}
 .editor-body{overflow-y:auto;padding:8px 10px;padding-bottom:calc(8px + var(--safe-bottom));flex:1;-webkit-overflow-scrolling:touch}
-.icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:3px;margin-bottom:8px}.icon-cell{aspect-ratio:1;border:1px solid var(--border);border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;background:var(--btn-bg);touch-action:manipulation;transition:border-color .15s}.icon-cell:hover{border-color:var(--accent)}.icon-cell.selected{border-color:var(--accent2);border-width:2px;background:rgba(255,215,0,.1)}.icon-cell canvas{width:100%;height:100%}.icon-cell .tooltip{position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:2px 6px;border-radius:3px;font-size:9px;white-space:nowrap;pointer-events:none;display:none;z-index:999}.icon-cell:hover .tooltip{display:block}
+.icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:3px;margin-bottom:8px}.icon-cell{aspect-ratio:1;border:1px solid var(--border);border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;background:var(--btn-bg);touch-action:manipulation;transition:border-color .15s,background .15s}.icon-cell:hover{border-color:#fff;background:rgba(255,255,255,.12)}.icon-cell.selected{border-color:#ffd700;border-width:2px;background:rgba(255,215,0,.2);box-shadow:0 0 6px rgba(255,215,0,.4)}.icon-cell canvas{width:100%;height:100%}.icon-cell .tooltip{position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:2px 6px;border-radius:3px;font-size:9px;white-space:nowrap;pointer-events:none;display:none;z-index:999}.icon-cell:hover .tooltip{display:block}
+.color-swatches{display:flex;gap:6px;margin:4px 0 8px}.swatch{width:28px;height:28px;border-radius:4px;cursor:pointer;border:2px solid transparent;transition:border-color .15s,transform .1s}.swatch:hover{transform:scale(1.15)}.swatch.active{border-color:#fff;box-shadow:0 0 6px rgba(255,255,255,.5)}
 .cat-header{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:4px 0;margin-top:6px;cursor:pointer;display:flex;align-items:center;gap:4px;opacity:.7}.cat-header::before{content:'\25b8';font-size:8px;transition:transform .15s}.cat-header.open::before{transform:rotate(90deg)}
 .mode-bar{position:absolute;bottom:calc(12px + var(--safe-bottom));left:50%;transform:translateX(-50%);background:var(--panel-bg);border:1px solid var(--border);border-radius:8px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:6px 10px;display:none;align-items:center;gap:8px;z-index:55;white-space:nowrap;box-shadow:0 2px 12px rgba(0,0,0,.4)}.mode-bar.open{display:flex}.mode-info{font-size:11px;opacity:.8}.mode-bar .btn{min-width:44px;min-height:36px;font-size:14px}.mode-bar .btn.done{border-color:var(--accent2);color:var(--accent2)}.mode-bar .btn.done.ready{animation:goldPulse 1.5s infinite}@keyframes goldPulse{0%,100%{box-shadow:none}50%{box-shadow:0 0 8px var(--accent2)}}
 .zoom-ctrl{position:absolute;bottom:calc(12px + var(--safe-bottom));right:calc(8px + var(--safe-right));display:flex;flex-direction:column;gap:2px;z-index:50}.zoom-ctrl .btn{width:44px;height:44px;font-size:18px;font-weight:700;border-radius:6px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center}
@@ -198,7 +199,10 @@ function renderSettings(){
   h+='<div class="toggle-row"><span>Show Grid</span><label class="switch"><input type="checkbox" id="set-grid"'+(S.showGrid?" checked":"")+'><span class="slider"></span></label></div>';
   h+='<label>Grid Mode</label><select id="set-gridmode"><option value="mgrs"'+(S.gridMode==="mgrs"?" selected":"")+'>MGRS</option><option value="latlon"'+(S.gridMode==="latlon"?" selected":"")+'>Lat/Lon</option></select>';
   h+='<label>Coord Display</label><select id="set-coorddisp"><option value="mgrs"'+(S.coordDisplay==="mgrs"?" selected":"")+'>MGRS</option><option value="latlon"'+(S.coordDisplay==="latlon"?" selected":"")+'>Lat/Lon</option></select>';
-  h+='<label>Grid Color</label><input type="text" id="set-gridcolor" value="'+S.gridColor+'">';
+  h+='<label>Grid Color</label><div class="color-swatches" id="set-gridcolor">';
+  const gridColors=[["#00ff00","Green"],["#00ffff","Cyan"],["#ffffff","White"],["#ffaa00","Orange"],["#ff4444","Red"],["#cccccc","Gray"]];
+  gridColors.forEach(([c,n])=>h+=`<div class="swatch${S.gridColor===c?" active":""}" style="background:${c}" onclick="S.gridColor='${c}';requestRender();renderFloatingPanel()" title="${n}"></div>`);
+  h+='</div>';
   h+='<label>Grid Opacity</label><input type="range" id="set-gridop" min="0" max="1" step="0.1" value="'+S.gridOpacity+'">';
   h+='</div><div class="section"><div class="section-title">Device Overrides</div>';
   h+='<label>Layout</label><select id="set-layout"><option value="auto">Auto</option><option value="phone">Phone</option><option value="tablet">Tablet</option><option value="desktop">Desktop</option></select>';
@@ -275,7 +279,6 @@ function bindPanelEvents(){
   if(el("set-grid"))el("set-grid").onchange=e=>{S.showGrid=e.target.checked;requestRender()};
   if(el("set-gridmode"))el("set-gridmode").onchange=e=>{S.gridMode=e.target.value;requestRender()};
   if(el("set-coorddisp"))el("set-coorddisp").onchange=e=>{S.coordDisplay=e.target.value};
-  if(el("set-gridcolor"))el("set-gridcolor").onchange=e=>{S.gridColor=e.target.value;requestRender()};
   if(el("set-gridop"))el("set-gridop").oninput=e=>{S.gridOpacity=parseFloat(e.target.value);requestRender()};
   if(el("net-name"))el("net-name").onchange=e=>{S._net.peerName=e.target.value;localStorage.setItem("scheffmap_callsign",e.target.value)};
   if(el("net-lww"))el("net-lww").onchange=e=>{S._net.editMode=e.target.checked?"lww":"observer";netBroadcast({type:"editModeChange",editMode:S._net.editMode})};
@@ -491,7 +494,7 @@ function init(){
     <div class="topbar">
       <div class="topbar-left">
         <div class="topbar-dot"></div>
-        <span class="topbar-title">SCHEFFMAP</span><span style="font-size:9px;opacity:0.4;margin-left:4px">v3.3</span>
+        <span class="topbar-title">SCHEFFMAP</span><span style="font-size:9px;opacity:0.4;margin-left:4px">v3.4</span>
         <button class="btn" id="file-btn" style="padding:2px 6px;font-size:10px;margin-left:4px">\u2630 FILE</button>
         <div class="file-menu" id="file-menu">
           <div class="fm-section">Project</div>
