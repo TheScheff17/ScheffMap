@@ -1096,13 +1096,15 @@ function renderComms(){
         h+='<span style="font-size:9px;opacity:.6;transform:rotate('+(cpkgCollapsed?'0':'90')+'deg)">\u25b6</span>';
         h+='<span style="font-weight:600;flex:1">'+escHtml(pkg.name)+'</span>';
         h+='<span style="font-size:9px;opacity:.4">('+pkgLayers.length+')</span>';
+        /* Package share toggles */
+        var _pkgAllVis=pkgLayers.every(function(l){var sh=n.sharedLayers[l.id];return sh&&sh.visible});
+        var _pkgAllEdit=pkgLayers.every(function(l){var sh=n.sharedLayers[l.id];return sh&&sh.editable});
+        h+='<button class="btn'+(_pkgAllVis?" primary":"")+'" onclick="event.stopPropagation();togglePkgShare(\''+pkg.id+'\',\'visible\')" style="padding:1px 5px;font-size:9px;min-height:22px;min-width:0" title="Share all layers">\ud83d\udc41</button>';
+        h+='<button class="btn'+(_pkgAllEdit?" primary":"")+'" onclick="event.stopPropagation();togglePkgShare(\''+pkg.id+'\',\'editable\')" style="padding:1px 5px;font-size:9px;min-height:22px;min-width:0" title="Edit all layers">\u270e</button>';
         h+='</div>';
         if(!cpkgCollapsed){
           h+='<div style="padding:2px 4px 4px">';
-          h+='<div style="display:flex;gap:3px;margin-bottom:3px">';
-          h+='<button class="btn" onclick="togglePkgShare(\''+pkg.id+'\',\'visible\')" style="flex:1;font-size:9px;padding:2px 4px;min-height:22px">\ud83d\udc41 All</button>';
-          h+='<button class="btn" onclick="togglePkgShare(\''+pkg.id+'\',\'editable\')" style="flex:1;font-size:9px;padding:2px 4px;min-height:22px">\u270e All</button>';
-          h+='</div>';
+
           pkgLayers.forEach(function(l){h+=renderCommLayerRow(l)});
           h+='</div>';
         }
@@ -1754,7 +1756,7 @@ function escAttr(s){return escHtml(s)}
 /* Sanitize + truncate user strings */
 function sanitizeStr(s,maxLen){s=String(s||"");if(maxLen&&s.length>maxLen)s=s.slice(0,maxLen);return s}
 /* Length limits for user input fields */
-const APP_VERSION="8.4";
+const APP_VERSION="8.6";
 function forceUpdate(){
   if("serviceWorker" in navigator){
     navigator.serviceWorker.getRegistrations().then(function(regs){
@@ -2755,7 +2757,15 @@ function netCreateRoom(){
   n.peer=new Peer("staffmaps-"+n.roomCode,{debug:0});
   n.peer.on("open",()=>{n.isHost=true;n.mode="hosting";n.status="Hosting";updateNetDot("connected");renderFloatingPanel()});
   n.peer.on("connection",conn=>{
-    conn.on("open",()=>{n.conns.push({conn,peerId:conn.peer,joinOrder:n.nextJoinOrder++,_lastPong:Date.now()});var fMsg={type:"fullState",units:S.units,graphics:S.graphics,layers:S.layers,packages:S.packages,activeLayerId:S.activeLayerId,editMode:n.editMode,sharedLayers:n.sharedLayers,sharedEditLayer:n.sharedEditLayer};conn.send(JSON.stringify(fMsg));/* Send wargame state if active */if(n.wargame.active){setTimeout(function(){var pRole="observer";var wgMsg={type:"wargameState",active:true,phase:n.wargame.phase,turnNumber:n.wargame.turnNumber,myRole:pRole,layerRoles:n.wargame.layerRoles,orders:[],roles:n.wargame.roles};try{conn.send(JSON.stringify(wgMsg))}catch(e){}},100)}n.status=n.conns.length+" peer(s)";renderFloatingPanel()});
+    conn.on("open",()=>{n.conns.push({conn,peerId:conn.peer,joinOrder:n.nextJoinOrder++,_lastPong:Date.now()});/* Build fullState with only shared layers */
+      var _fsLayers=[],_fsUnits=[],_fsGraphics=[],_fsPkgs=[];
+      var _fsSharedIds=new Set();
+      S.layers.forEach(function(l){var sh=n.sharedLayers[l.id];if(sh&&sh.visible){_fsLayers.push(l);_fsSharedIds.add(l.id)}});
+      if(_fsLayers.length===0){_fsLayers=S.layers;S.layers.forEach(function(l){_fsSharedIds.add(l.id)})}
+      S.units.forEach(function(u){if(_fsSharedIds.has(u.layerId))_fsUnits.push(u)});
+      S.graphics.forEach(function(g){if(_fsSharedIds.has(g.layerId))_fsGraphics.push(g)});
+      S.packages.forEach(function(p){var pIds=p.layerIds.filter(function(id){return _fsSharedIds.has(id)});if(pIds.length)_fsPkgs.push({id:p.id,name:p.name,collapsed:p.collapsed,layerIds:pIds})});
+      var fMsg={type:"fullState",units:_fsUnits,graphics:_fsGraphics,layers:_fsLayers,packages:_fsPkgs,activeLayerId:n.sharedEditLayer||S.activeLayerId,editMode:n.editMode,sharedLayers:n.sharedLayers,sharedEditLayer:n.sharedEditLayer};conn.send(JSON.stringify(fMsg));/* Send wargame state if active */if(n.wargame.active){setTimeout(function(){var pRole="observer";var wgMsg={type:"wargameState",active:true,phase:n.wargame.phase,turnNumber:n.wargame.turnNumber,myRole:pRole,layerRoles:n.wargame.layerRoles,orders:[],roles:n.wargame.roles};try{conn.send(JSON.stringify(wgMsg))}catch(e){}},100)}n.status=n.conns.length+" peer(s)";renderFloatingPanel()});
     conn.on("data",data=>{try{var msg=JSON.parse(data);sanitizeNetMsg(msg);handleNetMsg(msg,conn.peer)}catch(e){}});
     conn.on("close",()=>{const pid=conn.peer;n.conns=n.conns.filter(c=>c.conn!==conn);delete n.peerNames[pid];delete n.peerPermissions[pid];n.status=n.conns.length+" peer(s)";broadcastRoster();renderFloatingPanel()});
     conn.on("error",()=>{const pid=conn.peer;n.conns=n.conns.filter(c=>c.conn!==conn);delete n.peerNames[pid];delete n.peerPermissions[pid];n.status=n.conns.length+" peer(s)";broadcastRoster();renderFloatingPanel()})});
@@ -3337,8 +3347,8 @@ const IO={
     });
     kml+='</Document></kml>';var blob=new Blob([kml],{type:"application/vnd.google-earth.kml+xml"});dlBlob(blob,"scheffmap-export.kml");IO.notify("Exported "+(S.units.length+S.graphics.length)+" features as KML")
   },
-  autosave(){try{localStorage.setItem("staffmaps_autosave",JSON.stringify({v:"4.5",units:S.units,graphics:S.graphics,layers:S.layers,packages:S.packages,lat:S.lat,lon:S.lon,zoom:S.zoom,tileSource:S.tileSource,gridColor:S.gridColor,gridOpacity:S.gridOpacity}))}catch(e){}},
-  autorestore(){try{const d=localStorage.getItem("staffmaps_autosave");if(d){const s=JSON.parse(d);if(!s.v||s.v<"4.5"){localStorage.removeItem("staffmaps_autosave");return false}if(s.units&&s.units.length){S.units=s.units.slice(0,2000).map(u=>sanitizeUnit(u)).filter(Boolean);S.graphics=(s.graphics||[]).slice(0,1000).map(g=>sanitizeGraphic(g)).filter(Boolean);S.layers=(s.layers||S.layers).slice(0,50);S.layers.forEach(l=>{l.name=sanitizeStr(l.name,INPUT_LIMITS.layerName)});S.packages=s.packages||[];S.lat=s.lat||S.lat;S.lon=s.lon||S.lon;S.zoom=s.zoom||S.zoom;S.tileSource=s.tileSource||S.tileSource;S.gridColor=s.gridColor||S.gridColor;S.gridOpacity=s.gridOpacity!==undefined?s.gridOpacity:S.gridOpacity;return true}}}catch(e){}return false},
+  autosave(){try{localStorage.setItem("staffmaps_autosave",JSON.stringify({v:"4.5",units:S.units,graphics:S.graphics,layers:S.layers,packages:S.packages,lat:S.lat,lon:S.lon,zoom:S.zoom,tileSource:S.tileSource,gridColor:S.gridColor,gridOpacity:S.gridOpacity,sharedLayers:S._net.sharedLayers,sharedEditLayer:S._net.sharedEditLayer}))}catch(e){}},
+  autorestore(){try{const d=localStorage.getItem("staffmaps_autosave");if(d){const s=JSON.parse(d);if(!s.v||s.v<"4.5"){localStorage.removeItem("staffmaps_autosave");return false}if(s.units&&s.units.length){S.units=s.units.slice(0,2000).map(u=>sanitizeUnit(u)).filter(Boolean);S.graphics=(s.graphics||[]).slice(0,1000).map(g=>sanitizeGraphic(g)).filter(Boolean);S.layers=(s.layers||S.layers).slice(0,50);S.layers.forEach(l=>{l.name=sanitizeStr(l.name,INPUT_LIMITS.layerName)});S.packages=s.packages||[];S.lat=s.lat||S.lat;S.lon=s.lon||S.lon;S.zoom=s.zoom||S.zoom;S.tileSource=s.tileSource||S.tileSource;S.gridColor=s.gridColor||S.gridColor;S.gridOpacity=s.gridOpacity!==undefined?s.gridOpacity:S.gridOpacity;if(s.sharedLayers)S._net.sharedLayers=s.sharedLayers;if(s.sharedEditLayer)S._net.sharedEditLayer=s.sharedEditLayer;return true}}}catch(e){}return false},
   autosaveClear(){localStorage.removeItem("staffmaps_autosave")},
 };
 
