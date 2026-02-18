@@ -90,19 +90,20 @@ input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:20
 .layer-move-select{background:var(--btn-bg);color:var(--fg);border:1px solid var(--border);border-radius:3px;font-size:9px;font-family:var(--font);padding:1px 4px;max-width:70px;-webkit-appearance:none;appearance:none;cursor:pointer}
 .layer-rename-input{touch-action:manipulation}
 .preview-wrap{display:flex;justify-content:center;margin-bottom:8px}.preview-wrap canvas{border:1px solid var(--border);border-radius:4px;background:#2a3a4a}
-@media(max-width:700px){.topbar .btn{min-height:28px;padding:4px 8px}.float-panel{right:0;left:0;width:auto;max-height:50vh;top:auto;bottom:0;border-radius:12px 12px 0 0;padding-bottom:var(--safe-bottom)}.editor-overlay{right:0;left:0;bottom:0;width:auto;min-width:0;max-height:45vh;min-height:180px;border-radius:12px 12px 0 0;box-shadow:0 -2px 20px rgba(0,0,0,.4);animation:slideUp .2s ease-out}.layer-item{padding:8px 6px;min-height:40px}.layer-obj{padding:6px 4px;min-height:36px;font-size:11px}.layer-move-select{font-size:11px;padding:4px 6px;max-width:90px}.btn{min-height:36px;padding:6px 10px}.stack-btn{width:48px;height:48px}.zoom-ctrl .btn{width:48px;height:48px;min-height:48px;padding:0}.editor-tab{padding:8px 12px;font-size:11px}.editor-actions .btn{min-width:40px;min-height:40px;padding:6px 10px;font-size:13px}.editor-header{align-items:stretch}.editor-tabs{align-items:stretch}.editor-tab{display:flex;align-items:center}.editor-grip{height:28px}.draw-tool-btn,.ed-btn{min-height:36px}.ed-btn-row{flex-wrap:wrap;overflow:hidden}.ed-btn-row .ed-btn{min-height:36px;flex:1 1 auto;white-space:nowrap}@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}}
+@media(max-width:700px){.topbar .btn{min-height:28px;padding:4px 8px}.float-panel{right:calc(52px + var(--safe-right));left:0;width:auto;max-height:50vh;top:auto;bottom:0;border-radius:12px 12px 0 0;padding-bottom:var(--safe-bottom)}.editor-overlay{right:0;left:0;bottom:0;width:auto;min-width:0;max-height:45vh;min-height:180px;border-radius:12px 12px 0 0;box-shadow:0 -2px 20px rgba(0,0,0,.4);animation:slideUp .2s ease-out}.layer-item{padding:8px 6px;min-height:40px}.layer-obj{padding:6px 4px;min-height:36px;font-size:11px}.layer-move-select{font-size:11px;padding:4px 6px;max-width:90px}.btn{min-height:36px;padding:6px 10px}.stack-btn{width:48px;height:48px}.zoom-ctrl .btn{width:48px;height:48px;min-height:48px;padding:0}.editor-tab{padding:8px 12px;font-size:11px}.editor-actions .btn{min-width:40px;min-height:40px;padding:6px 10px;font-size:13px}.editor-header{align-items:stretch}.editor-tabs{align-items:stretch}.editor-tab{display:flex;align-items:center}.editor-grip{height:28px}.draw-tool-btn,.ed-btn{min-height:36px}.ed-btn-row{flex-wrap:wrap;overflow:hidden}.ed-btn-row .ed-btn{min-height:36px;flex:1 1 auto;white-space:nowrap}@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}}
 @media(min-width:501px) and (max-width:900px){.float-panel{width:300px}}
 @media(max-height:500px) and (min-width:700px) and (min-aspect-ratio:2/1){
 .icon-stack{flex-direction:row;top:auto;right:auto;bottom:calc(4px + var(--safe-bottom));left:50%;transform:translateX(-50%);gap:3px}
 .stack-btn{width:36px;height:36px}
 .float-panel{left:calc(4px + var(--safe-left));right:auto;top:calc(4px + var(--safe-top));bottom:auto;max-height:calc(100% - 50px - var(--safe-top) - var(--safe-bottom));width:min(280px,40vw);padding-bottom:0;border-radius:8px}
-.zoom-ctrl{flex-direction:column;bottom:calc(44px + var(--safe-bottom));right:calc(4px + var(--safe-right));top:auto;left:auto;transform:none}
+.zoom-ctrl{flex-direction:column;bottom:calc(44px + var(--safe-bottom));right:calc(8px + var(--safe-right));top:auto;left:auto;transform:none}
 .zoom-ctrl .btn{width:36px;height:36px;min-height:36px;font-size:15px;padding:0}
 .zoom-ctrl .stack-btn{width:36px;height:36px}
 .editor-overlay{left:calc(4px + var(--safe-left));right:auto;bottom:calc(44px + var(--safe-bottom));top:auto;width:min(45vw,340px);min-width:220px;max-height:calc(100% - 50px - var(--safe-top) - var(--safe-bottom));border-radius:8px;animation:slideRight .2s ease-out}
-.topbar{height:22px;box-sizing:content-box;font-size:10px}
+.topbar{height:28px;box-sizing:content-box;font-size:11px}.topbar .btn{min-height:28px;padding:4px 10px;font-size:11px}
 .layer-indicator{bottom:calc(44px + var(--safe-bottom));left:calc(4px + var(--safe-left))}
 .mode-bar{bottom:calc(44px + var(--safe-bottom))}
+.file-menu{left:0;right:auto;max-width:min(260px,50vw);margin-top:2px}
 }
 
 </style>
@@ -1779,7 +1780,7 @@ function escAttr(s){return escHtml(s)}
 /* Sanitize + truncate user strings */
 function sanitizeStr(s,maxLen){s=String(s||"");if(maxLen&&s.length>maxLen)s=s.slice(0,maxLen);return s}
 /* Length limits for user input fields */
-const APP_VERSION="9.5";
+const APP_VERSION="9.7";
 function toggleFullscreen(){
   var d=document;
   if(d.fullscreenElement||d.webkitFullscreenElement){
@@ -3439,7 +3440,7 @@ function init(){
       <div class="topbar-left">
         <div class="topbar-dot"></div>
         <span class="topbar-title">STAFFMAPS</span><span style="font-size:9px;opacity:0.4;margin-left:4px">v15.8</span>
-        <button class="btn" id="file-btn" style="padding:2px 6px;font-size:10px;margin-left:4px">\u2630 FILE</button>
+        <button class="btn" id="file-btn" style="padding:4px 10px;font-size:11px;margin-left:4px;min-height:32px">\u2630 FILE</button>
         <div class="file-menu" id="file-menu"></div>
         <button class="btn" id="undo-btn" style="padding:2px 6px;opacity:0.3;pointer-events:none" title="Undo" onclick="undo()">\u21a9</button>
       </div>
