@@ -3475,7 +3475,16 @@ const IO={
       if(pkgLayerIds.length>1){
         S.packages.push({id:"pkg"+Date.now(),name:docName,collapsed:false,layerIds:pkgLayerIds});
       }
-      if(importedLayerIds.length>0)S.activeLayerId=importedLayerIds[importedLayerIds.length-1];
+      /* Wrap any orphan imported layers into a catch-all package */
+    var _orphanIds=importedLayerIds.filter(function(id){return !_pkgdIds.has(id)});
+    if(_orphanIds.length>0){
+      var _existPkg=null;
+      S.packages.forEach(function(p){if(!_existPkg)_orphanIds.forEach(function(id){if(p.layerIds.indexOf(id)>=0)_existPkg=p})});
+      if(!_existPkg){
+        S.packages.push({id:"pkg"+Date.now()+Math.random().toString(36).substr(2,4),name:docName||"KMZ Import",collapsed:true,layerIds:_orphanIds});
+      }
+    }
+    if(importedLayerIds.length>0)S.activeLayerId=importedLayerIds[importedLayerIds.length-1];
       requestRender();updateLayerIndicator();renderFloatingPanel();
       IO.notify("Imported "+count+" MilX objects"+(errors?" ("+errors+" skipped)":""))
     }catch(e){IO.notify("MilX error: "+e.message,"error")}},
@@ -3538,7 +3547,7 @@ const IO={
       IO.notify("Could not extract .milxly from archive","error");
     }catch(e){IO.notify("ZIP parse error: "+e.message,"error")}},
   importKML(text,embeddedFiles){try{const parser=new DOMParser(),doc=parser.parseFromString(text,"text/xml");
-    let count=0,errors=0;const _embeddedFiles=embeddedFiles||{};
+    let count=0,errors=0;const _embeddedFiles=embeddedFiles||{};var docName="";var _dn=doc.querySelector("Document > name");if(_dn)docName=_dn.textContent.trim();
     /* Affiliation detection from name, description, or style */
     /* Resolve a KML styleUrl to find the actual Style element */
     function resolveStyle(pm){
@@ -3772,10 +3781,12 @@ const IO={
       }
     });
     topLevelPackages.forEach(function(pkg){
-      if(pkg.layerIds.length>1){
+      if(pkg.layerIds.length>=1){
         S.packages.push({id:"pkg"+Date.now()+Math.random().toString(36).substr(2,4),name:pkg.name,collapsed:true,layerIds:pkg.layerIds});
       }
     });
+    /* Collect layer IDs already in a package */
+    var _pkgdIds=new Set();S.packages.forEach(function(p){p.layerIds.forEach(function(id){_pkgdIds.add(id)})});
     
     /* Top-level placemarks not in any folder */
     var topPms=getDirectChildren(topDoc,"Placemark");
@@ -3791,6 +3802,15 @@ const IO={
       var inPkg=false;S.packages.forEach(function(p){if(p.layerIds.indexOf(lid)>=0)inPkg=true});return!inPkg;
     });
     /* Don't auto-wrap standalone layers into a package — they're already named from their folder */
+    /* Wrap any orphan imported layers into a catch-all package */
+    var _orphanIds=importedLayerIds.filter(function(id){return !_pkgdIds.has(id)});
+    if(_orphanIds.length>0){
+      var _existPkg=null;
+      S.packages.forEach(function(p){if(!_existPkg)_orphanIds.forEach(function(id){if(p.layerIds.indexOf(id)>=0)_existPkg=p})});
+      if(!_existPkg){
+        S.packages.push({id:"pkg"+Date.now()+Math.random().toString(36).substr(2,4),name:docName||"KMZ Import",collapsed:true,layerIds:_orphanIds});
+      }
+    }
     if(importedLayerIds.length>0)S.activeLayerId=importedLayerIds[importedLayerIds.length-1];
     requestRender();updateLayerIndicator();renderFloatingPanel();
     IO.notify("Imported "+count+" placemarks"+(errors?" ("+errors+" skipped)":""))
