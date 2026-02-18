@@ -3530,6 +3530,27 @@ const IO={
       const coords=pm.getElementsByTagName("coordinates")[0];if(!coords)return null;
       const nameEl=pm.getElementsByTagName("name")[0],descEl=pm.getElementsByTagName("description")[0];
       const rawName=nameEl?nameEl.textContent:"",rawDesc=descEl?descEl.textContent:"";
+      /* Check for ScheffMap ExtendedData — if present, use it directly (round-trip fidelity) */
+      var smData={};
+      var edNodes=pm.querySelectorAll("ExtendedData > Data");
+      edNodes.forEach(function(d){var k=d.getAttribute("name");var v=(d.querySelector("value")||{}).textContent||"";if(k&&k.startsWith("sm:"))smData[k.slice(3)]=v});
+      if(smData.type){
+        /* Full metadata preserved — reconstruct unit directly */
+        var smMods=[];try{smMods=JSON.parse(smData.modifiers||"[]")}catch(e){}
+        return{id:"u"+Date.now()+Math.random().toString(36).substr(2,4),
+          lat:parseFloat(coords.textContent.split(",")[1]),
+          lon:parseFloat(coords.textContent.split(",")[0]),
+          type:smData.type||"infantry",
+          affiliation:smData.affiliation||"friendly",
+          echelon:smData.echelon||null,
+          designation:sanitizeStr(rawName,INPUT_LIMITS.designation),
+          parentUnit:sanitizeStr(smData.parentUnit||"",INPUT_LIMITS.parentUnit||32),
+          higherUnit:sanitizeStr(smData.higherUnit||"",INPUT_LIMITS.parentUnit||32),
+          isHQ:smData.isHQ==="true",
+          modifiers:smMods,
+          layerId,rings:[],equipment:{},
+          importNotes:"",originalName:rawName,_useStructuredLabel:true};
+      }
       const aff=detectAff(pm,folderName);
       const mg=pm.getElementsByTagName("MultiGeometry")[0];
       if(mg){var st=resolveStyle(pm),ap=mg.getElementsByTagName("Polygon"),al=mg.getElementsByTagName("LineString");
@@ -3784,7 +3805,7 @@ const IO={
       else if(isP){styleBlock+='<PolyStyle><fill>0</fill></PolyStyle>';}
       styleBlock+='</Style>\n';
     });
-    function placemarkUnit(u){var nm=esc(u.designation||u.originalName||u.type);var sid="u_"+(u.id||"").replace(/[^a-zA-Z0-9]/g,"");return'<Placemark><name>'+nm+'</name><styleUrl>#'+sid+'</styleUrl><Point><coordinates>'+u.lon+','+u.lat+',0</coordinates></Point></Placemark>\n'}
+    function placemarkUnit(u){var nm=esc(u.designation||u.originalName||u.type);var sid="u_"+(u.id||"").replace(/[^a-zA-Z0-9]/g,"");var ext='<ExtendedData><Data name="sm:type"><value>'+esc(u.type||'')+'</value></Data><Data name="sm:affiliation"><value>'+esc(u.affiliation||'friendly')+'</value></Data><Data name="sm:echelon"><value>'+esc(u.echelon||'')+'</value></Data><Data name="sm:higherUnit"><value>'+esc(u.higherUnit||'')+'</value></Data><Data name="sm:parentUnit"><value>'+esc(u.parentUnit||'')+'</value></Data><Data name="sm:isHQ"><value>'+(u.isHQ?'true':'false')+'</value></Data><Data name="sm:modifiers"><value>'+esc(JSON.stringify(u.modifiers||[]))+'</value></Data></ExtendedData>';return'<Placemark><name>'+nm+'</name><styleUrl>#'+sid+'</styleUrl>'+ext+'<Point><coordinates>'+u.lon+','+u.lat+',0</coordinates></Point></Placemark>\n'}
     function placemarkGfx(g){
       var nm=esc(g.label||"");if(!nm)nm=esc(g.overlayType&&g.overlayType!=="none"?g.overlayType:g.tool);
       var sid="g_"+(g.id||"").replace(/[^a-zA-Z0-9]/g,"");
@@ -3829,7 +3850,7 @@ const IO={
     var hexToKml=function(hex,alpha){hex=(hex||"#ff4444").replace("#","");var r=hex.substring(0,2),g2=hex.substring(2,4),b=hex.substring(4,6);var a=alpha!==undefined?Math.round(alpha*255).toString(16).padStart(2,"0"):"ff";return a+b+g2+r};
     function rectToCoords(g){var p0=g.points[0],p1=g.points[1];return[p0.lon+","+p0.lat+",0",p1.lon+","+p0.lat+",0",p1.lon+","+p1.lat+",0",p0.lon+","+p1.lat+",0",p0.lon+","+p0.lat+",0"].join(" ")}
     function circleToCoords(g){var c=g.points[0],e=g.points[1];var R=Math.sqrt(Math.pow((e.lat-c.lat),2)+Math.pow((e.lon-c.lon)*Math.cos(c.lat*Math.PI/180),2));var pts=[];for(var i=0;i<=64;i++){var a=Math.PI*2*i/64;pts.push((c.lon+R*Math.sin(a)/Math.cos(c.lat*Math.PI/180))+","+(c.lat+R*Math.cos(a))+",0")}return pts.join(" ")}
-    function placemarkUnit(u){var nm=esc(u.designation||u.originalName||u.type);var aff=u.affiliation||"friendly";var col=aff==="hostile"?"ff0000ff":aff==="neutral"?"ff00ff00":"ffff8800";return'<Placemark><name>'+nm+'</name><Style><IconStyle><scale>'+(u.iconScale||1)+'</scale><Icon><href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href></Icon><color>'+col+'</color></IconStyle></Style><Point><coordinates>'+u.lon+','+u.lat+',0</coordinates></Point></Placemark>\n'}
+    function placemarkUnit(u){var nm=esc(u.designation||u.originalName||u.type);var aff=u.affiliation||"friendly";var col=aff==="hostile"?"ff0000ff":aff==="neutral"?"ff00ff00":"ffff8800";var ext='<ExtendedData><Data name="sm:type"><value>'+esc(u.type||'')+'</value></Data><Data name="sm:affiliation"><value>'+esc(aff)+'</value></Data><Data name="sm:echelon"><value>'+esc(u.echelon||'')+'</value></Data><Data name="sm:higherUnit"><value>'+esc(u.higherUnit||'')+'</value></Data><Data name="sm:parentUnit"><value>'+esc(u.parentUnit||'')+'</value></Data><Data name="sm:isHQ"><value>'+(u.isHQ?'true':'false')+'</value></Data><Data name="sm:modifiers"><value>'+esc(JSON.stringify(u.modifiers||[]))+'</value></Data></ExtendedData>';return'<Placemark><name>'+nm+'</name><Style><IconStyle><scale>'+(u.iconScale||1)+'</scale><Icon><href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href></Icon><color>'+col+'</color></IconStyle></Style>'+ext+'<Point><coordinates>'+u.lon+','+u.lat+',0</coordinates></Point></Placemark>\n'}
     function placemarkGfx(g){
       var nm=esc(g.label||"");if(!nm)nm=esc(g.overlayType&&g.overlayType!=="none"?g.overlayType:g.tool);
       var lineCol=hexToKml(g.color||"#ff4444",g.opacity!=null?g.opacity:1);var isP=g.tool==="polygon"||g.tool==="rectangle"||g.tool==="circle";
