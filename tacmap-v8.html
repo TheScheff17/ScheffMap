@@ -736,7 +736,7 @@ function smoothPanTo(lat,lon,dur){dur=dur||400;
   const tLat=lat-offsetLat,tLon=lon;
   const sLat=S.lat,sLon=S.lon,sT=performance.now();function step(t){const p=Math.min(1,(t-sT)/dur),e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;S.lat=sLat+(tLat-sLat)*e;S.lon=sLon+(tLon-sLon)*e;requestRender();if(p<1)requestAnimationFrame(step)}requestAnimationFrame(step)}
 var _canvasRect=null;function _updateCanvasRect(){_canvasRect=canvas?canvas.getBoundingClientRect():null}
-function getPos(e){if(!_canvasRect)_updateCanvasRect();var r=_canvasRect;return e.clientX!==undefined?{x:e.clientX-r.left,y:e.clientY-r.top}:e.touches&&e.touches[0]?{x:e.touches[0].clientX-r.left,y:e.touches[0].clientY-r.top}:{x:0,y:0}}
+function getPos(e){_updateCanvasRect();var r=_canvasRect;return e.clientX!==undefined?{x:e.clientX-r.left,y:e.clientY-r.top}:e.touches&&e.touches[0]?{x:e.touches[0].clientX-r.left,y:e.touches[0].clientY-r.top}:{x:0,y:0}}
 function hitTestUnit(pos){const sz=getUSS(),r=sz*0.4;const _hv={};S.layers.forEach(l=>{_hv[l.id]=l.visible});for(let i=S.units.length-1;i>=0;i--){const u=S.units[i];if(_hv[u.layerId]===false)continue;const sp=latlonToScreen(u.lat,u.lon);if(Math.abs(pos.x-sp.x)<r&&Math.abs(pos.y-sp.y)<r)return u;/* Check range rings — click near ring edge selects unit */if(u.rings&&u.rings.length){const dist=Math.hypot(pos.x-sp.x,pos.y-sp.y);for(const ring of u.rings){if(!ring.radius)continue;const rp=metersToPixels(ring.radius,u.lat,S.zoom);if(Math.abs(dist-rp)<10)return u}}}return null}
 function pointInPoly(px,py,pts){/* Ray casting algorithm */let inside=false;for(let i=0,j=pts.length-1;i<pts.length;j=i++){const xi=pts[i].x,yi=pts[i].y,xj=pts[j].x,yj=pts[j].y;if(((yi>py)!==(yj>py))&&(px<(xj-xi)*(py-yi)/(yj-yi)+xi))inside=!inside}return inside}
 function hitTestGraphic(pos){
@@ -1459,6 +1459,20 @@ function renderComms(){
     }
     h+='<div class="row" style="margin-top:8px"><button class="btn danger" onclick="netLeave()">Leave Room</button></div>';
   }
+  h+='<div class="section"><div class="section-title">Connection Troubleshooting</div>';
+  h+='<div style="font-size:10px;color:var(--fg-dim,#888);margin-bottom:6px">If auto-connect fails on restricted networks, use manual signaling below.</div>';
+  h+='<button class="btn" style="width:100%;margin-bottom:4px" onclick="netDiag()">Run Diagnostics</button>';
+  h+='<div id="net-diag-out" style="font-size:10px;color:#aaa;margin-bottom:6px;white-space:pre-wrap"></div>';
+  h+='<button class="btn" style="width:100%;margin-bottom:4px" onclick="netManualToggle()">Manual Connect (Firewall Bypass)</button>';
+  h+='<div id="net-manual" style="display:none">';
+  h+='<div style="font-size:10px;color:#aaa;margin-bottom:4px">1. One peer clicks <b>Generate Offer</b> and shares the text.<br>2. Other peer pastes it and clicks <b>Generate Answer</b>.<br>3. First peer pastes the answer and clicks <b>Apply Answer</b>.</div>';
+  h+='<button class="btn primary" style="width:100%;margin-bottom:4px" onclick="netManualOffer()">Generate Offer (Host)</button>';
+  h+='<textarea id="net-manual-in" placeholder="Paste offer or answer here..." style="width:100%;height:60px;font-size:9px;background:#111;color:#eee;border:1px solid #444;border-radius:4px;padding:4px;box-sizing:border-box;resize:vertical;margin-bottom:4px"></textarea>';
+  h+='<button class="btn" style="width:48%;margin-right:4%" onclick="netManualAnswer()">Generate Answer</button>';
+  h+='<button class="btn" style="width:48%" onclick="netManualApply()">Apply Answer</button>';
+  h+='<textarea id="net-manual-out" readonly placeholder="Output appears here — copy and share..." style="width:100%;height:60px;font-size:9px;background:#111;color:#eee;border:1px solid #444;border-radius:4px;padding:4px;box-sizing:border-box;resize:vertical;margin-top:4px"></textarea>';
+  h+='</div>';
+  h+='</div>';
   h+='<div class="section"><div class="section-title">Encryption</div>';
   h+='<div class="toggle-row"><span>Encrypt</span><label class="switch"><input type="checkbox" id="net-enc"'+(n.encEnabled?" checked":"")+'><span class="slider"></span></label></div>';
   h+='<div id="enc-fields" style="'+(n.encEnabled?'':'display:none')+'">';
@@ -2833,7 +2847,22 @@ function attemptHostMigration(){
   var savedCode=n.roomCode;
   var savedName=n.peerName;
   /* Create new peer with same room code */
-  n.peer=new Peer("staffmaps-"+savedCode,{debug:0});
+  n.peer=new Peer("staffmaps-"+savedCode,{
+    debug:0,
+    config:{
+      iceServers:[
+        {urls:"stun:stun.l.google.com:19302"},
+        {urls:"stun:stun1.l.google.com:19302"},
+        {urls:"stun:stun.cloudflare.com:3478"},
+        {urls:"stun:stun.relay.metered.ca:80"},
+        {urls:"turn:standard.relay.metered.ca:80",username:"openrelayproject",credential:"openrelayproject"},
+        {urls:"turn:standard.relay.metered.ca:80?transport=tcp",username:"openrelayproject",credential:"openrelayproject"},
+        {urls:"turn:standard.relay.metered.ca:443",username:"openrelayproject",credential:"openrelayproject"},
+        {urls:"turns:standard.relay.metered.ca:443?transport=tcp",username:"openrelayproject",credential:"openrelayproject"}
+      ],
+      iceTransportPolicy:"all"
+    }
+  });
   n.peer.on("open",function(){
     n.isHost=true;n.mode="hosting";n.roomCode=savedCode;
     n.hostConn=null;n.conns=[];n.peerNames={};n.peerPermissions={};
@@ -3041,7 +3070,22 @@ function shouldBroadcastEdit(msg){
 function netBroadcast(msg){const n=S._net;if(n.mode==="offline")return;if(!shouldBroadcastEdit(msg))return;const str=JSON.stringify(msg);if(n.isHost){n.conns.forEach(c=>{try{c.conn.send(str)}catch(e){}})}else if(n.hostConn){try{n.hostConn.send(str)}catch(e){}}}
 function netCreateRoom(){
   const n=S._net;n.roomCode=Math.random().toString(36).substr(2,6).toUpperCase();
-  n.peer=new Peer("staffmaps-"+n.roomCode,{debug:0});
+  n.peer=new Peer("staffmaps-"+n.roomCode,{
+    debug:0,
+    config:{
+      iceServers:[
+        {urls:"stun:stun.l.google.com:19302"},
+        {urls:"stun:stun1.l.google.com:19302"},
+        {urls:"stun:stun.cloudflare.com:3478"},
+        {urls:"stun:stun.relay.metered.ca:80"},
+        {urls:"turn:standard.relay.metered.ca:80",username:"openrelayproject",credential:"openrelayproject"},
+        {urls:"turn:standard.relay.metered.ca:80?transport=tcp",username:"openrelayproject",credential:"openrelayproject"},
+        {urls:"turn:standard.relay.metered.ca:443",username:"openrelayproject",credential:"openrelayproject"},
+        {urls:"turns:standard.relay.metered.ca:443?transport=tcp",username:"openrelayproject",credential:"openrelayproject"}
+      ],
+      iceTransportPolicy:"all"
+    }
+  });
   n.peer.on("open",()=>{n.isHost=true;n.mode="hosting";n.status="Hosting";updateNetDot("connected");renderFloatingPanel()});
   n.peer.on("connection",conn=>{
     conn.on("open",()=>{n.conns.push({conn,peerId:conn.peer,joinOrder:n.nextJoinOrder++,_lastPong:Date.now()});/* Build fullState with only shared layers */
@@ -3060,7 +3104,22 @@ function netCreateRoom(){
 
 function netJoinRoom(){
   const n=S._net,code=(document.getElementById("net-code")||{}).value||n.roomCode;if(!code)return;
-  n.roomCode=code.toUpperCase();n.peer=new Peer(undefined,{debug:0});
+  n.roomCode=code.toUpperCase();n.peer=new Peer(undefined,{
+    debug:0,
+    config:{
+      iceServers:[
+        {urls:"stun:stun.l.google.com:19302"},
+        {urls:"stun:stun1.l.google.com:19302"},
+        {urls:"stun:stun.cloudflare.com:3478"},
+        {urls:"stun:stun.relay.metered.ca:80"},
+        {urls:"turn:standard.relay.metered.ca:80",username:"openrelayproject",credential:"openrelayproject"},
+        {urls:"turn:standard.relay.metered.ca:80?transport=tcp",username:"openrelayproject",credential:"openrelayproject"},
+        {urls:"turn:standard.relay.metered.ca:443",username:"openrelayproject",credential:"openrelayproject"},
+        {urls:"turns:standard.relay.metered.ca:443?transport=tcp",username:"openrelayproject",credential:"openrelayproject"}
+      ],
+      iceTransportPolicy:"all"
+    }
+  });
   n.peer.on("open",()=>{
     const conn=n.peer.connect("staffmaps-"+n.roomCode);n.hostConn=conn;
     conn.on("open",()=>{n.mode="connected";n.status="Connected";updateNetDot("connected");S._net._lastHostPing=Date.now();conn.send(JSON.stringify({type:"hello",name:n.peerName}));renderFloatingPanel()});
@@ -3069,6 +3128,117 @@ function netJoinRoom(){
   n.peer.on("error",e=>{n.status="Error: "+e.type;updateNetDot("error");renderFloatingPanel()})}
 
 function netLeave(){const n=S._net;if(n.peer)n.peer.destroy();n.peer=null;n.conns=[];n.hostConn=null;n.isHost=false;n.roomCode=null;n.mode="offline";n.status="";n.peerNames={};n.sharedLayers={};n.sharedEditLayer=null;n.editScope="local";n.peerPermissions={};n.editRequests=[];n.editRequestStatus=null;n.roomRoster=[];n.wargame={active:false,phase:"planning",roles:{},myRole:null,layerRoles:{},orders:[],turnNumber:1,turnLog:[]};S._wargameOrderPending=null;updateNetDot("");renderFloatingPanel();requestRender()}
+
+/* ── Manual WebRTC Signaling (firewall bypass) ── */
+var _manualPC=null,_manualOffer=null;
+function netManualToggle(){
+  var el=document.getElementById("net-manual");
+  if(el)el.style.display=el.style.display==="none"?"block":"none";
+}
+function netManualOffer(){
+  if(_manualPC)_manualPC.close();
+  _manualPC=new RTCPeerConnection({iceServers:[
+    {urls:"stun:stun.l.google.com:19302"},
+    {urls:"turn:standard.relay.metered.ca:80",username:"openrelayproject",credential:"openrelayproject"},
+    {urls:"turn:standard.relay.metered.ca:443",username:"openrelayproject",credential:"openrelayproject"}
+  ]});
+  var dc=_manualPC.createDataChannel("staffmaps");
+  dc.onopen=function(){IO.notify("Manual channel open — connected!")};
+  dc.onmessage=function(e){try{handleNetMsg(JSON.parse(e.data),"manual")}catch(err){}};
+  _manualPC.ondatachannel=function(e){e.channel.onopen=function(){IO.notify("Manual channel open!")};e.channel.onmessage=function(ev){try{handleNetMsg(JSON.parse(ev.data),"manual")}catch(err){}}};
+  var candidates=[];
+  _manualPC.onicecandidate=function(e){if(e.candidate)candidates.push(e.candidate)};
+  _manualPC.onicegatheringstatechange=function(){
+    if(_manualPC.iceGatheringState==="complete"){
+      var out={sdp:_manualPC.localDescription,candidates:candidates};
+      var el=document.getElementById("net-manual-out");
+      if(el){el.value=btoa(JSON.stringify(out));el.select()}
+      IO.notify("Offer ready — copy the text and send to other peer");
+    }
+  };
+  _manualPC.createOffer().then(function(offer){
+    _manualOffer=offer;
+    return _manualPC.setLocalDescription(offer);
+  }).catch(function(e){IO.notify("Offer error: "+e.message,"error")});
+}
+function netManualAnswer(){
+  var inp=document.getElementById("net-manual-in");
+  if(!inp||!inp.value.trim()){IO.notify("Paste the offer first","error");return}
+  try{var data=JSON.parse(atob(inp.value.trim()))}catch(e){IO.notify("Invalid offer text","error");return}
+  if(_manualPC)_manualPC.close();
+  _manualPC=new RTCPeerConnection({iceServers:[
+    {urls:"stun:stun.l.google.com:19302"},
+    {urls:"turn:standard.relay.metered.ca:80",username:"openrelayproject",credential:"openrelayproject"},
+    {urls:"turn:standard.relay.metered.ca:443",username:"openrelayproject",credential:"openrelayproject"}
+  ]});
+  _manualPC.ondatachannel=function(e){
+    var ch=e.channel;
+    ch.onopen=function(){IO.notify("Manual channel open — connected!")};
+    ch.onmessage=function(ev){try{handleNetMsg(JSON.parse(ev.data),"manual")}catch(err){}};
+  };
+  var candidates=[];
+  _manualPC.onicecandidate=function(e){if(e.candidate)candidates.push(e.candidate)};
+  _manualPC.onicegatheringstatechange=function(){
+    if(_manualPC.iceGatheringState==="complete"){
+      var out={sdp:_manualPC.localDescription,candidates:candidates};
+      var el=document.getElementById("net-manual-out");
+      if(el){el.value=btoa(JSON.stringify(out));el.select()}
+      IO.notify("Answer ready — copy the text and send back to host");
+    }
+  };
+  _manualPC.setRemoteDescription(data.sdp).then(function(){
+    (data.candidates||[]).forEach(function(c){_manualPC.addIceCandidate(c).catch(function(){})});
+    return _manualPC.createAnswer();
+  }).then(function(ans){
+    return _manualPC.setLocalDescription(ans);
+  }).catch(function(e){IO.notify("Answer error: "+e.message,"error")});
+}
+function netManualApply(){
+  var inp=document.getElementById("net-manual-in");
+  if(!inp||!inp.value.trim()){IO.notify("Paste the answer first","error");return}
+  try{var data=JSON.parse(atob(inp.value.trim()))}catch(e){IO.notify("Invalid answer text","error");return}
+  if(!_manualPC){IO.notify("Generate offer first","error");return}
+  _manualPC.setRemoteDescription(data.sdp).then(function(){
+    (data.candidates||[]).forEach(function(c){_manualPC.addIceCandidate(c).catch(function(){})});
+    IO.notify("Answer applied — waiting for connection...");
+  }).catch(function(e){IO.notify("Apply error: "+e.message,"error")});
+}
+/* ── Network Diagnostics ── */
+function netDiag(){
+  var out=document.getElementById("net-diag-out");
+  if(out)out.textContent="Running...";
+  var results=[];
+  /* Test STUN reachability via RTCPeerConnection ice gathering */
+  var pc=new RTCPeerConnection({iceServers:[
+    {urls:"stun:stun.l.google.com:19302"},
+    {urls:"stun:stun.cloudflare.com:3478"},
+    {urls:"turn:standard.relay.metered.ca:80",username:"openrelayproject",credential:"openrelayproject"}
+  ]});
+  pc.createDataChannel("diag");
+  var types={host:0,srflx:0,relay:0};
+  var done=false;
+  pc.onicecandidate=function(e){
+    if(!e.candidate)return;
+    var t=e.candidate.type;
+    if(t&&types[t]!==undefined)types[t]++;
+  };
+  pc.onicegatheringstatechange=function(){
+    if(pc.iceGatheringState==="complete"&&!done){
+      done=true;
+      var lines=[];
+      lines.push("Local (host): "+(types.host>0?"✓ OK":"✗ None"));
+      lines.push("STUN (srflx): "+(types.srflx>0?"✓ Reachable":"✗ Blocked"));
+      lines.push("TURN (relay): "+(types.relay>0?"✓ Reachable":"✗ Blocked"));
+      if(types.relay>0)lines.push("\nTURN relay available — auto-connect should work.");
+      else if(types.srflx>0)lines.push("\nSTUN OK but no TURN — may fail on symmetric NAT.");
+      else lines.push("\nAll external servers blocked. Use Manual Connect.");
+      if(out)out.textContent=lines.join("\n");
+      pc.close();
+    }
+  };
+  pc.createOffer().then(function(o){return pc.setLocalDescription(o)});
+  setTimeout(function(){if(!done){done=true;if(out)out.textContent="Timeout — network may be blocking UDP. Try Manual Connect.";pc.close()}},8000);
+}
 
 function handleNetMsg(msg,fromPeer){
   /* Host: validate & relay edit messages to other peers */
@@ -3525,7 +3695,7 @@ const IO={
       else if(/\bpl\b|phase\s*line/i.test(ln)){ot="pl";gt="line"}else if(/\bld\b|line\s*of\s*dep/i.test(ln)){ot="ld";gt="line"}
       else if(/\bboundary\b/i.test(ln)){ot="boundary";gt="line"}else if(/\baa\b|assembly\s*area/i.test(ln)){ot="aa";gt="rectangle"}
       else if(/\baxis\b|avenue.*approach/i.test(ln)){ot="axis";gt="line"}else if(/\broute\b|msr\b|asr\b/i.test(ln)){ot="route";gt="line"}
-      return{_isGraphic:true,id:"g"+Date.now()+Math.random().toString(36).substr(2,4),tool:gt,points:pts,color:gc,lineWidth:glw,lineStyle:isPoly?"solid":"dashed",overlayType:ot,fill:sf,fillColor:gfc,fillOpacity:gfo,label:rn&&!/^Untitled (Polygon|Path|Linestring|Placemark|Line)$/i.test(rn)?rn:"",layerId:lid,labelOffset:null,echelon:ot==="boundary"?"brigade":null,unitAbove:"",unitBelow:""}}
+      return{_isGraphic:true,id:"g"+Date.now()+Math.random().toString(36).substr(2,4),tool:gt,points:pts,color:gc,lineWidth:glw,lineStyle:(function(){var ed=pm.querySelectorAll("ExtendedData > Data");for(var i=0;i<ed.length;i++){if(ed[i].getAttribute("name")==="sm:lineStyle")return ed[i].querySelector("value").textContent||"solid"}return isPoly?"solid":"solid";})(),overlayType:ot,fill:sf,fillColor:gfc,fillOpacity:gfo,label:rn&&!/^Untitled (Polygon|Path|Linestring|Placemark|Line)$/i.test(rn)?rn:"",layerId:lid,labelOffset:null,echelon:ot==="boundary"?"brigade":null,unitAbove:"",unitBelow:""}}
     function buildUnit(pm,layerId,folderName){
       const coords=pm.getElementsByTagName("coordinates")[0];if(!coords)return null;
       const nameEl=pm.getElementsByTagName("name")[0],descEl=pm.getElementsByTagName("description")[0];
@@ -3800,7 +3970,7 @@ const IO={
     S.graphics.filter(g=>layerIds.has(g.layerId)&&g.points&&g.points.length>=2).forEach(function(g){
       var styleId="g_"+(g.id||"").replace(/[^a-zA-Z0-9]/g,"");
       var lineCol=hexToKml(g.color||"#ff4444",g.opacity!=null?g.opacity:1);var isP=g.tool==="polygon"||g.tool==="rectangle"||g.tool==="circle";
-      styleBlock+='<Style id="'+styleId+'"><LineStyle><color>'+lineCol+'</color><width>'+(g.lineWidth||2)+'</width></LineStyle>';
+      styleBlock+='<Style id="'+styleId+'"><LineStyle><color>'+lineCol+'</color><width>'+(g.lineWidth||2)+'</width></LineStyle><ExtendedData><Data name="sm:lineStyle"><value>'+(g.lineStyle||'solid')+'</value></Data><Data name="sm:tool"><value>'+(g.tool||'line')+'</value></Data><Data name="sm:rotation"><value>'+(g.rotation||0)+'</value></Data><Data name="sm:label"><value>'+esc(g.label||'')+'</value></Data></ExtendedData>';
       if(isP&&g.fill){var fillOp=g.fillOpacity!=null?g.fillOpacity:0.35;styleBlock+='<PolyStyle><color>'+hexToKml(g.fillColor||g.color||"#ff4444",fillOp)+'</color></PolyStyle>';}
       else if(isP){styleBlock+='<PolyStyle><fill>0</fill></PolyStyle>';}
       styleBlock+='</Style>\n';
@@ -3854,7 +4024,7 @@ const IO={
     function placemarkGfx(g){
       var nm=esc(g.label||"");if(!nm)nm=esc(g.overlayType&&g.overlayType!=="none"?g.overlayType:g.tool);
       var lineCol=hexToKml(g.color||"#ff4444",g.opacity!=null?g.opacity:1);var isP=g.tool==="polygon"||g.tool==="rectangle"||g.tool==="circle";
-      var h='<Placemark><name>'+nm+'</name><Style><LineStyle><color>'+lineCol+'</color><width>'+(g.lineWidth||2)+'</width></LineStyle>';
+      var smExt='<ExtendedData><Data name="sm:lineStyle"><value>'+(g.lineStyle||'solid')+'</value></Data><Data name="sm:tool"><value>'+(g.tool||'line')+'</value></Data><Data name="sm:rotation"><value>'+(g.rotation||0)+'</value></Data><Data name="sm:label"><value>'+esc(g.label||'')+'</value></Data></ExtendedData>';var h='<Placemark><n>'+nm+'</n>'+smExt+'<Style><LineStyle><color>'+lineCol+'</color><width>'+(g.lineWidth||2)+'</width></LineStyle>';
       if(isP&&g.fill){var fillOp=g.fillOpacity!=null?g.fillOpacity:0.35;h+='<PolyStyle><color>'+hexToKml(g.fillColor||g.color||"#ff4444",fillOp)+'</color></PolyStyle>';}
       else if(isP){h+='<PolyStyle><fill>0</fill></PolyStyle>';}
       h+='</Style>';
