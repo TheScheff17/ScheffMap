@@ -11,6 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <title>StaffMaps — Tactical Map Engine</title>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root{--bg:#1a1a1a;--fg:#f0f0f0;--accent:#4a9eff;--accent2:#ffd700;--panel-bg:#1a1a1a;--btn-bg:rgba(255,255,255,0.1);--btn-hover:rgba(255,255,255,0.2);--border:rgba(255,255,255,0.15);--danger:#ff4444;--success:#44cc44;--warning:#ffaa00;--safe-top:env(safe-area-inset-top,0px);--safe-right:env(safe-area-inset-right,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--safe-left:env(safe-area-inset-left,0px);--font:'SF Mono','Fira Code',Consolas,Monaco,monospace;--ui-scale:1}
 [data-theme="light"]{--bg:#f0f0f0;--fg:#222;--panel-bg:rgba(245,245,245,0.97);--btn-bg:rgba(0,0,0,0.08);--btn-hover:rgba(0,0,0,0.15);--border:rgba(0,0,0,0.15)}
@@ -1464,14 +1465,41 @@ function renderComms(){
   h+='<button class="btn" style="width:100%;margin-bottom:4px" onclick="netDiag()">Run Diagnostics</button>';
   h+='<div id="net-diag-out" style="font-size:10px;color:#aaa;margin-bottom:6px;white-space:pre-wrap"></div>';
   h+='<button class="btn" style="width:100%;margin-bottom:4px" onclick="netManualToggle()">Manual Connect (Firewall Bypass)</button>';
-  h+='<div id="net-manual" style="display:none">';
-  h+='<div style="font-size:10px;color:#aaa;margin-bottom:6px">Works on same building network even on different routers (uses mDNS).<br><b>Host:</b> Generate Offer → Copy Output → send via Teams/text.<br><b>Peer:</b> Paste in box → Generate Answer → Copy Output → send back.<br><b>Host:</b> Paste answer → Apply Answer → wait for connected.</div>';
-  h+='<button class="btn primary" style="width:100%;margin-bottom:4px" onclick="netManualOffer()">Generate Offer (Host)</button>';
-  h+='<textarea id="net-manual-in" placeholder="Paste offer or answer here..." style="width:100%;height:60px;font-size:9px;background:#111;color:#eee;border:1px solid #444;border-radius:4px;padding:4px;box-sizing:border-box;resize:vertical;margin-bottom:4px"></textarea>';
-  h+='<button class="btn" style="width:48%;margin-right:4%" onclick="netManualAnswer()">Generate Answer</button>';
-  h+='<button class="btn" style="width:48%" onclick="netManualApply()">Apply Answer</button>';
-  h+='<textarea id="net-manual-out" readonly placeholder="Output appears here — copy and share..." style="width:100%;height:60px;font-size:9px;background:#111;color:#eee;border:1px solid #444;border-radius:4px;padding:4px;box-sizing:border-box;resize:vertical;margin-top:4px"></textarea>';
-  h+='<button class="btn" style="width:100%;margin-top:4px" onclick="netManualCopy()">📋 Copy Output to Clipboard</button>';
+  h+='<div id="net-manual" style="display:none;font-size:10px">';
+  h+='<div style="color:#aaa;margin-bottom:8px">Same building WiFi required. Each person picks their role — the host connects to each peer one at a time.</div>';
+
+  h+='<div style="display:flex;gap:4px;margin-bottom:10px">';
+  h+='<button id="mr-host" class="btn primary" style="flex:1" onclick="netManualRole('host')">I am the HOST</button>';
+  h+='<button id="mr-peer" class="btn" style="flex:1" onclick="netManualRole('peer')">I am a PEER</button>';
+  h+='</div>';
+
+  h+='<div id="net-manual-host" style="display:none">';
+  h+='<div style="background:#1e2a1e;border:1px solid #3a5a3a;border-radius:6px;padding:8px;margin-bottom:8px">';
+  h+='<div style="color:#7fc97f;font-weight:bold;margin-bottom:4px">STEP 1 — Generate your offer</div>';
+  h+='<div style="color:#aaa;margin-bottom:6px">Click, wait 5 sec, then send the copied text to your first peer via Teams/text. Repeat for each additional peer.</div>';
+  h+='<button class="btn primary" style="width:100%;margin-bottom:6px" onclick="netManualOffer()">Generate Offer</button>';
+  h+='<textarea id="net-manual-out" readonly placeholder="Offer appears here — auto-copied to clipboard" style="width:100%;height:50px;font-size:9px;background:#111;color:#eee;border:1px solid #444;border-radius:4px;padding:4px;box-sizing:border-box;resize:none"></textarea>';
+  h+='<button class="btn" style="width:100%;margin-top:4px" onclick="netManualCopy()">📋 Copy Again</button>';
+  h+='<div id="net-manual-qr" style="margin-top:8px;display:flex;justify-content:center;min-height:0"></div>';
+  h+='<div style="font-size:9px;color:#666;text-align:center;margin-top:2px">Or peer scans QR code</div>';
+  h+='</div>';
+  h+='<div style="background:#2a1e1e;border:1px solid #5a3a3a;border-radius:6px;padding:8px">';
+  h+='<div style="color:#c97f7f;font-weight:bold;margin-bottom:4px">STEP 2 — Apply each peer's answer</div>';
+  h+='<div style="color:#aaa;margin-bottom:6px">When a peer sends you their answer, paste it here and apply. Repeat for each peer.</div>';
+  h+='<textarea id="net-manual-in2" placeholder="Paste answer from peer here..." style="width:100%;height:50px;font-size:9px;background:#111;color:#eee;border:1px solid #444;border-radius:4px;padding:4px;box-sizing:border-box;resize:none;margin-bottom:4px"></textarea>';
+  h+='<button class="btn primary" style="width:100%" onclick="netManualApply()">Apply Answer</button>';
+  h+='</div>';
+  h+='</div>';
+
+  h+='<div id="net-manual-peer" style="display:none">';
+  h+='<div style="background:#1e1e2a;border:1px solid #3a3a5a;border-radius:6px;padding:8px">';
+  h+='<div style="color:#7f9fc9;font-weight:bold;margin-bottom:4px">YOUR STEP — Respond to the host</div>';
+  h+='<div style="color:#aaa;margin-bottom:6px">Paste the offer the host sent you, generate your answer, and send it back to them.</div>';
+  h+='<textarea id="net-manual-in" placeholder="Paste offer from host here..." style="width:100%;height:50px;font-size:9px;background:#111;color:#eee;border:1px solid #444;border-radius:4px;padding:4px;box-sizing:border-box;resize:none;margin-bottom:4px"></textarea>';
+  h+='<button class="btn primary" style="width:100%;" onclick="netManualAnswer()">Generate Answer &amp; Copy</button>';
+  h+='</div>';
+  h+='</div>';
+
   h+='</div>';
   h+='</div>';
   h+='<div class="section"><div class="section-title">Encryption</div>';
@@ -3131,10 +3159,20 @@ function netJoinRoom(){
 function netLeave(){const n=S._net;if(n.peer)n.peer.destroy();n.peer=null;n.conns=[];n.hostConn=null;n.isHost=false;n.roomCode=null;n.mode="offline";n.status="";n.peerNames={};n.sharedLayers={};n.sharedEditLayer=null;n.editScope="local";n.peerPermissions={};n.editRequests=[];n.editRequestStatus=null;n.roomRoster=[];n.wargame={active:false,phase:"planning",roles:{},myRole:null,layerRoles:{},orders:[],turnNumber:1,turnLog:[]};S._wargameOrderPending=null;updateNetDot("");renderFloatingPanel();requestRender()}
 
 /* ── Manual WebRTC Signaling (firewall bypass) ── */
-var _manualPC=null,_manualOffer=null;
+var _manualPC=null,_manualOffer=null,_manualPCs=[];
 function netManualToggle(){
   var el=document.getElementById("net-manual");
   if(el)el.style.display=el.style.display==="none"?"block":"none";
+}
+function netManualRole(role){
+  var hEl=document.getElementById('net-manual-host');
+  var pEl=document.getElementById('net-manual-peer');
+  var hBtn=document.getElementById('mr-host');
+  var pBtn=document.getElementById('mr-peer');
+  if(hEl)hEl.style.display=role==='host'?'block':'none';
+  if(pEl)pEl.style.display=role==='peer'?'block':'none';
+  if(hBtn)hBtn.className='btn'+(role==='host'?' primary':'');
+  if(pBtn)pBtn.className='btn'+(role==='peer'?' primary':'');
 }
 function _manualIceConfig(){
   /* No external STUN/TURN needed — use host + mDNS candidates only.
@@ -3143,33 +3181,108 @@ function _manualIceConfig(){
      iceCandidatePoolSize pre-gathers candidates for faster offer generation. */
   return {iceServers:[],iceCandidatePoolSize:10};
 }
+function _stripSdp(sdp){
+  /* Remove lines not needed for data-only channels */
+  return sdp.split('\n').filter(function(l){
+    return l.trim()&&!l.startsWith('a=extmap')&&l!=='a=msid-semantic: WMS';
+  }).join('\n');
+}
+function _compressOffer(obj){
+  /* Compress JSON with DecompressionStream's counterpart — use pako if available,
+     otherwise fall back to plain base64 */
+  var stripped={sdp:{type:obj.sdp.type,sdp:_stripSdp(obj.sdp.sdp||'')}};
+  var json=JSON.stringify(stripped);
+  /* Try CompressionStream (Chrome 80+, Safari 16.4+, Firefox 113+) */
+  if(typeof CompressionStream!=='undefined'){
+    return new Promise(function(resolve){
+      var cs=new CompressionStream('deflate-raw');
+      var w=cs.writable.getWriter(),r=cs.readable.getReader(),chunks=[];
+      function pump(){r.read().then(function(res){
+        if(res.done){
+          var merged=new Uint8Array(chunks.reduce(function(s,c){return s+c.length},0));
+          var off=0;chunks.forEach(function(c){merged.set(c,off);off+=c.length});
+          /* base64url encode — no +/= to avoid copy issues */
+          var b64=btoa(String.fromCharCode.apply(null,merged))
+            .replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
+          resolve('Z'+b64);/* Z prefix = compressed */
+        }else{chunks.push(res.value);pump()}
+      })}
+      pump();
+      w.write(new TextEncoder().encode(json));w.close();
+    });
+  }
+  return Promise.resolve('R'+btoa(unescape(encodeURIComponent(json)))); /* R = raw */
+}
+function _decompressOffer(str){
+  if(!str)return Promise.reject(new Error('Empty'));
+  if(str[0]==='R'){
+    try{return Promise.resolve(JSON.parse(decodeURIComponent(escape(atob(str.slice(1))))))}
+    catch(e){return Promise.reject(e)}
+  }
+  if(str[0]==='Z'){
+    var b64=str.slice(1).replace(/-/g,'+').replace(/_/g,'/');
+    var bin=atob(b64);
+    var bytes=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+    var ds=new DecompressionStream('deflate-raw');
+    var w=ds.writable.getWriter(),r=ds.readable.getReader(),chunks=[];
+    return new Promise(function(resolve,reject){
+      function pump(){r.read().then(function(res){
+        if(res.done){
+          var merged=new Uint8Array(chunks.reduce(function(s,c){return s+c.length},0));
+          var off=0;chunks.forEach(function(c){merged.set(c,off);off+=c.length});
+          try{resolve(JSON.parse(new TextDecoder().decode(merged)))}catch(e){reject(e)}
+        }else{chunks.push(res.value);pump()}
+      },reject)}
+      pump();w.write(bytes);w.close();
+    });
+  }
+  /* Legacy: plain base64 JSON with candidates[] */
+  try{return Promise.resolve(JSON.parse(atob(str)))}catch(e){return Promise.reject(e)}
+}
+function _showQR(text,containerId){
+  var el=document.getElementById(containerId);
+  if(!el||typeof QRCode==='undefined')return;
+  el.innerHTML='';
+  try{new QRCode(el,{text:text,width:180,height:180,colorDark:'#ffffff',colorLight:'#111111',correctLevel:QRCode.CorrectLevel.M})}
+  catch(e){}
+}
 function _finishManualGather(pc,candidates,label,outId){
   var out={sdp:pc.localDescription,candidates:candidates};
-  var el=document.getElementById(outId||"net-manual-out");
-  if(el){el.value=btoa(JSON.stringify(out));el.select();el.focus()}
-  IO.notify(label+" ready — copy ALL the text and send to other peer");
+  _compressOffer(out).then(function(compressed){
+    var el=document.getElementById(outId||'net-manual-out');
+    if(el)el.value=compressed;
+    /* Auto-copy */
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(compressed).catch(function(){});
+    }else if(el){el.select();try{document.execCommand('copy')}catch(e){}}
+    /* Show QR */
+    _showQR(compressed,'net-manual-qr');
+    IO.notify(label+' ready ('+compressed.length+' chars) — copied to clipboard or scan QR');
+  });
 }
 function netManualOffer(){
   var outId="net-manual-out";
-  if(_manualPC)_manualPC.close();
-  _manualPC=new RTCPeerConnection(_manualIceConfig());
-  var dc=_manualPC.createDataChannel("staffmaps");
+  /* Each offer creates a fresh PC — host can connect multiple peers */
+  var pc=new RTCPeerConnection(_manualIceConfig());
+  _manualPC=pc;_manualPCs.push(pc);
+  var dc=pc.createDataChannel("staffmaps");
   dc.onopen=function(){IO.notify("Manual channel open — connected! Syncing map...")};
   dc.onmessage=function(e){try{handleNetMsg(JSON.parse(e.data),"manual")}catch(err){}};
   var candidates=[],done=false;
   function finish(){
     if(done)return;done=true;
-    _finishManualGather(_manualPC,candidates,"Offer",outId);
+    _finishManualGather(pc,candidates,"Offer",outId);
   }
-  _manualPC.onicecandidate=function(e){
+  pc.onicecandidate=function(e){
     if(!e.candidate){finish();return}
     candidates.push(e.candidate);
   };
-  _manualPC.onicegatheringstatechange=function(){
+  pc.onicegatheringstatechange=function(){
     if(_manualPC.iceGatheringState==="complete")finish();
   };
-  _manualPC.createOffer().then(function(offer){
-    return _manualPC.setLocalDescription(offer);
+  pc.createOffer().then(function(offer){
+    return pc.setLocalDescription(offer);
   }).then(function(){
     /* Timeout fallback: if gathering never completes (all servers blocked),
        fire after 3s with whatever host candidates we have */
@@ -3181,9 +3294,13 @@ function netManualAnswer(){
   var inp=document.getElementById("net-manual-in");
   var outId="net-manual-out";
   if(!inp||!inp.value.trim()){IO.notify("Paste the offer text first","error");return}
-  var data;
-  try{data=JSON.parse(atob(inp.value.trim()))}catch(e){IO.notify("Invalid offer — make sure you copied the entire block","error");return}
-  if(!data||!data.sdp){IO.notify("Offer missing SDP — copy the full text","error");return}
+  var raw=inp.value.trim();
+  _decompressOffer(raw).then(function(data){
+    if(!data||!data.sdp){IO.notify("Offer missing SDP — copy the full text","error");return}
+    _netManualAnswerWith(data);
+  }).catch(function(){IO.notify("Invalid offer — make sure you copied the entire block","error")});
+}
+function _netManualAnswerWith(data){
   if(_manualPC)_manualPC.close();
   _manualPC=new RTCPeerConnection(_manualIceConfig());
   _manualPC.ondatachannel=function(e){
@@ -3221,9 +3338,15 @@ function netManualCopy(){
   }else{el.select();document.execCommand("copy");IO.notify("Copied")}
 }
 function netManualApply(){
-  var inp=document.getElementById("net-manual-in");
+  var inp=document.getElementById("net-manual-in2");
   if(!inp||!inp.value.trim()){IO.notify("Paste the answer first","error");return}
-  try{var data=JSON.parse(atob(inp.value.trim()))}catch(e){IO.notify("Invalid answer text","error");return}
+  if(!_manualPC){IO.notify("Generate offer first","error");return}
+  _decompressOffer(inp.value.trim()).then(function(data){
+    if(!data||!data.sdp){IO.notify("Answer missing SDP","error");return}
+    _netManualApplyWith(data);
+  }).catch(function(){IO.notify("Invalid answer — copy the full text","error")});
+}
+function _netManualApplyWith(data){
   if(!_manualPC){IO.notify("Generate offer first","error");return}
   _manualPC.setRemoteDescription(data.sdp).then(function(){
     (data.candidates||[]).forEach(function(c){_manualPC.addIceCandidate(c).catch(function(){})});
