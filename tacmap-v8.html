@@ -3719,10 +3719,11 @@ const IO={
       const coords=pm.getElementsByTagName("coordinates")[0];if(!coords)return null;
       const nameEl=pm.getElementsByTagName("name")[0],descEl=pm.getElementsByTagName("description")[0];
       const rawName=nameEl?nameEl.textContent:"",rawDesc=descEl?descEl.textContent:"";
-      var _gfxLabel=rawName||((folderName||"").replace(/^(Polygon|Polyline|Line|Path)\s+/i,""));
+      var _gfxLabel=rawName;
       var smData={};pm.querySelectorAll("ExtendedData > Data").forEach(function(d){var k=d.getAttribute("name");var v=(d.querySelector("value")||{}).textContent||"";if(k&&k.startsWith("sm:"))smData[k.slice(3)]=v});
       if(smData.type){var smMods=[];try{smMods=JSON.parse(smData.modifiers||"[]")}catch(e){}
-        return{id:"u"+Date.now()+Math.random().toString(36).substr(2,4),lat:parseFloat(coords.textContent.split(",")[1]),lon:parseFloat(coords.textContent.split(",")[0]),type:smData.type||"infantry",affiliation:smData.affiliation||"friendly",echelon:smData.echelon||null,designation:sanitizeStr(rawName,INPUT_LIMITS.designation),parentUnit:sanitizeStr(smData.parentUnit||"",INPUT_LIMITS.parentUnit||32),higherUnit:sanitizeStr(smData.higherUnit||"",INPUT_LIMITS.parentUnit||32),isHQ:smData.isHQ==="true",modifiers:smMods,layerId,rings:[],equipment:{},importNotes:"",originalName:rawName,_useStructuredLabel:true};}
+        var _smIcon=resolveIconHref(pm);
+        return{id:"u"+Date.now()+Math.random().toString(36).substr(2,4),lat:parseFloat(coords.textContent.split(",")[1]),lon:parseFloat(coords.textContent.split(",")[0]),type:smData.type||"infantry",affiliation:smData.affiliation||"friendly",echelon:smData.echelon||null,designation:sanitizeStr(rawName,INPUT_LIMITS.designation),parentUnit:sanitizeStr(smData.parentUnit||"",INPUT_LIMITS.parentUnit||32),higherUnit:sanitizeStr(smData.higherUnit||"",INPUT_LIMITS.parentUnit||32),isHQ:smData.isHQ==="true",modifiers:smMods,layerId,rings:[],equipment:{},customIcon:_smIcon||null,useCustomIcon:!!_smIcon,importNotes:"",originalName:rawName,_useStructuredLabel:!_smIcon};}
       const aff=detectAff(pm,folderName);
       const mg=pm.getElementsByTagName("MultiGeometry")[0];
       if(mg){var st=resolveStyle(pm),ap=mg.getElementsByTagName("Polygon"),al=mg.getElementsByTagName("LineString");
