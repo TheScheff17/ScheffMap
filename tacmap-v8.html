@@ -1161,7 +1161,7 @@ function renderSettings(){
   }
   h+='</div>';
   h+='<div class="section"><div class="section-title">About</div>';
-  h+='<div style="font-size:10px;opacity:.5;margin-bottom:6px">ScheffMap v'+APP_VERSION+'</div>';
+  h+='<div style="font-size:10px;opacity:.5;margin-bottom:6px">StaffMaps v'+APP_VERSION+'</div>';
   h+='<button class="btn" onclick="forceUpdate()" style="margin-bottom:4px;width:100%">\u21bb Force Update (Clear Cache)</button>';
   h+='<div style="font-size:9px;opacity:.35">Clears service worker cache and reloads from server</div>';
   h+='</div>';
@@ -1561,7 +1561,7 @@ else{
   h+='<div class="section-title">Connection Troubleshooting</div>';
   h+='<div style="font-size:11px;color:#aaa;margin-bottom:8px">If auto-connect fails on restricted networks, use manual signaling below.</div>';
   h+='<button class="btn" style="width:100%;margin-bottom:6px" onclick="netDiag()">Run Diagnostics</button>';
-  h+='<div id="net-diag-out" style="font-size:10px;color:#aaa;min-height:16px;margin-bottom:6px"></div>';
+  h+='<div id="net-diag-out" style="font-size:10px;color:#aaa;min-height:16px;margin-bottom:6px;max-height:300px;overflow-y:auto"></div>';
   h+='<button class="btn" style="width:100%;margin-bottom:4px" onclick="netManualToggle()">Manual Connect (Firewall Bypass)</button>';
   h+='<div id="net-manual" style="display:none;font-size:10px;margin-top:6px">';
   h+='<div style="color:#aaa;margin-bottom:8px">Same building WiFi required. Pick your role.</div>';
@@ -3230,7 +3230,91 @@ function netManualAnswer(){var inp=document.getElementById('net-manual-in');if(!
 function netManualApply(){var inp=document.getElementById('net-manual-in2');if(!inp||!inp.value.trim()){IO.notify('Paste answer first','error');return}if(!_manualPC){IO.notify('Generate offer first','error');return}var data=_decodeOffer(inp.value.trim());if(!data||!data.sdp){IO.notify('Invalid answer','error');return}_manualPC.setRemoteDescription(data.sdp).then(function(){(data.candidates||[]).forEach(function(c){_manualPC.addIceCandidate(c).catch(function(){})});IO.notify('Applied — waiting for connection…')}).catch(function(e){IO.notify('Apply error: '+e.message,'error')});}
 function netManualCopy(){var el=document.getElementById('net-manual-out');if(!el||!el.value){IO.notify('Nothing to copy','error');return}if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(el.value).then(function(){IO.notify('Copied!')}).catch(function(){el.select();document.execCommand('copy')});else{el.select();document.execCommand('copy');IO.notify('Copied!')}}
 function netManualToggle(){var el=document.getElementById('net-manual');if(el)el.style.display=el.style.display==='none'?'block':'none';}
-function netDiag(){var out=document.getElementById('net-diag-out');if(!out)return;out.textContent='Testing…';var pc2=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});var types={};var t=setTimeout(function(){pc2.close();var parts=Object.keys(types).map(function(k){return k+' ✓'});out.textContent=parts.length?parts.join(' | '):'All servers blocked — use Manual Connect';},6000);pc2.onicecandidate=function(e){if(!e.candidate)return;var tp=e.candidate.type;if(tp)types[tp]=1};pc2.createDataChannel('d');pc2.createOffer().then(function(o){return pc2.setLocalDescription(o)}).catch(function(){out.textContent='Diagnostic failed';});}
+function netDiag(){var out=document.getElementById('net-diag-out');if(!out)return;
+  out.innerHTML='<div style="color:#4a9eff">⏳ Running diagnostics…</div>';
+  var results={peerjs:null,stun:null,turn:null,localNet:null,webrtc:null};
+  var done=0,total=3;
+  var finished=false;
+  /* Hard timeout — never hang longer than 12 seconds */
+  var hardTimeout=setTimeout(function(){if(finished)return;finished=true;
+    if(!results.stun)results.stun='blocked';if(!results.turn&&S._turnServer&&S._turnServer.host)results.turn='blocked';else if(!results.turn)results.turn='skipped';if(!results.peerjs)results.peerjs='blocked';
+    done=total;checkDone()},12000);
+  function checkDone(){
+    done++;if(done<total)return;
+    if(finished)return;finished=true;clearTimeout(hardTimeout);
+    /* Build recommendations */
+    var h='<div style="margin-top:6px">';
+    h+='<div style="font-weight:600;margin-bottom:6px;font-size:11px">Network Diagnostic Results</div>';
+    /* WebRTC support */
+    if(!results.webrtc){h+='<div style="color:#ff4444;margin-bottom:4px">❌ <b>WebRTC not supported</b> — Your browser cannot make P2P connections. Try Chrome, Edge, or Safari.</div>';out.innerHTML=h+'</div>';return}
+    else h+='<div style="color:#40e060;margin-bottom:4px">✅ WebRTC supported</div>';
+    /* STUN (internet reachability) */
+    if(results.stun==='ok') h+='<div style="color:#40e060;margin-bottom:4px">✅ STUN reachable — Internet P2P available</div>';
+    else if(results.stun==='partial') h+='<div style="color:#e0a030;margin-bottom:4px">⚠️ STUN partial — Local connections work, internet P2P may fail behind strict NAT</div>';
+    else h+='<div style="color:#ff4444;margin-bottom:4px">❌ STUN blocked — Cannot reach Google STUN server</div>';
+    /* TURN */
+    if(S._turnServer&&S._turnServer.host){
+      if(results.turn==='ok') h+='<div style="color:#40e060;margin-bottom:4px">✅ TURN relay available — Connections will work even behind strict firewalls</div>';
+      else h+='<div style="color:#ff4444;margin-bottom:4px">❌ TURN relay failed — Check your TURN server settings (host: '+escHtml(S._turnServer.host)+')</div>';
+    }else{
+      if(results.stun!=='ok') h+='<div style="color:#e0a030;margin-bottom:4px">⚠️ No TURN server configured — Add one in Server Settings for firewall relay</div>';
+    }
+    /* PeerJS signaling */
+    if(results.peerjs==='ok') h+='<div style="color:#40e060;margin-bottom:4px">✅ Signal server reachable — Room codes will work</div>';
+    else h+='<div style="color:#ff4444;margin-bottom:4px">❌ Signal server unreachable'+(S._signalServer?' ('+escHtml(S._signalServer.host)+':'+((S._signalServer.port)||9000)+')':' (PeerJS Cloud)')+'</div>';
+    /* Recommendations */
+    h+='<div style="border-top:1px solid #333;margin-top:8px;padding-top:8px;font-weight:600;font-size:11px">Recommendation</div>';
+    if(results.peerjs==='ok'&&(results.stun==='ok'||results.turn==='ok')){
+      h+='<div style="color:#40e060;margin-top:4px">🟢 <b>Ready to connect.</b> Use Create Room / Join Room.</div>';
+    }else if(results.peerjs==='ok'&&results.stun==='partial'){
+      h+='<div style="color:#e0a030;margin-top:4px">🟡 <b>Room codes work, but P2P may fail</b> if both users are behind strict NAT/firewalls. Options:<br>';
+      h+='&nbsp;&nbsp;1. Configure a TURN server in Server Settings<br>';
+      h+='&nbsp;&nbsp;2. Use Manual Connect as fallback</div>';
+    }else if(results.peerjs!=='ok'&&(results.stun==='ok'||results.stun==='partial')){
+      h+='<div style="color:#e0a030;margin-top:4px">🟡 <b>Signal server blocked but WebRTC works.</b> Options:<br>';
+      h+='&nbsp;&nbsp;1. Set up a Custom Signal Server on your local network<br>';
+      h+='&nbsp;&nbsp;2. Use Manual Connect (copy/paste codes)</div>';
+    }else{
+      h+='<div style="color:#ff4444;margin-top:4px">🔴 <b>Network is heavily restricted.</b><br>';
+      h+='&nbsp;&nbsp;→ Use <b>Manual Connect</b> below. Exchange offer/answer codes verbally or via text message.<br>';
+      h+='&nbsp;&nbsp;→ Both devices must be able to reach each other (same WiFi or VPN).</div>';
+    }
+    h+='</div>';
+    out.innerHTML=h;
+  }
+  /* Test 1: WebRTC support */
+  results.webrtc=!!(window.RTCPeerConnection);if(!results.webrtc){done=total;checkDone();return}
+  /* Test 2: STUN connectivity */
+  try{
+    var pc2=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+    var iceTypes={};var stunDone=false;
+    var stunTimeout=setTimeout(function(){if(stunDone)return;stunDone=true;pc2.close();
+      if(iceTypes.srflx||iceTypes.relay)results.stun='ok';
+      else if(iceTypes.host)results.stun='partial';
+      else results.stun='blocked';
+      checkDone()},6000);
+    pc2.onicecandidate=function(e){if(!e||!e.candidate)return;var tp=e.candidate.type;if(tp)iceTypes[tp]=true;
+      if(tp==='srflx'&&!stunDone){stunDone=true;clearTimeout(stunTimeout);pc2.close();results.stun='ok';checkDone()}};
+    pc2.createDataChannel('diag');pc2.createOffer().then(function(o){return pc2.setLocalDescription(o)}).catch(function(){if(!stunDone){stunDone=true;results.stun='blocked';checkDone()}});
+  }catch(e){results.stun='blocked';checkDone()}
+  /* Test 3: TURN relay (only if configured) */
+  if(S._turnServer&&S._turnServer.host){
+    try{
+      var pc3=new RTCPeerConnection({iceServers:[{urls:'turn:'+S._turnServer.host+':'+(S._turnServer.port||3478),username:S._turnServer.user||'staffmaps',credential:S._turnServer.pass||'staffmaps'}],iceTransportPolicy:'relay'});
+      var turnDone=false;
+      var turnTimeout=setTimeout(function(){if(turnDone)return;turnDone=true;pc3.close();results.turn='blocked';checkDone()},8000);
+      pc3.onicecandidate=function(e){if(!e||!e.candidate)return;if(e.candidate.type==='relay'&&!turnDone){turnDone=true;clearTimeout(turnTimeout);pc3.close();results.turn='ok';checkDone()}};
+      pc3.createDataChannel('diag');pc3.createOffer().then(function(o){return pc3.setLocalDescription(o)}).catch(function(){if(!turnDone){turnDone=true;results.turn='blocked';checkDone()}});
+    }catch(e){results.turn='blocked';checkDone()}
+  }else{results.turn='skipped';checkDone()}
+  /* Test 4: PeerJS signaling server reachability */
+  var sigHost,sigPort,sigSecure;
+  if(S._signalServer){sigHost=S._signalServer.host;sigPort=S._signalServer.port||9000;sigSecure=!!S._signalServer.secure}
+  else{sigHost='0.peerjs.com';sigPort=443;sigSecure=true}
+  var sigUrl=(sigSecure?'https://':'http://')+sigHost+':'+sigPort+'/peerjs/id';
+  var sigTimer=setTimeout(function(){results.peerjs='blocked';checkDone()},6000);
+  fetch(sigUrl,{method:'GET',mode:'cors'}).then(function(r){clearTimeout(sigTimer);results.peerjs=r.ok?'ok':'blocked';checkDone()}).catch(function(){clearTimeout(sigTimer);results.peerjs='blocked';checkDone()});
+}
 
 function handleNetMsg(msg,fromPeer){
   /* Host: validate & relay edit messages to other peers */
@@ -3398,7 +3482,7 @@ const IO={
        Real structure from map.army V3.1:
          <MilXDocument_Layer>
            <MilXLayer>
-             <n>Layer Name</n>
+             <name>Layer Name</name>
              <GraphicList>
                <MilXGraphic>
                  <MssStringXML>&lt;Symbol ID="SHGPUCIL-------"/&gt;</MssStringXML>
@@ -3658,21 +3742,43 @@ const IO={
     function extractKmlFillOpacity(s){if(!s)return null;var ps=s.getElementsByTagName("PolyStyle");if(!ps.length)return null;var ce=ps[0].getElementsByTagName("color")[0];if(!ce)return null;var kc=ce.textContent.trim();if(kc.length!==8)return null;var a=parseInt(kc.substr(0,2),16);return isNaN(a)?null:a/255}
     function resolveIconHref(pm){var style=resolveStyle(pm);if(!style)return null;var is=style.getElementsByTagName("IconStyle");if(!is.length)return null;var icon=is[0].getElementsByTagName("Icon");if(!icon.length)return null;var href=icon[0].getElementsByTagName("href");if(!href.length)return null;var h=href[0].textContent.trim();if(!h||/maps\.google\.com|earth\.google\.com/i.test(h))return null;if(_embeddedFiles[h])return _embeddedFiles[h];var bn=h.split("/").pop();for(var k in _embeddedFiles){if(k.split("/").pop()===bn)return _embeddedFiles[k]}return null}
     function parseCot(descText){
-      if(!descText)return null;var m=descText.match(/COT:<\/b>\s*([a-zA-Z\-\/]+)/);if(!m)return null;
+      if(!descText)return null;
+      /* Match CoT codes in WinTAK format: COT:</b> a-h-G-U-C-I-Z/h-g-i-g-o  OR  plain: COT: a-h-G-U-C-I-Z */
+      var m=descText.match(/COT:<\/b>\s*([a-zA-Z\-\/]+)/)||descText.match(/\bCOT:\s*([a-zA-Z\-\/]+)/);
+      if(!m)return null;
       var cot=m[1],mainPart=cot.split("/")[0],segs=mainPart.split("-");
       var result={affiliation:null,type:null,raw:cot};
       var affMap={f:"friendly",h:"hostile",n:"neutral",u:"unknown",j:"hostile",k:"hostile",s:"unknown"};
       if(segs.length>=2)result.affiliation=affMap[segs[1]]||null;
       var funcCode=null;if(segs.length>=5&&segs[2]==="G"&&(segs[3]==="U"||segs[3]==="E"))funcCode=segs.slice(4).join("-");
       if(!funcCode)return result;
-      var cotMap={"C-A":"armor","C-A-T":"armor","C-A-W":"armor","C-A-A":"armor","C-A-A-A-W":"armor",
-        "C-D":"air_defense","C-D-C":"air_defense","C-D-M":"sam","C-D-M-L":"sam","C-D-M-H":"sam",
-        "C-E":"engineer","C-E-C":"engineer","C-F":"artillery","C-F-H":"artillery","C-F-H-L":"artillery",
-        "C-F-M":"mortar","C-F-M-S":"mortar","C-F-M-W":"mortar","C-F-R":"rocket_artillery",
-        "C-I":"infantry","C-I-M":"mechanized_infantry","C-I-Z":"mechanized_infantry","C-I-d":"cavalry",
-        "C-R":"cavalry","C-S":"special_forces",
-        "U-S":"signal","U-M":"medical","U-E":"engineer","U-L":"sustainment","U-O":"ordnance","U-T":"transportation","U-I":"military_intelligence",
-        "S-R":"electronic_warfare"};
+      var cotMap={
+        /* Combat Arms */
+        "C-A":"armor","C-A-T":"armor","C-A-W":"armor","C-A-A":"armor","C-A-A-A-W":"anti_armor",
+        "C-D":"air_defense","C-D-C":"air_defense","C-D-G":"air_defense","C-D-S":"short_range_air_defense",
+        "C-D-M":"sam","C-D-M-L":"sam","C-D-M-H":"sam","C-D-M-S":"sam",
+        "C-E":"engineer","C-E-C":"engineer","C-E-C-S":"engineer",
+        "C-F":"artillery","C-F-H":"artillery","C-F-H-L":"artillery","C-F-H-M":"artillery","C-F-H-H":"artillery",
+        "C-F-M":"mortar","C-F-M-S":"mortar","C-F-M-W":"mortar","C-F-M-L":"mortar",
+        "C-F-R":"rocket_artillery","C-F-R-S":"rocket_artillery","C-F-R-L":"rocket_artillery",
+        "C-I":"infantry","C-I-A":"infantry","C-I-L":"infantry",
+        "C-I-M":"mechanized_infantry","C-I-Z":"mechanized_infantry",
+        "C-I-d":"cavalry","C-I-r":"infantry",
+        "C-R":"cavalry","C-R-A":"cavalry","C-R-C":"cavalry","C-R-S":"armored_recon",
+        "C-S":"special_forces","C-S-F":"special_forces","C-S-R":"ranger",
+        "C-B":"chemical",
+        /* Combat Support */
+        "C-A-T-W":"aviation","C-A-T-W-U":"uav","C-A-A":"attack_aviation","C-A-R":"recon_aviation",
+        /* Combat Service Support */
+        "U-S":"signal","U-S-M":"maintenance","U-S-S":"supply",
+        "U-M":"medical","U-M-R-W":"medevac_aviation",
+        "U-E":"engineer","U-L":"sustainment","U-O":"ordnance","U-T":"transportation",
+        "U-I":"military_intelligence","U-P-M":"military_police","U-P-S":"psyop","U-C-A":"civil_affairs",
+        /* Electronic Warfare / Sensor */
+        "S-R":"electronic_warfare","S-E":"electronic_warfare",
+        /* Installations & Facilities */
+        "I-H":"headquarters","I-S":"supply"
+      };
       var parts=funcCode.split("-");for(var len=parts.length;len>=1;len--){var tc=parts.slice(0,len).join("-");if(cotMap[tc]){result.type=cotMap[tc];break}}
       return result}
     function detectAff(pm,folderName){
@@ -3984,7 +4090,7 @@ const IO={
       else if(g.points.length>=2){var coords=g.points.map(p=>[p.lon,p.lat]);var isP=g.tool==="polygon"||g.tool==="rectangle";
         if(isP&&coords.length>=3){coords.push(coords[0]);features.push({type:"Feature",geometry:{type:"Polygon",coordinates:[coords]},properties:{tool:g.tool,label:g.label||"",color:g.color,overlayType:g.overlayType||"",layerId:g.layerId}})}
         else{features.push({type:"Feature",geometry:{type:"LineString",coordinates:coords},properties:{tool:g.tool,label:g.label||"",color:g.color,overlayType:g.overlayType||"",layerId:g.layerId}})}}});
-    const fc={type:"FeatureCollection",features};const blob=new Blob([JSON.stringify(fc,null,2)],{type:"application/json"});dlBlob(blob,"scheffmap-export.geojson");IO.notify("Exported "+features.length+" features as GeoJSON")},
+    const fc={type:"FeatureCollection",features};const blob=new Blob([JSON.stringify(fc,null,2)],{type:"application/json"});dlBlob(blob,"staffmaps-export.geojson");IO.notify("Exported "+features.length+" features as GeoJSON")},
   exportTacmap(selectedLayerIds,packages,pkgLayerIds){
     var layerIds=selectedLayerIds||new Set(S.layers.map(l=>l.id));
     var exportLayers=S.layers.filter(l=>layerIds.has(l.id));
@@ -3993,7 +4099,7 @@ const IO={
     var exportGraphics=S.graphics.filter(g=>layerIds.has(g.layerId));
     const data={version:"3.0",app:"StaffMaps",timestamp:new Date().toISOString(),map:{lat:S.lat,lon:S.lon,zoom:S.zoom,tileSource:S.tileSource},units:exportUnits,graphics:exportGraphics,layers:exportLayers,packages:exportPkgs};
     const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
-    dlBlob(blob,"scheffmap-export-"+new Date().toISOString().slice(0,10)+".tacmap");IO.notify("Exported "+(exportUnits.length+exportGraphics.length)+" features as .tacmap")},
+    dlBlob(blob,"staffmaps-export-"+new Date().toISOString().slice(0,10)+".tacmap");IO.notify("Exported "+(exportUnits.length+exportGraphics.length)+" features as .tacmap")},
   importKMZ(buf){
     try{
       const dv=new DataView(buf);let off=0;let kmlText=null;const embeddedFiles={};const pendingDeflates=[];
@@ -4030,7 +4136,7 @@ const IO={
       styleBlock+='<Style id="'+styleId+'">';
       if(u.customIcon&&u.useCustomIcon!==false){var iconFn="images/icon_"+(iconIdx++)+".png";iconFiles[iconFn]=u.customIcon;styleBlock+='<IconStyle><scale>'+(u.iconScale||1)+'</scale><Icon><href>'+iconFn+'</href></Icon></IconStyle>';}
       else{/* Render military symbol to canvas PNG for KMZ */var _ic=document.createElement("canvas");_ic.width=256;_ic.height=256;var _ix=_ic.getContext("2d");_ix.clearRect(0,0,256,256);drawUnitIcon(_ix,u,128,128,220);var iconFn="images/icon_"+(iconIdx++)+".png";iconFiles[iconFn]=_ic.toDataURL("image/png");styleBlock+='<IconStyle><scale>'+(u.iconScale||1)+'</scale><Icon><href>'+iconFn+'</href></Icon><hotSpot x="0.5" y="0.5" xunits="fraction" yunits="fraction"/></IconStyle>';}
-      styleBlock+='<LabelStyle><scale>0</scale></LabelStyle></Style>\n';
+      styleBlock+='<LabelStyle><scale>1</scale></LabelStyle></Style>\n';
     });
     S.graphics.filter(g=>layerIds.has(g.layerId)&&g.points&&g.points.length>=2).forEach(function(g){
       var styleId="g_"+(g.id||"").replace(/[^a-zA-Z0-9]/g,"");
@@ -4040,7 +4146,40 @@ const IO={
       else if(isP){styleBlock+='<PolyStyle><fill>0</fill></PolyStyle>';}
       styleBlock+='</Style>\n';
     });
-    function placemarkUnit(u){var _parts=[];if(u.designation)_parts.push(u.designation);var _ech=u.echelon?ECHELONS.find(function(x){return x.id===u.echelon}):null;if(_ech)_parts.push(_ech.label);_parts.push(TYPE_LABELS[u.type]||u.type);if(u.parentUnit)_parts.push(u.parentUnit);var nm=esc(u.designation||"");var nmFull=esc(_parts.join(" \u2022 "));var sid="u_"+(u.id||"").replace(/[^a-zA-Z0-9]/g,"");var ext='<ExtendedData><Data name="sm:type"><value>'+esc(u.type||'')+'</value></Data><Data name="sm:affiliation"><value>'+esc(u.affiliation||'friendly')+'</value></Data><Data name="sm:echelon"><value>'+esc(u.echelon||'')+'</value></Data><Data name="sm:higherUnit"><value>'+esc(u.higherUnit||'')+'</value></Data><Data name="sm:parentUnit"><value>'+esc(u.parentUnit||'')+'</value></Data><Data name="sm:isHQ"><value>'+(u.isHQ?'true':'false')+'</value></Data><Data name="sm:modifiers"><value>'+esc(JSON.stringify(u.modifiers||[]))+'</value></Data><Data name="sm:label"><value>'+nmFull+'</value></Data></ExtendedData>';return'<Placemark><name>'+nm+'</name><styleUrl>#'+sid+'</styleUrl>'+ext+'<Point><coordinates>'+u.lon+','+u.lat+',0</coordinates></Point></Placemark>\n'}
+    /* === CoT type mapping for WinTAK-compatible KMZ export === */
+    var AFF_COT={friendly:"f",hostile:"h",neutral:"n",unknown:"u"};
+    var TYPE_COT={
+      infantry:"G-U-C-I",mechanized_infantry:"G-U-C-I-Z",ifv:"G-U-C-I-Z",naval_infantry:"G-U-C-I",
+      armor:"G-U-C-A",armored_wheeled:"G-U-C-A-W",cavalry:"G-U-C-R",armored_recon:"G-U-C-R-S",
+      artillery:"G-U-C-F",mechanized_artillery:"G-U-C-F-M",rocket_artillery:"G-U-C-F-R",
+      mortar:"G-U-C-F-M-S",air_defense:"G-U-C-D",short_range_air_defense:"G-U-C-D-S",anti_armor:"G-U-C-A-A-A-W",
+      sam:"G-U-C-D-M",magtf:"G-U-C-I",
+      engineer:"G-U-C-E",bridging:"G-U-C-E-C",
+      headquarters:"G-U-C-A",signal:"G-U-U-S",military_intelligence:"G-U-U-I",electronic_warfare:"G-U-U-E",cyber:"G-U-U-E",
+      sustainment:"G-U-U-L",medical:"G-U-U-M",maintenance:"G-U-U-S-M",transportation:"G-U-U-T",supply:"G-U-U-S-S",ordnance:"G-U-U-O",
+      aviation:"G-U-C-A-T-W",attack_aviation:"G-U-C-A-A",recon_aviation:"G-U-C-A-R",medevac_aviation:"G-U-U-M-R-W",uav:"G-U-C-A-T-W-U",
+      special_forces:"G-U-C-S",ranger:"G-U-C-S",civil_affairs:"G-U-U-C-A",psyop:"G-U-U-P-S",
+      chemical:"G-U-C-B",military_police:"G-U-U-P-M",waypoint:"G-U-C-I"
+    };
+    var ECH_SHORT={team:"TM",squad:"SQD",section:"SECT",platoon:"PLT",company:"CO",battery:"BTRY",troop:"TRP",battalion:"BN",squadron:"SQDN",regiment:"REGT",brigade:"BDE",division:"DIV",corps:"CORPS",army:"ARMY",army_group:"AG",theater:"THEATER",command:"CMD"};
+    function _callsign(u){var p=[];if(u.designation)p.push(u.designation);var el=ECH_SHORT[u.echelon];if(el)p.push(el);p.push(TYPE_LABELS[u.type]||u.type);if(u.parentUnit)p.push(u.parentUnit);return p.join(" ")}
+    function _cotType(u){var a=AFF_COT[u.affiliation||"friendly"]||"f";var t=TYPE_COT[u.type]||"G-U-C-I";return"a-"+a+"-"+t}
+    function _takDesc(u){
+      var aL=(u.affiliation||"friendly").charAt(0).toUpperCase()+(u.affiliation||"friendly").slice(1);
+      var cs=_callsign(u);var cot=_cotType(u)+"/h-g-i-g-o";
+      var d='<h2>'+esc(aL)+'\\'+esc(cs)+'</h2>';
+      d+='<b>COT:</b> '+esc(cot)+'<br/>';
+      d+='<b>Type:</b> '+esc(TYPE_LABELS[u.type]||u.type)+'<br/>';
+      if(u.echelon){var _e=ECHELONS.find(function(x){return x.id===u.echelon});if(_e)d+='<b>Echelon:</b> '+esc(_e.label)+'<br/>'}
+      if(u.parentUnit)d+='<b>Parent:</b> '+esc(u.parentUnit)+'<br/>';
+      if(u.higherUnit)d+='<b>Higher:</b> '+esc(u.higherUnit)+'<br/>';
+      if(u.isHQ)d+='<b>HQ:</b> Yes<br/>';
+      d+='<b>Source:</b> StaffMaps';return d}
+    function placemarkUnit(u){var cs=_callsign(u);var nm=esc(cs);var sid="u_"+(u.id||"").replace(/[^a-zA-Z0-9]/g,"");
+      var desc='<description><![CDATA['+_takDesc(u)+']]></description>';
+      var ext='<ExtendedData><Data name="sm:type"><value>'+esc(u.type||'')+'</value></Data><Data name="sm:affiliation"><value>'+esc(u.affiliation||'friendly')+'</value></Data><Data name="sm:echelon"><value>'+esc(u.echelon||'')+'</value></Data><Data name="sm:higherUnit"><value>'+esc(u.higherUnit||'')+'</value></Data><Data name="sm:parentUnit"><value>'+esc(u.parentUnit||'')+'</value></Data><Data name="sm:isHQ"><value>'+(u.isHQ?'true':'false')+'</value></Data><Data name="sm:modifiers"><value>'+esc(JSON.stringify(u.modifiers||[]))+'</value></Data><Data name="sm:label"><value>'+nm+'</value></Data></ExtendedData>';
+      return'<Placemark><name>'+nm+'</name><styleUrl>#'+sid+'</styleUrl>'+desc+ext+'<Point><coordinates>'+u.lon+','+u.lat+',0</coordinates></Point></Placemark>\n'}
+
     function placemarkGfx(g){
       var nm=esc(g.label||"");
       var sid="g_"+(g.id||"").replace(/[^a-zA-Z0-9]/g,"");
@@ -4059,7 +4198,7 @@ const IO={
       return h+'</Folder>\n';
     }
     var _pkgLayerIds=pkgLayerIds||new Set();
-    var kml='<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document>\n<name>ScheffMap Export</name>\n'+styleBlock;
+    var kml='<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document>\n<name>StaffMaps Export</name>\n'+styleBlock;
     (packages||[]).forEach(function(pkg){
       var pkgLayers=pkg.layerIds.map(id=>S.layers.find(l=>l.id===id)).filter(l=>l&&layerIds.has(l.id));
       if(!pkgLayers.length)return;
@@ -4078,7 +4217,7 @@ const IO={
     var eocd=new Uint8Array(22);var ev=new DataView(eocd.buffer);ev.setUint32(0,0x06054b50,true);ev.setUint16(8,files.length,true);ev.setUint16(10,files.length,true);ev.setUint32(12,cdSize,true);ev.setUint32(16,cdOffset,true);
     var zip=new Uint8Array(offset+cdSize+22);var pos=0;localParts.forEach(function(p){zip.set(p,pos);pos+=p.length});cdParts.forEach(function(p){zip.set(p,pos);pos+=p.length});zip.set(eocd,pos);
     var total=S.units.filter(u=>layerIds.has(u.layerId)).length+S.graphics.filter(g=>layerIds.has(g.layerId)).length;
-    var blob=new Blob([zip],{type:"application/vnd.google-earth.kmz"});dlBlob(blob,"scheffmap-export.kmz");IO.notify("Exported "+total+" features as KMZ")
+    var blob=new Blob([zip],{type:"application/vnd.google-earth.kmz"});dlBlob(blob,"staffmaps-export.kmz");IO.notify("Exported "+total+" features as KMZ")
   },
   exportKML(selectedLayerIds,packages,pkgLayerIds){
     var layerIds=selectedLayerIds||new Set(S.layers.map(l=>l.id));
@@ -4086,7 +4225,40 @@ const IO={
     var hexToKml=function(hex,alpha){hex=(hex||"#ff4444").replace("#","");var r=hex.substring(0,2),g2=hex.substring(2,4),b=hex.substring(4,6);var a=alpha!==undefined?Math.round(alpha*255).toString(16).padStart(2,"0"):"ff";return a+b+g2+r};
     function rectToCoords(g){var p0=g.points[0],p1=g.points[1];return[p0.lon+","+p0.lat+",0",p1.lon+","+p0.lat+",0",p1.lon+","+p1.lat+",0",p0.lon+","+p1.lat+",0",p0.lon+","+p0.lat+",0"].join(" ")}
     function circleToCoords(g){var c=g.points[0],e=g.points[1];var R=Math.sqrt(Math.pow((e.lat-c.lat),2)+Math.pow((e.lon-c.lon)*Math.cos(c.lat*Math.PI/180),2));var pts=[];for(var i=0;i<=64;i++){var a=Math.PI*2*i/64;pts.push((c.lon+R*Math.sin(a)/Math.cos(c.lat*Math.PI/180))+","+(c.lat+R*Math.cos(a))+",0")}return pts.join(" ")}
-    function placemarkUnit(u){var _parts=[];if(u.designation)_parts.push(u.designation);var _ech=u.echelon?ECHELONS.find(function(x){return x.id===u.echelon}):null;if(_ech)_parts.push(_ech.label);_parts.push(TYPE_LABELS[u.type]||u.type);if(u.parentUnit)_parts.push(u.parentUnit);var nm=esc(u.designation||"");var nmFull=esc(_parts.join(" \u2022 "));var aff=u.affiliation||"friendly";var col=aff==="hostile"?"ff0000ff":aff==="neutral"?"ff00ff00":"ffff8800";var ext='<ExtendedData><Data name="sm:type"><value>'+esc(u.type||'')+'</value></Data><Data name="sm:affiliation"><value>'+esc(u.affiliation||'friendly')+'</value></Data><Data name="sm:echelon"><value>'+esc(u.echelon||'')+'</value></Data><Data name="sm:higherUnit"><value>'+esc(u.higherUnit||'')+'</value></Data><Data name="sm:parentUnit"><value>'+esc(u.parentUnit||'')+'</value></Data><Data name="sm:isHQ"><value>'+(u.isHQ?'true':'false')+'</value></Data><Data name="sm:modifiers"><value>'+esc(JSON.stringify(u.modifiers||[]))+'</value></Data></ExtendedData>';return'<Placemark><name>'+nm+'</name><Style><IconStyle><scale>'+(u.iconScale||1)+'</scale><Icon><href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href></Icon><color>'+col+'</color></IconStyle></Style><Point><coordinates>'+u.lon+','+u.lat+',0</coordinates></Point></Placemark>\n'}
+    /* CoT helpers (same as KMZ export) for WinTAK round-trip */
+    var AFF_COT={friendly:"f",hostile:"h",neutral:"n",unknown:"u"};
+    var TYPE_COT={
+      infantry:"G-U-C-I",mechanized_infantry:"G-U-C-I-Z",ifv:"G-U-C-I-Z",naval_infantry:"G-U-C-I",
+      armor:"G-U-C-A",armored_wheeled:"G-U-C-A-W",cavalry:"G-U-C-R",armored_recon:"G-U-C-R-S",
+      artillery:"G-U-C-F",mechanized_artillery:"G-U-C-F-M",rocket_artillery:"G-U-C-F-R",
+      mortar:"G-U-C-F-M-S",air_defense:"G-U-C-D",short_range_air_defense:"G-U-C-D-S",anti_armor:"G-U-C-A-A-A-W",
+      sam:"G-U-C-D-M",magtf:"G-U-C-I",
+      engineer:"G-U-C-E",bridging:"G-U-C-E-C",
+      headquarters:"G-U-C-A",signal:"G-U-U-S",military_intelligence:"G-U-U-I",electronic_warfare:"G-U-U-E",cyber:"G-U-U-E",
+      sustainment:"G-U-U-L",medical:"G-U-U-M",maintenance:"G-U-U-S-M",transportation:"G-U-U-T",supply:"G-U-U-S-S",ordnance:"G-U-U-O",
+      aviation:"G-U-C-A-T-W",attack_aviation:"G-U-C-A-A",recon_aviation:"G-U-C-A-R",medevac_aviation:"G-U-U-M-R-W",uav:"G-U-C-A-T-W-U",
+      special_forces:"G-U-C-S",ranger:"G-U-C-S",civil_affairs:"G-U-U-C-A",psyop:"G-U-U-P-S",
+      chemical:"G-U-C-B",military_police:"G-U-U-P-M",waypoint:"G-U-C-I"
+    };
+    var ECH_SHORT={team:"TM",squad:"SQD",section:"SECT",platoon:"PLT",company:"CO",battery:"BTRY",troop:"TRP",battalion:"BN",squadron:"SQDN",regiment:"REGT",brigade:"BDE",division:"DIV",corps:"CORPS",army:"ARMY",army_group:"AG",theater:"THEATER",command:"CMD"};
+    function _callsign(u){var p=[];if(u.designation)p.push(u.designation);var el=ECH_SHORT[u.echelon];if(el)p.push(el);p.push(TYPE_LABELS[u.type]||u.type);if(u.parentUnit)p.push(u.parentUnit);return p.join(" ")}
+    function _cotType(u){var a=AFF_COT[u.affiliation||"friendly"]||"f";var t=TYPE_COT[u.type]||"G-U-C-I";return"a-"+a+"-"+t}
+    function _takDesc(u){
+      var aL=(u.affiliation||"friendly").charAt(0).toUpperCase()+(u.affiliation||"friendly").slice(1);
+      var cs=_callsign(u);var cot=_cotType(u)+"/h-g-i-g-o";
+      var d='<h2>'+esc(aL)+'\\'+esc(cs)+'</h2>';
+      d+='<b>COT:</b> '+esc(cot)+'<br/>';
+      d+='<b>Type:</b> '+esc(TYPE_LABELS[u.type]||u.type)+'<br/>';
+      if(u.echelon){var _e=ECHELONS.find(function(x){return x.id===u.echelon});if(_e)d+='<b>Echelon:</b> '+esc(_e.label)+'<br/>'}
+      if(u.parentUnit)d+='<b>Parent:</b> '+esc(u.parentUnit)+'<br/>';
+      if(u.higherUnit)d+='<b>Higher:</b> '+esc(u.higherUnit)+'<br/>';
+      if(u.isHQ)d+='<b>HQ:</b> Yes<br/>';
+      d+='<b>Source:</b> StaffMaps';return d}
+    function placemarkUnit(u){var cs=_callsign(u);var nm=esc(cs);var aff=u.affiliation||"friendly";var col=aff==="hostile"?"ff0000ff":aff==="neutral"?"ff00ff00":"ffff8800";
+      var desc='<description><![CDATA['+_takDesc(u)+']]></description>';
+      var ext='<ExtendedData><Data name="sm:type"><value>'+esc(u.type||'')+'</value></Data><Data name="sm:affiliation"><value>'+esc(u.affiliation||'friendly')+'</value></Data><Data name="sm:echelon"><value>'+esc(u.echelon||'')+'</value></Data><Data name="sm:higherUnit"><value>'+esc(u.higherUnit||'')+'</value></Data><Data name="sm:parentUnit"><value>'+esc(u.parentUnit||'')+'</value></Data><Data name="sm:isHQ"><value>'+(u.isHQ?'true':'false')+'</value></Data><Data name="sm:modifiers"><value>'+esc(JSON.stringify(u.modifiers||[]))+'</value></Data></ExtendedData>';
+      return'<Placemark><name>'+nm+'</name><Style><IconStyle><scale>'+(u.iconScale||1)+'</scale><Icon><href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href></Icon><color>'+col+'</color></IconStyle></Style>'+desc+ext+'<Point><coordinates>'+u.lon+','+u.lat+',0</coordinates></Point></Placemark>\n'}
+
     function placemarkGfx(g){
       var nm=esc(g.label||"");
       var lineCol=hexToKml(g.color||"#ff4444",g.opacity!=null?g.opacity:1);var isP=g.tool==="polygon"||g.tool==="rectangle"||g.tool==="circle";
@@ -4108,7 +4280,7 @@ const IO={
       return h+'</Folder>\n';
     }
     var _pkgLayerIds=pkgLayerIds||new Set();
-    var kml='<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document>\n<name>ScheffMap Export</name>\n';
+    var kml='<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document>\n<name>StaffMaps Export</name>\n';
     (packages||[]).forEach(function(pkg){
       var pkgLayers=pkg.layerIds.map(id=>S.layers.find(l=>l.id===id)).filter(l=>l&&layerIds.has(l.id));
       if(!pkgLayers.length)return;
@@ -4119,7 +4291,7 @@ const IO={
     S.layers.filter(l=>layerIds.has(l.id)&&!_pkgLayerIds.has(l.id)).forEach(l=>{kml+=layerFolder(l)});
     kml+='</Document></kml>';
     var total=S.units.filter(u=>layerIds.has(u.layerId)).length+S.graphics.filter(g=>layerIds.has(g.layerId)).length;
-    var blob=new Blob([kml],{type:"application/vnd.google-earth.kml+xml"});dlBlob(blob,"scheffmap-export.kml");IO.notify("Exported "+total+" features as KML")
+    var blob=new Blob([kml],{type:"application/vnd.google-earth.kml+xml"});dlBlob(blob,"staffmaps-export.kml");IO.notify("Exported "+total+" features as KML")
   },
   autosave(){try{localStorage.setItem("staffmaps_autosave",JSON.stringify({v:"4.5",units:S.units,graphics:S.graphics,layers:S.layers,packages:S.packages,lat:S.lat,lon:S.lon,zoom:S.zoom,tileSource:S.tileSource,gridColor:S.gridColor,gridOpacity:S.gridOpacity,showLabels:S.showLabels,persistentRoom:S._net.persistentRoom,sharedLayers:S._net.sharedLayers,sharedEditLayer:S._net.sharedEditLayer}))}catch(e){}},
   autorestore(){try{const d=localStorage.getItem("staffmaps_autosave");if(d){const s=JSON.parse(d);if(!s.v||s.v<"4.5"){localStorage.removeItem("staffmaps_autosave");return false}if(s.units&&s.units.length){S.units=s.units.slice(0,2000).map(u=>sanitizeUnit(u)).filter(Boolean);S.graphics=(s.graphics||[]).slice(0,1000).map(g=>sanitizeGraphic(g)).filter(Boolean);S.layers=(s.layers||S.layers).slice(0,50);S.layers.forEach(l=>{l.name=sanitizeStr(l.name,INPUT_LIMITS.layerName)});S.packages=s.packages||[];S.lat=s.lat||S.lat;S.lon=s.lon||S.lon;S.zoom=s.zoom||S.zoom;S.tileSource=s.tileSource||S.tileSource;S.gridColor=s.gridColor||S.gridColor;S.gridOpacity=s.gridOpacity!==undefined?s.gridOpacity:S.gridOpacity;if(s.showLabels!==undefined)S.showLabels=s.showLabels;if(s.persistentRoom)S._net.persistentRoom=s.persistentRoom;if(s.sharedLayers)S._net.sharedLayers=s.sharedLayers;if(s.sharedEditLayer)S._net.sharedEditLayer=s.sharedEditLayer;return true}}}catch(e){}return false},
