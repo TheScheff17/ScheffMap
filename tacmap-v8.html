@@ -306,7 +306,7 @@ function drawLLGrid(){const d=devicePixelRatio||1,W=canvas.width,H=canvas.height
 
 // === part_04_units.js ===
 
-function drawUnitIcon(c2,u,cx,cy,sz){const sc=sz/SVG_W;c2.save();c2.translate(cx,cy);if(u.rotation)c2.rotate(u.rotation*DEG);c2.translate(-sz/2,-sz/2);c2.scale(sc,sc);const a=AFFILIATIONS[u.affiliation||"friendly"],col=a.color,sw=4,hw=FRAME_W/2,hh=FRAME_H/2;/* UAV/drone uses house-shaped (pentagon) frame per MIL-STD-2525 equipment */const _isUAV=u.isEquipment&&u.type==="uav";const _cr=Math.max(hw,hh)+U*.1;const B=_isUAV?(CY+hh):a.shape==="circle"?CY+_cr:a.shape==="diamond"?CY+(hh+U*.6):CY+hh;if(u.isHQ){c2.beginPath();c2.moveTo(CX,B);c2.lineTo(CX,SVG_H-U*.5);c2.strokeStyle="#000";c2.lineWidth=sw;c2.stroke()}/* Frame */c2.fillStyle=a.fill;c2.strokeStyle=col;c2.lineWidth=sw;if(_isUAV){/* House/pentagon frame for drones */const hx=hw*.85,hy=hh+U*.2;const peakY=CY-hy-U*1.0;c2.beginPath();c2.moveTo(CX,peakY);c2.lineTo(CX+hx,CY-hy*.3);c2.lineTo(CX+hx,CY+hy);c2.lineTo(CX-hx,CY+hy);c2.lineTo(CX-hx,CY-hy*.3);c2.closePath();c2.fill();c2.stroke()}else switch(a.shape){case"circle":{const cr=_cr;c2.beginPath();c2.arc(CX,CY,cr,0,Math.PI*2);c2.fill();c2.stroke();break}case"rect":c2.beginPath();c2.rect(CX-hw,CY-hh,FRAME_W,FRAME_H);c2.fill();c2.stroke();break;case"diamond":{const dx=hw+U*.6,dy=hh+U*.6;c2.beginPath();c2.moveTo(CX,CY-dy);c2.lineTo(CX+dx,CY);c2.lineTo(CX,CY+dy);c2.lineTo(CX-dx,CY);c2.closePath();c2.fill();c2.stroke();break}case"square":{const sq=Math.max(hw,hh)+U*.2;c2.beginPath();c2.rect(CX-sq,CY-sq,sq*2,sq*2);c2.fill();c2.stroke();break}case"quatrefoil":{const r=hh*.55;c2.beginPath();c2.moveTo(CX,CY-hh-U*.3);c2.bezierCurveTo(CX+r,CY-hh-U*.3,CX+hw+U*.3,CY-r,CX+hw+U*.3,CY);c2.bezierCurveTo(CX+hw+U*.3,CY+r,CX+r,CY+hh+U*.3,CX,CY+hh+U*.3);c2.bezierCurveTo(CX-r,CY+hh+U*.3,CX-hw-U*.3,CY+r,CX-hw-U*.3,CY);c2.bezierCurveTo(CX-hw-U*.3,CY-r,CX-r,CY-hh-U*.3,CX,CY-hh-U*.3);c2.closePath();c2.fill();c2.stroke();break}}/* Interior bounds */var ihw=hw,ihh=hh;if(_isUAV){ihw=hw*.65;ihh=hh*.65}else switch(a.shape){case"circle":{ihw=_cr*.68;ihh=_cr*.68;break}case"diamond":ihw=hw*.58;ihh=hh*.58;break;case"square":{const sq=Math.max(hw,hh)+U*.2;ihw=sq*.7;ihh=sq*.7;break}case"quatrefoil":ihw=hw*.6;ihh=hh*.6;break}/* Icon interior */c2.strokeStyle="#000";c2.fillStyle="#000";c2.lineWidth=3;drawTS(c2,u.type,CX,CY,ihw,ihh);if(u.echelon)drawEch(c2,u.echelon,u.affiliation,u.type,u.isEquipment);if(u.modifiers&&u.modifiers.length)drawMods(c2,u.modifiers);/* Text labels outside frame — hide when icon is small */var _dpr=devicePixelRatio||1;if(S.showLabels&&sz/_dpr>60){c2.fillStyle="#000";c2.font=`bold ${U*2.0}px serif`;const textX=_isUAV?(hw*.85):a.shape==="circle"?_cr*0.72:hw;if(u.designation){c2.textAlign="right";c2.textBaseline="alphabetic";c2.fillText(u.designation,CX-textX-U*.3,B)}if(u.parentUnit){c2.textAlign="left";c2.textBaseline="alphabetic";c2.fillText(u.parentUnit,CX+textX+U*.3,B)}}c2.restore()}
+function drawUnitIcon(c2,u,cx,cy,sz){const sc=sz/SVG_W;c2.save();c2.translate(cx,cy);if(u.rotation)c2.rotate(u.rotation*DEG);c2.translate(-sz/2,-sz/2);c2.scale(sc,sc);const a=AFFILIATIONS[u.affiliation||"friendly"],col=a.color,sw=4,hw=FRAME_W/2,hh=FRAME_H/2;/* UAV/drone uses house-shaped (pentagon) frame per MIL-STD-2525 equipment */const _isUAV=u.isEquipment&&u.type==="uav";const _cr=Math.max(hw,hh)+U*.1;const B=_isUAV?(CY+hh):a.shape==="circle"?CY+_cr:a.shape==="diamond"?CY+(hh+U*.6):CY+hh;if(u.isHQ){c2.beginPath();c2.moveTo(CX,B);c2.lineTo(CX,SVG_H-U*.5);c2.strokeStyle="#000";c2.lineWidth=sw;c2.stroke()}/* Frame */c2.fillStyle=a.fill;c2.strokeStyle="#000";c2.lineWidth=sw;if(_isUAV){/* House/pentagon frame for drones */const hx=hw*.85,hy=hh+U*.2;const peakY=CY-hy-U*1.0;c2.beginPath();c2.moveTo(CX,peakY);c2.lineTo(CX+hx,CY-hy*.3);c2.lineTo(CX+hx,CY+hy);c2.lineTo(CX-hx,CY+hy);c2.lineTo(CX-hx,CY-hy*.3);c2.closePath();c2.fill();c2.stroke()}else switch(a.shape){case"circle":{const cr=_cr;c2.beginPath();c2.arc(CX,CY,cr,0,Math.PI*2);c2.fill();c2.stroke();break}case"rect":c2.beginPath();c2.rect(CX-hw,CY-hh,FRAME_W,FRAME_H);c2.fill();c2.stroke();break;case"diamond":{const dx=hw+U*.6,dy=hh+U*.6;c2.beginPath();c2.moveTo(CX,CY-dy);c2.lineTo(CX+dx,CY);c2.lineTo(CX,CY+dy);c2.lineTo(CX-dx,CY);c2.closePath();c2.fill();c2.stroke();break}case"square":{const sq=Math.max(hw,hh)+U*.2;c2.beginPath();c2.rect(CX-sq,CY-sq,sq*2,sq*2);c2.fill();c2.stroke();break}case"quatrefoil":{const r=hh*.55;c2.beginPath();c2.moveTo(CX,CY-hh-U*.3);c2.bezierCurveTo(CX+r,CY-hh-U*.3,CX+hw+U*.3,CY-r,CX+hw+U*.3,CY);c2.bezierCurveTo(CX+hw+U*.3,CY+r,CX+r,CY+hh+U*.3,CX,CY+hh+U*.3);c2.bezierCurveTo(CX-r,CY+hh+U*.3,CX-hw-U*.3,CY+r,CX-hw-U*.3,CY);c2.bezierCurveTo(CX-hw-U*.3,CY-r,CX-r,CY-hh-U*.3,CX,CY-hh-U*.3);c2.closePath();c2.fill();c2.stroke();break}}/* Interior bounds */var ihw=hw,ihh=hh;if(_isUAV){ihw=hw*.65;ihh=hh*.65}else switch(a.shape){case"circle":{ihw=_cr*.68;ihh=_cr*.68;break}case"diamond":ihw=hw*.58;ihh=hh*.58;break;case"square":{const sq=Math.max(hw,hh)+U*.2;ihw=sq*.7;ihh=sq*.7;break}case"quatrefoil":ihw=hw*.6;ihh=hh*.6;break}/* Icon interior */c2.strokeStyle="#000";c2.fillStyle="#000";c2.lineWidth=3;drawTS(c2,u.type,CX,CY,ihw,ihh);if(u.echelon)drawEch(c2,u.echelon,u.affiliation,u.type,u.isEquipment);if(u.modifiers&&u.modifiers.length)drawMods(c2,u.modifiers);/* Text labels outside frame — hide when icon is small */var _dpr=devicePixelRatio||1;if(S.showLabels&&sz/_dpr>60){c2.fillStyle="#000";c2.font=`bold ${U*2.0}px serif`;const textX=_isUAV?(hw*.85):a.shape==="circle"?_cr*0.72:hw;if(u.designation){c2.textAlign="right";c2.textBaseline="alphabetic";c2.fillText(u.designation,CX-textX-U*.3,B)}if(u.parentUnit){c2.textAlign="left";c2.textBaseline="alphabetic";c2.fillText(u.parentUnit,CX+textX+U*.3,B)}}c2.restore()}
 function _drawTrefoil(c2,cx,cy,r,hh){
 /* Aviation: two inverted triangles on vertical axis + horizontal lobes — compact */
 var hw=r/.7;
@@ -430,7 +430,7 @@ if(u.rings&&u.rings.length)u.rings.forEach(ring=>{const rp=metersToPixels(ring.r
 if(u.customIcon&&u.useCustomIcon!==false){
 const isH=u.affiliation==="hostile";const cimg=isH?getTintedIcon(u.customIcon,"#ff4444"):getCustomIconImage(u.customIcon);
 const uScale=u.iconScale||1;
-if(cimg.complete&&cimg.naturalWidth>0){const iSz=sz*d*uScale;ctx.drawImage(cimg,sp.x*d-iSz/2,sp.y*d-iSz/2,iSz,iSz)}
+if(cimg.complete&&cimg.naturalWidth>0){const uSz=sz*d*uScale;const _ar=cimg.naturalWidth/cimg.naturalHeight;if(_ar>2){/* Wide image (text label) — render at natural aspect ratio, height=uSz*0.4 */const _ih=uSz*0.4;const _iw=_ih*_ar;ctx.drawImage(cimg,sp.x*d-_iw/2,sp.y*d-_ih/2,_iw,_ih)}else{ctx.drawImage(cimg,sp.x*d-uSz/2,sp.y*d-uSz/2,uSz,uSz)}}
 else{drawUnitIcon(ctx,u,sp.x*d,sp.y*d,sz*d)}}else{const uScale=u.iconScale||1;drawUnitIcon(ctx,u,sp.x*d,sp.y*d,sz*d*uScale)}}
 ctx.restore();if(u.id===S.selectedUnitId){ctx.save();ctx.strokeStyle="#ffd700";ctx.lineWidth=2*d;ctx.setLineDash([4*d,4*d]);const h=sz*d/2+4*d;ctx.strokeRect(sp.x*d-h,sp.y*d-h,h*2,h*2);ctx.restore();/* Rotation handle — red dot around unit */const handleDist=(sz*d/2+20*d);const ang=(u.rotation||0)*DEG;const hx=sp.x*d+Math.sin(ang)*handleDist;const hy=sp.y*d-Math.cos(ang)*handleDist;/* Handle dot */ctx.save();ctx.fillStyle="#ff4444";ctx.strokeStyle="#fff";ctx.lineWidth=2*d;ctx.beginPath();ctx.arc(hx,hy,5*d,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();/* Angle text above icon */if(u.rotation){ctx.save();ctx.fillStyle="#fff";ctx.strokeStyle="rgba(0,0,0,.6)";ctx.lineWidth=3*d;ctx.font=`bold ${10*d}px ${getComputedStyle(document.body).fontFamily}`;ctx.textAlign="center";ctx.textBaseline="bottom";const txt=Math.round(u.rotation)+"\u00b0";ctx.strokeText(txt,sp.x*d,sp.y*d-h-4*d);ctx.fillText(txt,sp.x*d,sp.y*d-h-4*d);ctx.restore()}}})}
 /* Custom icon image cache for KMZ-embedded images */
@@ -3993,6 +3993,9 @@ const IO={
       const coords=pm.getElementsByTagName("coordinates")[0];if(!coords)return null;
       const nameEl=pm.getElementsByTagName("name")[0],descEl=pm.getElementsByTagName("description")[0];
       const rawName=nameEl?nameEl.textContent:"",rawDesc=descEl?descEl.textContent:"";
+      /* If placemark has no name, try to derive from folder name (e.g. "Polygon NAI SW_Vermi" -> "NAI SW_Vermi") */
+      var _derivedName=rawName;
+      if(!_derivedName&&folderName){_derivedName=folderName.replace(/^(Polygon|Polyline|LineString|Path|Point)\s+/i,"").trim();if(/^\[unnamed\]$|^Unnamed$|^New Layer$/i.test(_derivedName))_derivedName=""}
       var smData={};pm.querySelectorAll("ExtendedData > Data").forEach(function(d){var k=d.getAttribute("name");var v=(d.querySelector("value")||{}).textContent||"";if(k&&k.startsWith("sm:"))smData[k.slice(3)]=v});
       if(smData.type){var smMods=[];try{smMods=JSON.parse(smData.modifiers||"[]")}catch(e){}
         var _smIcon=resolveIconHref(pm);
@@ -4000,12 +4003,12 @@ const IO={
       const aff=detectAff(pm,folderName);
       const mg=pm.getElementsByTagName("MultiGeometry")[0];
       if(mg){var st=resolveStyle(pm),ap=mg.getElementsByTagName("Polygon"),al=mg.getElementsByTagName("LineString");
-        if(ap.length>100){var bp=null,bl=0;for(var bi=0;bi<Math.min(ap.length,20);bi++){var bc=ap[bi].getElementsByTagName("coordinates")[0],bpts=_pcr(bc);if(bpts&&bpts.length>bl){bp=bpts;bl=bpts.length}}return bp?_bgo(pm,layerId,rawName,rawDesc,st,bp,true):null}
-        var res=[];for(var mi=0;mi<ap.length;mi++){var sc=ap[mi].getElementsByTagName("coordinates")[0],sp=_pcr(sc);if(sp&&sp.length>=2)res.push(_bgo(pm,layerId,mi===0?rawName:"",rawDesc,st,sp,true))}
-        for(var mj=0;mj<al.length;mj++){var sc2=al[mj].getElementsByTagName("coordinates")[0],sp2=_pcr(sc2);if(sp2&&sp2.length>=2)res.push(_bgo(pm,layerId,mj===0&&!ap.length?rawName:"",rawDesc,st,sp2,false))}
+        if(ap.length>100){var bp=null,bl=0;for(var bi=0;bi<Math.min(ap.length,20);bi++){var bc=ap[bi].getElementsByTagName("coordinates")[0],bpts=_pcr(bc);if(bpts&&bpts.length>bl){bp=bpts;bl=bpts.length}}return bp?_bgo(pm,layerId,_derivedName||rawName,rawDesc,st,bp,true):null}
+        var res=[];for(var mi=0;mi<ap.length;mi++){var sc=ap[mi].getElementsByTagName("coordinates")[0],sp=_pcr(sc);if(sp&&sp.length>=2)res.push(_bgo(pm,layerId,mi===0?(_derivedName||rawName):"",rawDesc,st,sp,true))}
+        for(var mj=0;mj<al.length;mj++){var sc2=al[mj].getElementsByTagName("coordinates")[0],sp2=_pcr(sc2);if(sp2&&sp2.length>=2)res.push(_bgo(pm,layerId,mj===0&&!ap.length?(_derivedName||rawName):"",rawDesc,st,sp2,false))}
         return res.length?res:null}
       const polyEl=pm.getElementsByTagName("Polygon")[0],lineEl=pm.getElementsByTagName("LineString")[0];
-      if(polyEl||lineEl){var ce=polyEl?polyEl.getElementsByTagName("coordinates")[0]:lineEl.getElementsByTagName("coordinates")[0];var gp=_pcr(ce);if(!gp)return null;return _bgo(pm,layerId,rawName,rawDesc,resolveStyle(pm),gp,!!polyEl)}
+      if(polyEl||lineEl){var ce=polyEl?polyEl.getElementsByTagName("coordinates")[0]:lineEl.getElementsByTagName("coordinates")[0];var gp=_pcr(ce);if(!gp)return null;return _bgo(pm,layerId,_derivedName||rawName,rawDesc,resolveStyle(pm),gp,!!polyEl)}
       const parts=coords.textContent.trim().split(",");if(parts.length<2)return null;
       const lon=parseFloat(parts[0]),lat=parseFloat(parts[1]);if(isNaN(lat)||isNaN(lon))return null;
       const hasName=!!rawName,parseSource=rawName||rawDesc.replace(/<[^>]*>/g,"").trim();
@@ -4025,10 +4028,13 @@ const IO={
       if(cotResult){if(cotResult.type)parsed.type=cotResult.type;if(cotResult.affiliation)finalAff=cotResult.affiliation}
       const notes=parsed.importNotes+(cotResult?" | CoT: "+cotResult.raw:"")+(rawDesc?"\nDescription: "+rawDesc.replace(/<[^>]*>/g,"").trim():"")+(folderName?"\nSource folder: "+folderName:"");
       const iconDataUrl=resolveIconHref(pm);
-      /* Skip label-only point placemarks (no name, has icon — typically a rendered label from another app) */
-      if(!rawName&&!rawDesc){
-        if(iconDataUrl)return null;
+      /* Skip label-only point placemarks ONLY if no icon at all (empty placemarks) */
+      if(!rawName&&!rawDesc&&!iconDataUrl){
         var _chkSt=resolveStyle(pm);if(_chkSt){var _chkIs=_chkSt.getElementsByTagName("IconStyle");if(_chkIs.length){var _chkIc=_chkIs[0].getElementsByTagName("Icon");if(_chkIc.length){var _chkHr=_chkIc[0].getElementsByTagName("href");if(_chkHr.length){var _hr=_chkHr[0].textContent.trim();if(_hr&&!/maps\.google\.com|earth\.google\.com/i.test(_hr))return null}}}}
+      }
+      /* Unnamed points WITH embedded icon images — mark as label attachment for preceding graphic */
+      if(!rawName&&!rawDesc&&iconDataUrl){
+        return{_isLabelPoint:true,lat,lon,customIcon:iconDataUrl}
       }
       return{id:"u"+Date.now()+Math.random().toString(36).substr(2,4),lat,lon,
         type:iconDataUrl&&parsed.type==="infantry"?"waypoint":parsed.type,affiliation:finalAff,echelon:parsed.echelon,
@@ -4054,11 +4060,16 @@ const IO={
       if(directPms.length===0)return;
       var fname=getFolderName(folder)||"Unnamed";
       var layerId="l"+Date.now()+Math.random().toString(36).substr(2,4);
-      S.layers.push({id:layerId,name:fname,visible:true,hasErrors:false,collapsed:true});
+      var _cleanFname=fname.replace(/^(Polygon|Polyline|LineString|Path|Point)\s+/i,'').trim();S.layers.push({id:layerId,name:_cleanFname||fname,visible:true,hasErrors:false,collapsed:true});
       var imported=0,ferr=0;
       directPms.forEach(function(pm){
         var u=buildUnit(pm,layerId,fname);
-        if(u){if(Array.isArray(u)){u.forEach(function(g){delete g._isGraphic;S.graphics.push(g);count++});imported+=u.length}else if(u._isGraphic){delete u._isGraphic;S.graphics.push(u);count++;imported++}else{S.units.push(u);count++;imported++}}else{ferr++;errors++}
+        if(u){
+          if(Array.isArray(u)){u.forEach(function(g){delete g._isGraphic;S.graphics.push(g);count++});imported+=u.length}
+          else if(u._isGraphic){delete u._isGraphic;S.graphics.push(u);count++;imported++}
+          else if(u._isLabelPoint){/* Skip — label derived from folder name */}
+          else{S.units.push(u);count++;imported++}
+        }else{ferr++;errors++}
       });
       if(imported>0){
         importedLayerIds.push(layerId);
@@ -4294,6 +4305,7 @@ const IO={
       var nm=esc(g.label||"");
       var sid="g_"+(g.id||"").replace(/[^a-zA-Z0-9]/g,"");
       var gExt='<ExtendedData><Data name="sm:lineStyle"><value>'+(g.lineStyle||'solid')+'</value></Data><Data name="sm:tool"><value>'+(g.tool||'line')+'</value></Data><Data name="sm:overlayType"><value>'+(g.overlayType||'none')+'</value></Data><Data name="sm:label"><value>'+esc(g.label||'')+'</value></Data></ExtendedData>';
+      var gDesc=nm?'<description><![CDATA[<b>'+nm+'</b><br/>Source: StaffMaps]]></description>':'';
       var h='<Placemark><name>'+nm+'</name><styleUrl>#'+sid+'</styleUrl>'+gExt;
       if(g.tool==="rectangle"&&g.points.length===2){h+='<Polygon><outerBoundaryIs><LinearRing><coordinates>'+rectToCoords(g)+'</coordinates></LinearRing></outerBoundaryIs></Polygon>';}
       else if(g.tool==="circle"&&g.points.length>=2){h+='<Polygon><outerBoundaryIs><LinearRing><coordinates>'+circleToCoords(g)+'</coordinates></LinearRing></outerBoundaryIs></Polygon>';}
@@ -4367,16 +4379,18 @@ const IO={
     function placemarkUnit(u){var cs=_callsign(u);var nm=esc(cs);var aff=u.affiliation||"friendly";var col=aff==="hostile"?"ff0000ff":aff==="neutral"?"ff00ff00":"ffff8800";
       var desc='<description><![CDATA['+_takDesc(u)+']]></description>';
       var ext='<ExtendedData><Data name="sm:type"><value>'+esc(u.type||'')+'</value></Data><Data name="sm:affiliation"><value>'+esc(u.affiliation||'friendly')+'</value></Data><Data name="sm:echelon"><value>'+esc(u.echelon||'')+'</value></Data><Data name="sm:higherUnit"><value>'+esc(u.higherUnit||'')+'</value></Data><Data name="sm:parentUnit"><value>'+esc(u.parentUnit||'')+'</value></Data><Data name="sm:isHQ"><value>'+(u.isHQ?'true':'false')+'</value></Data><Data name="sm:modifiers"><value>'+esc(JSON.stringify(u.modifiers||[]))+'</value></Data></ExtendedData>';
-      return'<Placemark><name>'+nm+'</name><Style><IconStyle><scale>'+(u.iconScale||1)+'</scale><Icon><href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href></Icon><color>'+col+'</color></IconStyle></Style>'+desc+ext+'<Point><coordinates>'+u.lon+','+u.lat+',0</coordinates></Point></Placemark>\n'}
+      return'<Placemark><name>'+nm+'</name><Style><IconStyle><scale>'+(u.iconScale||1)+'</scale><Icon><href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href></Icon><color>'+col+'</color></IconStyle><LabelStyle><scale>1</scale></LabelStyle></Style>'+desc+ext+'<Point><coordinates>'+u.lon+','+u.lat+',0</coordinates></Point></Placemark>\n'}
 
     function placemarkGfx(g){
       var nm=esc(g.label||"");
       var lineCol=hexToKml(g.color||"#ff4444",g.opacity!=null?g.opacity:1);var isP=g.tool==="polygon"||g.tool==="rectangle"||g.tool==="circle";
       var gExt='<ExtendedData><Data name="sm:lineStyle"><value>'+(g.lineStyle||'solid')+'</value></Data><Data name="sm:tool"><value>'+(g.tool||'line')+'</value></Data><Data name="sm:overlayType"><value>'+(g.overlayType||'none')+'</value></Data><Data name="sm:label"><value>'+esc(g.label||'')+'</value></Data></ExtendedData>';
+      var gDesc=nm?'<description><![CDATA[<b>'+nm+'</b><br/>Source: StaffMaps]]></description>':'';
       var h='<Placemark><name>'+nm+'</name><Style><LineStyle><color>'+lineCol+'</color><width>'+(g.lineWidth||2)+'</width></LineStyle>';
       if(isP&&g.fill){var fillOp=g.fillOpacity!=null?g.fillOpacity:0.35;h+='<PolyStyle><color>'+hexToKml(g.fillColor||g.color||"#ff4444",fillOp)+'</color></PolyStyle>';}
       else if(isP){h+='<PolyStyle><fill>0</fill></PolyStyle>';}
       h+='</Style>';
+      h+=gDesc+gExt;
       if(g.tool==="rectangle"&&g.points.length===2){h+='<Polygon><outerBoundaryIs><LinearRing><coordinates>'+rectToCoords(g)+'</coordinates></LinearRing></outerBoundaryIs></Polygon>';}
       else if(g.tool==="circle"&&g.points.length>=2){h+='<Polygon><outerBoundaryIs><LinearRing><coordinates>'+circleToCoords(g)+'</coordinates></LinearRing></outerBoundaryIs></Polygon>';}
       else if(g.tool==="polygon"){var c=g.points.map(p=>p.lon+","+p.lat+",0").join(" ");h+='<Polygon><outerBoundaryIs><LinearRing><coordinates>'+c+" "+g.points[0].lon+","+g.points[0].lat+',0</coordinates></LinearRing></outerBoundaryIs></Polygon>';}
