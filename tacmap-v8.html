@@ -1263,6 +1263,8 @@ function renderComms(){
         h+='<div class="ed-section-title">JOIN ROOM</div>';
         h+='<div style="font-size:11px;opacity:.7;margin-bottom:6px">Enter the 6-character room code from the host.</div>';
         h+='<div class="row" style="align-items:stretch"><input type="text" id="net-code" placeholder="Room code" maxlength="6" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" style="flex:2;margin-bottom:0"><button class="btn primary" onclick="netJoinRoom()" style="min-height:0;align-self:stretch">Join</button></div>';
+        if(n.mode==="connecting"){h+='<div style="margin-top:6px;padding:6px 8px;border-radius:6px;background:rgba(74,158,255,.08);border:1px solid rgba(74,158,255,.2);font-size:11px;color:#4a9eff">⏳ '+escHtml(n.status)+'</div>';}
+        else if(n.status&&n.status.indexOf('Error')===0){h+='<div style="margin-top:6px;padding:6px 8px;border-radius:6px;background:rgba(255,68,68,.08);border:1px solid rgba(255,68,68,.2);font-size:11px;color:#ff6666">'+escHtml(n.status)+'</div>';}
       }
       /* TURN server settings — collapsible */
       var _hasTurn=S._turnServer&&S._turnServer.host&&S._turnServer.host.trim();
@@ -3253,13 +3255,29 @@ function netCreateRoom(fixedCode){
 
 function netJoinRoom(){
   const n=S._net,code=(document.getElementById("net-code")||{}).value||n.roomCode;if(!code)return;
-  n.roomCode=code.toUpperCase();n.peer=new Peer(undefined,_peerOpts());
+  n.roomCode=code.toUpperCase();
+  /* Clean up any previous peer */
+  if(n.peer)try{n.peer.destroy()}catch(e){}
+  n.peer=null;n.hostConn=null;
+  n.mode="connecting";n.status="Connecting to signal server…";updateNetDot("connecting");renderFloatingPanel();
+  n.peer=new Peer(undefined,_peerOpts());
+  var _joinTimeout=null;
   n.peer.on("open",()=>{
-    const conn=n.peer.connect("staffmaps-"+n.roomCode);n.hostConn=conn;
-    conn.on("open",()=>{n.mode="connected";n.status="Connected";updateNetDot("connected");S._net._lastHostPing=Date.now();conn.send(JSON.stringify({type:"hello",name:n.peerName}));renderFloatingPanel()});
+    n.status="Signal OK — connecting to room "+n.roomCode+"…";renderFloatingPanel();
+    const conn=n.peer.connect("staffmaps-"+n.roomCode,{reliable:true});n.hostConn=conn;
+    /* Timeout if data channel never opens */
+    _joinTimeout=setTimeout(function(){
+      if(n.mode!=="connected"){n.status="Connection timed out — host may be offline or firewall is blocking P2P";updateNetDot("error");renderFloatingPanel();IO.notify("Connection timed out. Try Manual Connect if room codes keep failing.","error")}
+    },15000);
+    conn.on("open",()=>{clearTimeout(_joinTimeout);n.mode="connected";n.status="Connected";updateNetDot("connected");S._net._lastHostPing=Date.now();conn.send(JSON.stringify({type:"hello",name:n.peerName}));renderFloatingPanel()});
     conn.on("data",data=>{try{var msg=JSON.parse(data);sanitizeNetMsg(msg);handleNetMsg(msg,null)}catch(e){}});
-    conn.on("close",()=>{n.hostConn=null;attemptHostMigration()})});
-  n.peer.on("error",e=>{n.status="Error: "+e.type;updateNetDot("error");renderFloatingPanel()})}
+    conn.on("close",()=>{clearTimeout(_joinTimeout);n.hostConn=null;attemptHostMigration()});
+    conn.on("error",e=>{clearTimeout(_joinTimeout);n.status="Data connection error: "+(e.type||e.message||e);updateNetDot("error");renderFloatingPanel()})});
+  n.peer.on("error",e=>{clearTimeout(_joinTimeout);n.status="Error: "+e.type;updateNetDot("error");
+    if(e.type==="peer-unavailable"){IO.notify("Room "+n.roomCode+" not found — check the code or ask host to recreate","error")}
+    else if(e.type==="network"||e.type==="server-error"){IO.notify("Signal server unreachable — check internet or try Manual Connect","error")}
+    else{IO.notify("Connection error: "+e.type,"error")}
+    renderFloatingPanel()})}
 
 function netLeave(){const n=S._net;if(n.peer)n.peer.destroy();n.peer=null;n.conns=[];n.hostConn=null;n.isHost=false;n.roomCode=null;n.mode="offline";n.status="";n.peerNames={};n.sharedLayers={};n.sharedEditLayer=null;n.editScope="local";n.peerPermissions={};n.editRequests=[];n.editRequestStatus=null;n.roomRoster=[];n.wargame={active:false,phase:"planning",roles:{},myRole:null,layerRoles:{},orders:[],turnNumber:1,turnLog:[]};S._wargameOrderPending=null;updateNetDot("");renderFloatingPanel();requestRender()}
 
@@ -4479,7 +4497,8 @@ function _buildIceServers(){
     servers.push(
       {urls:"turn:openrelay.metered.ca:80",username:"openrelayproject",credential:"openrelayproject"},
       {urls:"turn:openrelay.metered.ca:443",username:"openrelayproject",credential:"openrelayproject"},
-      {urls:"turn:openrelay.metered.ca:443?transport=tcp",username:"openrelayproject",credential:"openrelayproject"}
+      {urls:"turn:openrelay.metered.ca:443?transport=tcp",username:"openrelayproject",credential:"openrelayproject"},
+      {urls:"turns:openrelay.metered.ca:443?transport=tcp",username:"openrelayproject",credential:"openrelayproject"}
     );
   }
   return servers;
