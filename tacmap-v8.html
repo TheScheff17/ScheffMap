@@ -14,6 +14,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root{--bg:#1a1a1a;--fg:#f0f0f0;--accent:#4a9eff;--accent2:#ffd700;--panel-bg:#1a1a1a;--btn-bg:rgba(255,255,255,0.1);--btn-hover:rgba(255,255,255,0.2);--border:rgba(255,255,255,0.15);--danger:#ff4444;--success:#44cc44;--warning:#ffaa00;--safe-top:env(safe-area-inset-top,0px);--safe-right:env(safe-area-inset-right,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--safe-left:env(safe-area-inset-left,0px);--font:'SF Mono','Fira Code',Consolas,Monaco,monospace;--ui-scale:1}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}input[type=number]{-moz-appearance:textfield}
 [data-theme="light"]{--bg:#f0f0f0;--fg:#222;--panel-bg:rgba(245,245,245,0.97);--btn-bg:rgba(0,0,0,0.08);--btn-hover:rgba(0,0,0,0.15);--border:rgba(0,0,0,0.15)}
 [data-theme="light"] select,[data-theme="light"] input[type="text"],[data-theme="light"] input[type="number"],[data-theme="light"] input[type="password"],[data-theme="light"] textarea{background:#fff;color:#222;border-color:rgba(0,0,0,.2)}
 [data-theme="light"] select option{background:#fff;color:#222}
@@ -56,6 +57,8 @@ html{height:100%;background:#1a1a2e}body{width:100%;height:100%;min-height:100vh
 .editor-body{overflow-y:auto;overflow-x:hidden;padding:8px 10px;padding-bottom:12px;flex:1;-webkit-overflow-scrolling:touch;min-height:0;border-radius:0 0 12px 12px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent}
 .editor-body::-webkit-scrollbar{width:6px}.editor-body::-webkit-scrollbar-track{background:transparent}.editor-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:3px}.editor-body::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.35)}
 [data-theme="light"] .editor-body{scrollbar-color:rgba(0,0,0,.2) transparent}[data-theme="light"] .editor-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.2)}[data-theme="light"] .editor-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.35)}
+#ipb-placer-panel *{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent}#ipb-placer-panel ::-webkit-scrollbar{width:6px}#ipb-placer-panel ::-webkit-scrollbar-track{background:transparent}#ipb-placer-panel ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.25);border-radius:3px}#ipb-placer-panel ::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.4)}
+[data-theme="light"] #ipb-placer-panel *{scrollbar-color:rgba(0,0,0,.2) transparent}[data-theme="light"] #ipb-placer-panel ::-webkit-scrollbar-thumb{background:rgba(0,0,0,.2)}[data-theme="light"] #ipb-placer-panel ::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.35)}
 .editor-body .toggle-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}.editor-body .toggle-row span{font-size:11px}
 .editor-body label{display:block;font-size:10px;opacity:.6;margin-bottom:2px;text-transform:uppercase;letter-spacing:.5px}.editor-body label.switch,.editor-body label.switch-sm{display:inline-block;opacity:1;font-size:inherit;margin-bottom:0;text-transform:none;letter-spacing:normal}
 .editor-body input[type="range"]{width:100%;accent-color:var(--accent);-webkit-appearance:none;appearance:none;height:20px;background:transparent;outline:none;touch-action:none;margin:0}
@@ -76,9 +79,9 @@ html{height:100%;background:#1a1a2e}body{width:100%;height:100%;min-height:100vh
 .icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:3px;margin-bottom:8px}.icon-cell{aspect-ratio:1;border:2px solid transparent;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;background:transparent;touch-action:manipulation;transition:border-color .15s}.icon-cell:hover{border-color:rgba(255,255,255,.3)}[data-theme="light"] .icon-cell:hover{border-color:rgba(0,0,0,.2)}.icon-cell.selected{border-color:#ffd700;background:rgba(255,215,0,.08)}.icon-cell canvas{width:100%;height:100%}.icon-cell .tooltip{position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:2px 6px;border-radius:3px;font-size:9px;white-space:nowrap;pointer-events:none;display:none;z-index:999}.icon-cell:hover .tooltip{display:block}
 .color-swatches{display:flex;gap:6px;margin:4px 0 8px}.swatch{width:28px;height:28px;border-radius:4px;cursor:pointer;border:2px solid transparent;transition:border-color .15s,transform .1s}.swatch:hover{transform:scale(1.15)}.swatch.active{border-color:#fff;box-shadow:0 0 6px rgba(255,255,255,.5)}
 .cat-header{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:4px 0;margin-top:6px;cursor:pointer;display:flex;align-items:center;gap:4px;opacity:.7}.cat-header::before{content:'\25b8';font-size:8px;transition:transform .15s}.cat-header.open::before{transform:rotate(90deg)}
-.mode-bar{position:absolute;bottom:calc(4px + var(--safe-bottom));left:50%;transform:translateX(-50%);background:var(--panel-bg);border:1px solid var(--border);border-radius:8px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:6px 10px;display:none;align-items:center;gap:8px;z-index:55;white-space:nowrap;box-shadow:0 2px 12px rgba(0,0,0,.4);zoom:var(--ui-scale)}.mode-bar.open{display:flex}.mode-info{font-size:11px;opacity:.8}.mode-bar .btn{min-width:44px;min-height:36px;font-size:14px}.mode-bar .btn.done{border-color:var(--accent2);color:var(--accent2)}.mode-bar .btn.done.ready{animation:goldPulse 1.5s infinite}@keyframes goldPulse{0%,100%{box-shadow:none}50%{box-shadow:0 0 8px var(--accent2)}}
+.mode-bar{position:absolute;bottom:calc(4px + var(--safe-bottom));left:50%;transform:translateX(-50%);background:var(--panel-bg);border:1px solid var(--border);border-radius:8px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:6px 10px;display:none;align-items:center;gap:8px;z-index:55;white-space:nowrap;box-shadow:0 2px 12px rgba(0,0,0,.4);zoom:var(--ui-scale)}.mode-bar.open{display:flex}.mode-info{font-size:11px;opacity:.8}.mode-bar .btn{min-width:44px;min-height:36px;font-size:16px}.mode-bar .btn.done{border-color:var(--accent2);color:var(--accent2)}.mode-bar .btn.done.ready{animation:goldPulse 1.5s infinite}@keyframes goldPulse{0%,100%{box-shadow:none}50%{box-shadow:0 0 8px var(--accent2)}}
 .zoom-ctrl{position:absolute;bottom:calc(4px + var(--safe-bottom));right:calc(4px + var(--safe-right));display:flex;flex-direction:column;gap:3px;z-index:50;zoom:var(--ui-scale)}.zoom-ctrl .btn{width:44px;height:44px;font-size:18px;font-weight:700;border-radius:8px;background:var(--panel-bg);color:var(--fg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.3);padding:0;min-height:unset}
-.layer-indicator{position:absolute;bottom:calc(4px + var(--safe-bottom));left:calc(4px + var(--safe-left));display:flex;align-items:center;gap:4px;font-size:10px;opacity:.6;z-index:50}.layer-indicator .dot{width:8px;height:8px;border-radius:50%}
+.layer-indicator{position:absolute;bottom:calc(4px + var(--safe-bottom));left:calc(4px + var(--safe-left));display:flex;align-items:center;gap:6px;font-size:11px;z-index:50;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:5px 10px;color:#e0e0e0;font-weight:500}.layer-indicator .dot{width:8px;height:8px;border-radius:50%}
 .file-menu{position:absolute;top:100%;left:0;min-width:220px;max-width:calc(100vw - 20px - var(--safe-left) - var(--safe-right));max-height:calc(var(--app-h,100vh) - 80px);overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--panel-bg);border:1px solid var(--border);border-radius:6px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 4px 20px rgba(0,0,0,.4);z-index:110;display:none;padding:4px 0}.file-menu.open{display:block}.file-menu .fm-section{padding:2px 8px;font-size:9px;text-transform:uppercase;letter-spacing:1px;opacity:.4;margin-top:4px}.file-menu .fm-item{padding:10px 14px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;touch-action:manipulation;min-height:44px}.file-menu .fm-item:hover{background:var(--btn-hover)}.file-menu .fm-item.disabled{opacity:.3;pointer-events:none}.file-menu .fm-divider{height:1px;background:var(--border);margin:2px 0}.file-menu .fm-status{padding:4px 12px;font-size:9px;opacity:.4}
 .toast{position:fixed;top:40px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:8px 16px;border-radius:6px;font-size:12px;font-family:var(--font);z-index:9999;border:1px solid var(--accent);animation:toastIn .3s ease-out;box-shadow:0 4px 12px rgba(0,0,0,.4)}.toast.error{border-color:var(--danger)}@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 .export-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:2000;display:flex;align-items:center;justify-content:center;padding:16px}
@@ -141,7 +144,7 @@ const OVERLAY_TYPES=[{id:"none",label:"Basic"},{id:"pl",label:"Phase Line"},{id:
 // === part_02_state_coords.js ===
 
 let canvas,ctx;const tileCache=new Map();let _renderQueued=false,_fileMenuOpen=false;
-const S={lat:38.8977,lon:-77.0365,zoom:12,tileSource:"esri_topo",theme:"dark",showGrid:true,showLabels:true,gridOpacity:0.25,gridColor:"#000000",gridMode:"mgrs",gridSpacing:"auto",coordDisplay:"mgrs",units:[],graphics:[],layers:[{id:"default",name:"Default",color:"#4a9eff",visible:true}],packages:[],activeLayerId:"default",selectedUnitId:null,selectedGraphicId:null,editorTab:"icon",editorPinned:false,_activePanel:null,_drawMode:null,_placementMode:null,_isPanning:false,_panStart:null,_lastPointerType:"mouse",_activePointers:new Map(),_pinchStartDist:null,_pinchStartZoom:null,_layout:"desktop",_isLandscape:false,undoStack:[],_net:{peer:null,conns:[],isHost:false,roomCode:null,hostConn:null,mode:"offline",persistentRoom:null,editMode:"observer",joinOrder:0,nextJoinOrder:1,peerName:localStorage.getItem("staffmaps_callsign")||"",peerNames:{},status:"",encEnabled:false,encKey:null,passphrase:"",chatMessages:[],unreadCount:0,chatTarget:"room",sharedLayers:{},sharedEditLayer:null,editScope:"local",defaultJoinMode:"view",peerPermissions:{},editRequests:[],editRequestStatus:null,roomRoster:[],
+const S={lat:38.8977,lon:-77.0365,zoom:12,tileSource:"esri_topo",theme:"dark",showGrid:true,showLabels:true,gridOpacity:0.25,gridColor:"#000000",gridMode:"mgrs",gridSpacing:"auto",coordDisplay:"mgrs",units:[],graphics:[],layers:[{id:"default",name:"Default",color:"#4a9eff",visible:true}],packages:[],activeLayerId:"default",selectedUnitId:null,selectedGraphicId:null,editorTab:"icon",editorPinned:false,_activePanel:null,_drawMode:null,_placementMode:null,_isPanning:false,_panStart:null,_lastPointerType:"mouse",_activePointers:new Map(),_pinchStartDist:null,_pinchStartZoom:null,_layout:"desktop",_isLandscape:false,undoStack:[],_operation:null,_opActivePhase:null,_opShowSettings:false,_opShowPhaseMeta:false,_wjEntryType:'note',_net:{peer:null,conns:[],isHost:false,roomCode:null,hostConn:null,mode:"offline",persistentRoom:null,editMode:"observer",joinOrder:0,nextJoinOrder:1,peerName:localStorage.getItem("staffmaps_callsign")||"",peerNames:{},status:"",encEnabled:false,encKey:null,passphrase:"",chatMessages:[],unreadCount:0,chatTarget:"room",sharedLayers:{},sharedEditLayer:null,editScope:"local",defaultJoinMode:"view",peerPermissions:{},editRequests:[],editRequestStatus:null,roomRoster:[],
 /* Wargame */
 wargame:{active:false,phase:"planning",/* planning|execution */
 roles:{},/* peerId -> {role:"blufor"|"opfor"|"observer", name:""} */
@@ -477,7 +480,7 @@ if(g.points.length>=2){var _mn=90,_mx=-90,_mln=180,_mlx=-180;for(var _i=0;_i<g.p
 var _rpts=g.points;var _maxRPts=S.zoom>=14?2000:S.zoom>=12?1000:500;if(g.points.length>_maxRPts){var _rs=Math.ceil(g.points.length/_maxRPts);_rpts=[];for(var _ri=0;_ri<g.points.length;_ri+=_rs)_rpts.push(g.points[_ri]);if(_ri-_rs!==g.points.length-1)_rpts.push(g.points[g.points.length-1])}
 const pts=_rpts.map(p=>{const s=latlonToScreen(p.lat,p.lon);return{x:s.x*d,y:s.y*d}});
 /* Decimate for drawing if too many points */
-var dpts=pts;if(pts.length>_maxRPts){var ds=Math.ceil(pts.length/_maxRPts);dpts=[];for(var di=0;di<pts.length;di+=ds)dpts.push(pts[di]);if(di-ds!==pts.length-1)dpts.push(pts[pts.length-1])}ctx.save();if(g.shadow){ctx.shadowColor="rgba(0,0,0,.5)";ctx.shadowBlur=4*d;ctx.shadowOffsetX=d;ctx.shadowOffsetY=d}const col=g.color||"#f44",lw=Math.max(1,(g.lineWidth||2))*d;ctx.strokeStyle=col;ctx.lineWidth=lw;setDash(ctx,g.lineStyle,d);if(g.overlayType&&g.overlayType!=="none")drawOvl(ctx,g,pts,d);else switch(g.tool){case"line":case"arrow":ctx.beginPath();dpts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();if(g.tool==="arrow"&&dpts.length>=2){const as=(g.arrowSize||1)*d;drawAH(ctx,dpts[dpts.length-2],dpts[dpts.length-1],lw,col,as)}break;case"polygon":ctx.beginPath();dpts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();if(g.fill){ctx.fillStyle=g.fillColor||col;ctx.globalAlpha=g.fillOpacity||.2;ctx.fill();ctx.globalAlpha=1;if(g.fillHatch&&g.fillHatch!=="none")drawHatchClipped(ctx,pts,g.fillHatch,col,d,{hatchColor:g.hatchColor,hatchLineWidth:g.hatchLineWidth,hatchSpacing:g.hatchSpacing,hatchOpacity:g.hatchOpacity})}ctx.stroke();if(g.label&&S.showLabels){var pcx=0,pcy=0;pts.forEach(p=>{pcx+=p.x;pcy+=p.y});pcx/=pts.length;pcy/=pts.length;var bMinX=Infinity,bMaxX=-Infinity,bMinY=Infinity,bMaxY=-Infinity;pts.forEach(p=>{if(p.x<bMinX)bMinX=p.x;if(p.x>bMaxX)bMaxX=p.x;if(p.y<bMinY)bMinY=p.y;if(p.y>bMaxY)bMaxY=p.y});var bSz=Math.min(bMaxX-bMinX,bMaxY-bMinY);var lox=g.labelOffset?g.labelOffset.x*d:0,loy=g.labelOffset?g.labelOffset.y*d:-20*d;var fSz=g.fontSize?(g.fontSize*d):Math.max(10*d,Math.min(24*d,Math.max(bSz,20*d)*.08));var lAlpha=bSz>3000*d?Math.max(0,1-(bSz-3000*d)/1000*d):1;ctx.save();ctx.globalAlpha=lAlpha;ctx.font=`${g.labelBold!==false?'bold ':''}${fSz}px sans-serif`;ctx.fillStyle=col;ctx.textAlign="center";ctx.textBaseline="middle";if(g.labelShadow){ctx.shadowColor="rgba(0,0,0,.7)";ctx.shadowBlur=4*d;ctx.shadowOffsetX=1*d;ctx.shadowOffsetY=1*d}else{ctx.shadowColor="transparent";ctx.shadowBlur=0}ctx.fillText(g.label,pcx+lox,pcy+loy);ctx.restore()}break;case"circle":if(pts.length>=2){const r=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y);ctx.beginPath();ctx.arc(pts[0].x,pts[0].y,r,0,Math.PI*2);if(g.fill){ctx.fillStyle=g.fillColor||col;ctx.globalAlpha=g.fillOpacity||.2;ctx.fill();ctx.globalAlpha=1;if(g.fillHatch&&g.fillHatch!=="none"){const np=64,cpts=[];for(let i=0;i<np;i++){const a=Math.PI*2*i/np;cpts.push({x:pts[0].x+Math.cos(a)*r,y:pts[0].y+Math.sin(a)*r})}drawHatchClipped(ctx,cpts,g.fillHatch,col,d,{hatchColor:g.hatchColor,hatchLineWidth:g.hatchLineWidth,hatchSpacing:g.hatchSpacing,hatchOpacity:g.hatchOpacity})}}ctx.stroke();if(g.label&&S.showLabels&&r>4*d){var lox2=g.labelOffset?g.labelOffset.x*d:0,loy2=g.labelOffset?g.labelOffset.y*d:-20*d;var fSz2=g.fontSize?(g.fontSize*d):Math.max(10*d,Math.min(24*d,r*.08));var lAlpha2=r>1500*d?Math.max(0,1-(r-1500*d)/500*d):1;ctx.save();ctx.globalAlpha=lAlpha2;ctx.font=`${g.labelBold!==false?'bold ':''}${fSz2}px sans-serif`;ctx.fillStyle=col;ctx.textAlign="center";ctx.textBaseline="middle";if(g.labelShadow){ctx.shadowColor="rgba(0,0,0,.7)";ctx.shadowBlur=4*d;ctx.shadowOffsetX=1*d;ctx.shadowOffsetY=1*d}else{ctx.shadowColor="transparent";ctx.shadowBlur=0}ctx.fillText(g.label,pts[0].x+lox2,pts[0].y+loy2);ctx.restore()}}break;case"rectangle":if(pts.length>=2){const x=Math.min(pts[0].x,pts[1].x),y=Math.min(pts[0].y,pts[1].y),w=Math.abs(pts[1].x-pts[0].x),h=Math.abs(pts[1].y-pts[0].y),rcx=x+w/2,rcy=y+h/2;ctx.save();if(g.rotation){ctx.translate(rcx,rcy);ctx.rotate(g.rotation*Math.PI/180);ctx.translate(-rcx,-rcy)}if(g.fill){ctx.fillStyle=g.fillColor||col;ctx.globalAlpha=g.fillOpacity||.2;ctx.fillRect(x,y,w,h);ctx.globalAlpha=1;if(g.fillHatch&&g.fillHatch!=="none"){const rpts=[{x,y},{x:x+w,y},{x:x+w,y:y+h},{x,y:y+h}];drawHatchClipped(ctx,rpts,g.fillHatch,col,d,{hatchColor:g.hatchColor,hatchLineWidth:g.hatchLineWidth,hatchSpacing:g.hatchSpacing,hatchOpacity:g.hatchOpacity})}}ctx.strokeRect(x,y,w,h);var rSz=Math.min(w,h);if(g.label){var lox3=g.labelOffset?g.labelOffset.x*d:0,loy3=g.labelOffset?g.labelOffset.y*d:-20*d;var fSz3=g.fontSize?(g.fontSize*d):Math.max(10*d,Math.min(24*d,Math.max(rSz,20*d)*.08));var lAlpha3=rSz>3000*d?Math.max(0,1-(rSz-3000*d)/1000*d):1;ctx.globalAlpha=lAlpha3;ctx.font=`${g.labelBold!==false?'bold ':''}${fSz3}px sans-serif`;ctx.fillStyle=col;ctx.textAlign="center";ctx.textBaseline="middle";if(g.labelShadow){ctx.shadowColor="rgba(0,0,0,.7)";ctx.shadowBlur=4*d;ctx.shadowOffsetX=1*d;ctx.shadowOffsetY=1*d}else{ctx.shadowColor="transparent";ctx.shadowBlur=0}ctx.fillText(g.label,rcx+lox3,rcy+loy3)}ctx.restore()}break;case"text":if(pts.length>=1&&g.label){ctx.save();if(g.rotation){ctx.translate(pts[0].x,pts[0].y);ctx.rotate(g.rotation*Math.PI/180);ctx.translate(-pts[0].x,-pts[0].y)}ctx.font=`${g.labelBold!==false?'bold ':''}${(g.fontSize||14)*d}px ${g.fontFamily||"sans-serif"}`;ctx.fillStyle=col;ctx.textAlign="left";ctx.textBaseline="top";if(g.labelShadow){ctx.shadowColor="rgba(0,0,0,.7)";ctx.shadowBlur=4*d;ctx.shadowOffsetX=1*d;ctx.shadowOffsetY=1*d}ctx.fillText(g.label,pts[0].x,pts[0].y);ctx.restore()}break}ctx.restore();/* Measurement labels for converted measure graphics */
+var dpts=pts;if(pts.length>_maxRPts){var ds=Math.ceil(pts.length/_maxRPts);dpts=[];for(var di=0;di<pts.length;di+=ds)dpts.push(pts[di]);if(di-ds!==pts.length-1)dpts.push(pts[pts.length-1])}ctx.save();if(g.shadow){ctx.shadowColor="rgba(0,0,0,.5)";ctx.shadowBlur=4*d;ctx.shadowOffsetX=d;ctx.shadowOffsetY=d}const col=g.color||"#f44",lw=Math.max(1,(g.lineWidth||2))*d;ctx.strokeStyle=col;ctx.lineWidth=lw;setDash(ctx,g.lineStyle,d);if(g.overlayType&&g.overlayType!=="none")drawOvl(ctx,g,pts,d);else switch(g.tool){case"line":case"arrow":ctx.beginPath();dpts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();if(g.tool==="arrow"&&dpts.length>=2){const as=(g.arrowSize||1)*d;drawAH(ctx,dpts[dpts.length-2],dpts[dpts.length-1],lw,col,as)}break;case"polygon":ctx.beginPath();dpts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();if(g.fill){ctx.fillStyle=g.fillColor||col;ctx.globalAlpha=g.fillOpacity||.2;ctx.fill();ctx.globalAlpha=1;if(g.fillHatch&&g.fillHatch!=="none")drawHatchClipped(ctx,pts,g.fillHatch,col,d,{hatchColor:g.hatchColor,hatchLineWidth:g.hatchLineWidth,hatchSpacing:g.hatchSpacing,hatchOpacity:g.hatchOpacity})}ctx.stroke();if(g.label&&S.showLabels){var pcx=0,pcy=0;pts.forEach(p=>{pcx+=p.x;pcy+=p.y});pcx/=pts.length;pcy/=pts.length;var bMinX=Infinity,bMaxX=-Infinity,bMinY=Infinity,bMaxY=-Infinity;pts.forEach(p=>{if(p.x<bMinX)bMinX=p.x;if(p.x>bMaxX)bMaxX=p.x;if(p.y<bMinY)bMinY=p.y;if(p.y>bMaxY)bMaxY=p.y});var bSz=Math.min(bMaxX-bMinX,bMaxY-bMinY);var lox=g.labelOffset?g.labelOffset.x*d:0,loy=g.labelOffset?g.labelOffset.y*d:-20*d;var _pZs=g._zoomRef!=null?Math.pow(2,S.zoom-g._zoomRef):1;var fSz=g.fontSize?g.fontSize*d*_pZs:Math.max(4*d,Math.min(200*d,Math.max(bSz,20*d)*.12));var lAlpha=bSz>3000*d?Math.max(0,1-(bSz-3000*d)/1000*d):1;ctx.save();ctx.globalAlpha=lAlpha;ctx.font=`${g.labelBold!==false?'bold ':''}${fSz}px sans-serif`;ctx.fillStyle=col;ctx.textAlign="center";ctx.textBaseline="middle";if(g.labelShadow){ctx.shadowColor="rgba(0,0,0,.7)";ctx.shadowBlur=4*d;ctx.shadowOffsetX=1*d;ctx.shadowOffsetY=1*d}else{ctx.shadowColor="transparent";ctx.shadowBlur=0}ctx.fillText(g.label,pcx+lox,pcy+loy);ctx.restore()}break;case"circle":if(pts.length>=2){const r=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y);ctx.beginPath();ctx.arc(pts[0].x,pts[0].y,r,0,Math.PI*2);if(g.fill){ctx.fillStyle=g.fillColor||col;ctx.globalAlpha=g.fillOpacity||.2;ctx.fill();ctx.globalAlpha=1;if(g.fillHatch&&g.fillHatch!=="none"){const np=64,cpts=[];for(let i=0;i<np;i++){const a=Math.PI*2*i/np;cpts.push({x:pts[0].x+Math.cos(a)*r,y:pts[0].y+Math.sin(a)*r})}drawHatchClipped(ctx,cpts,g.fillHatch,col,d,{hatchColor:g.hatchColor,hatchLineWidth:g.hatchLineWidth,hatchSpacing:g.hatchSpacing,hatchOpacity:g.hatchOpacity})}}ctx.stroke();if(g.label&&S.showLabels&&r>4*d){var lox2=g.labelOffset?g.labelOffset.x*d:0,loy2=g.labelOffset?g.labelOffset.y*d:-20*d;var _cZs=g._zoomRef!=null?Math.pow(2,S.zoom-g._zoomRef):1;var fSz2=g.fontSize?g.fontSize*d*_cZs:Math.max(4*d,Math.min(200*d,r*.12));var lAlpha2=r>1500*d?Math.max(0,1-(r-1500*d)/500*d):1;ctx.save();ctx.globalAlpha=lAlpha2;ctx.font=`${g.labelBold!==false?'bold ':''}${fSz2}px sans-serif`;ctx.fillStyle=col;ctx.textAlign="center";ctx.textBaseline="middle";if(g.labelShadow){ctx.shadowColor="rgba(0,0,0,.7)";ctx.shadowBlur=4*d;ctx.shadowOffsetX=1*d;ctx.shadowOffsetY=1*d}else{ctx.shadowColor="transparent";ctx.shadowBlur=0}ctx.fillText(g.label,pts[0].x+lox2,pts[0].y+loy2);ctx.restore()}}break;case"rectangle":if(pts.length>=2){const x=Math.min(pts[0].x,pts[1].x),y=Math.min(pts[0].y,pts[1].y),w=Math.abs(pts[1].x-pts[0].x),h=Math.abs(pts[1].y-pts[0].y),rcx=x+w/2,rcy=y+h/2;ctx.save();if(g.rotation){ctx.translate(rcx,rcy);ctx.rotate(g.rotation*Math.PI/180);ctx.translate(-rcx,-rcy)}if(g.fill){ctx.fillStyle=g.fillColor||col;ctx.globalAlpha=g.fillOpacity||.2;ctx.fillRect(x,y,w,h);ctx.globalAlpha=1;if(g.fillHatch&&g.fillHatch!=="none"){const rpts=[{x,y},{x:x+w,y},{x:x+w,y:y+h},{x,y:y+h}];drawHatchClipped(ctx,rpts,g.fillHatch,col,d,{hatchColor:g.hatchColor,hatchLineWidth:g.hatchLineWidth,hatchSpacing:g.hatchSpacing,hatchOpacity:g.hatchOpacity})}}ctx.strokeRect(x,y,w,h);var rSz=Math.min(w,h);if(g.label){var lox3=g.labelOffset?g.labelOffset.x*d:0,loy3=g.labelOffset?g.labelOffset.y*d:-20*d;var _rZs=g._zoomRef!=null?Math.pow(2,S.zoom-g._zoomRef):1;var fSz3=g.fontSize?g.fontSize*d*_rZs:Math.max(4*d,Math.min(200*d,Math.max(rSz,20*d)*.12));var lAlpha3=rSz>3000*d?Math.max(0,1-(rSz-3000*d)/1000*d):1;ctx.globalAlpha=lAlpha3;ctx.font=`${g.labelBold!==false?'bold ':''}${fSz3}px sans-serif`;ctx.fillStyle=col;ctx.textAlign="center";ctx.textBaseline="middle";if(g.labelShadow){ctx.shadowColor="rgba(0,0,0,.7)";ctx.shadowBlur=4*d;ctx.shadowOffsetX=1*d;ctx.shadowOffsetY=1*d}else{ctx.shadowColor="transparent";ctx.shadowBlur=0}ctx.fillText(g.label,rcx+lox3,rcy+loy3)}ctx.restore()}break;case"text":if(pts.length>=1&&g.label){ctx.save();if(g.rotation){ctx.translate(pts[0].x,pts[0].y);ctx.rotate(g.rotation*Math.PI/180);ctx.translate(-pts[0].x,-pts[0].y)}/* Scale text with zoom: store reference zoom, scale by 2^(delta) */if(g._zoomRef==null)g._zoomRef=S.zoom;var _tFontSz=(g.fontSize||14)*d*Math.pow(2,S.zoom-g._zoomRef);if(_tFontSz<1.5){ctx.restore();break}ctx.font=`${g.labelBold!==false?'bold ':''}${_tFontSz}px ${g.fontFamily||"sans-serif"}`;ctx.fillStyle=col;ctx.textAlign="left";ctx.textBaseline="top";if(g.labelShadow){ctx.shadowColor="rgba(0,0,0,.7)";ctx.shadowBlur=4*d;ctx.shadowOffsetX=1*d;ctx.shadowOffsetY=1*d}ctx.fillText(g.label,pts[0].x,pts[0].y);ctx.restore()}break}ctx.restore();/* Measurement labels for converted measure graphics */
 if(g.showMeasure&&g._measureData){ctx.save();ctx.font=`bold ${10*d}px ${getComputedStyle(document.body).fontFamily}`;
 if(g._measureData.type==="distance"&&g._measureData.segments){
 for(let i=1;i<pts.length&&i-1<g._measureData.segments.length;i++){const mx=(pts[i-1].x+pts[i].x)/2,my=(pts[i-1].y+pts[i].y)/2;const txt=formatDist(g._measureData.segments[i-1]);const tw=ctx.measureText(txt).width;ctx.fillStyle="rgba(0,0,0,.75)";ctx.fillRect(mx-tw/2-3*d,my-14*d,tw+6*d,14*d);ctx.textAlign="center";ctx.textBaseline="bottom";ctx.fillStyle="#ffd700";ctx.fillText(txt,mx,my-2*d)}
@@ -623,7 +626,13 @@ lines2.forEach(txt=>{const tw=ctx.measureText(txt).width;ctx.fillStyle="rgba(0,0
 ctx.restore()}}
 
 function activateMapTool(tool){
-if(S._mapTool===tool||tool===null){S._mapTool=null;_freehandActive=false;_freehandPoints=[];hideModeBar();canvas.style.cursor=""}
+if(S._mapTool===tool||tool===null){
+  /* If closing freehand on MCOO layer, switch back to base map */
+  if(S._mapTool==='freehand'&&S._ipb&&S._ipb.mcooLayerId&&S.activeLayerId===S._ipb.mcooLayerId){
+    S.activeLayerId=S._ipb.baseMapLayerId||S.layers[0].id||'default';
+    updateLayerIndicator();
+  }
+  S._mapTool=null;_freehandActive=false;_freehandPoints=[];_mcooOutside=false;hideModeBar();canvas.style.cursor=""}
 else{S._mapTool=tool;deselectAll();if(tool==="freehand"){canvas.style.cursor="crosshair";showFreehandBar()}else{showModeBar();updateModeBar()}}
 requestRender();renderFloatingPanel()}
 
@@ -640,7 +649,7 @@ function simplifyFreehand(pts,tolerance){
 
 function showFreehandBar(){
   var mb=document.getElementById("mode-bar");mb.style.display="flex";mb.classList.add("open");
-  renderFreehandBar()}
+  renderFreehandBar();updateLayerIndicator()}
 
 function renderFreehandBar(){
   var mb=document.getElementById("mode-bar");if(!mb)return;
@@ -806,14 +815,18 @@ var FREEHAND_WIDTHS=[1,2,3,5,8,12];
 /* Pinned swatches — user can add/remove favorites */
 var _pinnedSwatches=JSON.parse(localStorage.getItem("tacmap-mcoo-swatches")||'["#ff4444","#4a9eff","#44cc44","#ffd700","#ff8800","#000000","#ffffff","#8b4513"]');
 /* MCOO state */
-var _mcooLayerId=null,_mcooAoId=null;
+var _mcooLayerId=null,_mcooAoId=null,_mcooOutside=false,_mcooLastOutsidePos=null;
 /* Performance: max points per stroke, max strokes on MCOO layer */
 var MCOO_MAX_PTS_PER_STROKE=200,MCOO_MAX_STROKES=150;
 
 function onPointerDown(e){if(e.target!==canvas)return;S._lastPointerType=e.pointerType||"mouse";const pos=getPos(e);_ptrDownPos=pos;_ptrDownTime=Date.now();_selOnDown=false;_gfxSelOnDown=null;_dragUnit=null;_dragGV=null;_rotUnit=null;S._pendingGfxSelect=null;
 /* Freehand mode — start stroke */
 if(S._mapTool==="freehand"){
-  _freehandActive=true;_freehandPoints=[pos];_freehandPressures=[e.pressure||0.5];
+  /* If on MCOO layer, reject start outside AO */
+  if(_mcooAoId&&S._ipb&&S._ipb.mcooLayerId&&S.activeLayerId===S._ipb.mcooLayerId){
+    if(!_mcooIsInsideAO(pos)){e.preventDefault();return}
+  }
+  _freehandActive=true;_freehandPoints=[pos];_freehandPressures=[e.pressure||0.5];_mcooOutside=false;
   if(e.pointerId!==undefined)try{canvas.setPointerCapture(e.pointerId)}catch(ex){}
   e.preventDefault();return}
 const tt=document.getElementById("map-tooltip");if(tt)tt.style.display="none";
@@ -848,7 +861,7 @@ if(S._drawMode.tool==="rectangle"&&S._drawMode.points.length===1&&S._drawMode._r
   if(Math.hypot(pos.x-rh.x,pos.y-rh.y)<14){S._drawMode._rotDrag=true;_selOnDown=true;return}
 }
 for(let i=0;i<S._drawMode.points.length;i++){const sp=latlonToScreen(S._drawMode.points[i].lat,S._drawMode.points[i].lon);if(Math.hypot(pos.x-sp.x,pos.y-sp.y)<20){_dragGV={drawMode:true,idx:i};_selOnDown=true;return}}}
-if(S._drawMode)return;
+if(S._drawMode){S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon};return}
 /* Pan Lock mode — skip all selection, just pan */
 if(S._panLockMode){S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon};return}
 /* Map tool active — allow panning but skip unit selection */
@@ -863,9 +876,33 @@ S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon}}
 function onPointerMove(e){const pos=getPos(e);if(e.pointerId!==undefined)S._activePointers.set(e.pointerId,pos);
 /* Freehand stroke capture */
 if(_freehandActive&&S._mapTool==="freehand"){
-  var last=_freehandPoints[_freehandPoints.length-1];
+  var isMcooClip=_mcooAoId&&S._ipb&&S._ipb.mcooLayerId&&S.activeLayerId===S._ipb.mcooLayerId;
+  if(isMcooClip&&_mcooOutside){
+    /* Currently outside AO — check if we re-entered */
+    if(_mcooIsInsideAO(pos)){
+      /* Re-entering AO — find edge crossing and start a new stroke segment */
+      var edgeIn=_mcooFindEdgeCrossing(pos,_mcooLastOutsidePos||pos);
+      _freehandPoints=[edgeIn||pos,pos];_freehandPressures=[e.pressure||0.5,e.pressure||0.5];
+      _mcooOutside=false;
+      requestRender();
+    }else{
+      _mcooLastOutsidePos=pos;
+    }
+    e.preventDefault();return;
+  }
+  var last=_freehandPoints.length?_freehandPoints[_freehandPoints.length-1]:pos;
   var dist=Math.hypot(pos.x-last.x,pos.y-last.y);
-  if(dist>2){_freehandPoints.push(pos);_freehandPressures.push(e.pressure||0.5);requestRender()}
+  if(dist>2){
+    if(isMcooClip&&!_mcooIsInsideAO(pos)){
+      /* Exiting AO — find edge crossing, add it, commit stroke, go to outside mode */
+      var edgeOut=_mcooFindEdgeCrossing(last,pos);
+      if(edgeOut)_freehandPoints.push(edgeOut);
+      _mcooCommitStroke();
+      _mcooOutside=true;
+      _mcooLastOutsidePos=pos;
+      e.preventDefault();return;
+    }
+    _freehandPoints.push(pos);_freehandPressures.push(e.pressure||0.5);requestRender()}
   e.preventDefault();return}
 if(S._activePointers.size===2&&S._pinchStartDist){const pts=[...S._activePointers.values()],dist=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y);S.zoom=Math.max(2,Math.min(19,S._pinchStartZoom+Math.log2(dist/S._pinchStartDist)));requestRender();updateCoords(pos);return}
 if(_rotUnit){canvas.style.cursor="grabbing";const sp=latlonToScreen(_rotUnit.lat,_rotUnit.lon);const dx=pos.x-sp.x,dy=-(pos.y-sp.y);let ang=Math.atan2(dx,dy)/DEG;ang=((ang%360)+360)%360;_rotUnit.rotation=Math.round(ang);debouncedUnitSync(_rotUnit);openEditor();requestRender();return}
@@ -928,6 +965,7 @@ if(!onHandle){for(let i=0;i<g.points.length;i++){const sp=latlonToScreen(g.point
   }else{if(tt)tt.style.display="none";canvas.style.cursor=""}}}
 
 function onPointerUp(e){const pos=getPos(e);if(e.pointerId!==undefined)S._activePointers.delete(e.pointerId);
+var _upOnCanvas=e.target===canvas;
 /* Clear rectangle draw rotation drag */
 if(S._drawMode&&S._drawMode._rotDrag){S._drawMode._rotDrag=false;_selOnDown=true;return}
 /* Freehand stroke complete */
@@ -970,7 +1008,8 @@ if(_rotUnit)netBroadcast({type:"unitEdit",unit:_rotUnit});
 if(_dragGV){var _fgG=S.graphics.find(function(x){return x.id===_dragGV.gid});if(_fgG)netBroadcast({type:"graphicEdit",graphic:_fgG})}
 S._isPanning=false;_dragUnit=null;_dragGV=null;_rotUnit=null;_dragStartPos=null;requestRender();
 
-if(S._drawMode&&moved<10&&!wasDraggingVertex){const ll=screenToLatlon(pos.x,pos.y);const dm=S._drawMode;
+var clickDuration=Date.now()-_ptrDownTime;
+if(S._drawMode&&!wasDraggingVertex&&_upOnCanvas&&(moved<window.innerWidth*0.7||clickDuration<850)){const ll=screenToLatlon(pos.x,pos.y);const dm=S._drawMode;
 /* Check if click is on an existing point — don't add duplicate */
 let onExisting=false;
 for(let i=0;i<dm.points.length;i++){const sp=latlonToScreen(dm.points[i].lat,dm.points[i].lon);if(Math.hypot(pos.x-sp.x,pos.y-sp.y)<20){onExisting=true;break}}
@@ -983,7 +1022,7 @@ if(dm.tool==="text"&&dm.points.length===0){dm.points.push({lat:ll.lat,lon:ll.lon
 dm.points.push({lat:ll.lat,lon:ll.lon});updateModeBar();requestRender();return}
 return}
 
-if(S._placementMode&&moved<10){const ll=screenToLatlon(pos.x,pos.y);const u={...S._placementMode,id:"u"+Date.now()+Math.random().toString(36).substr(2,4),lat:ll.lat,lon:ll.lon,layerId:S.activeLayerId,rings:[],equipment:{...(EQUIPMENT_DEFAULTS[S._placementMode.type]||{})},isEquipment:!!S._placementMode.isEquipment};S.units.push(u);S._placementMode=null;selectUnit(u.id);hideModeBar();netBroadcast({type:"unitAdd",unit:u});requestRender();return}
+if(S._placementMode&&moved<10){const ll=screenToLatlon(pos.x,pos.y);const u={...S._placementMode,id:"u"+Date.now()+Math.random().toString(36).substr(2,4),lat:ll.lat,lon:ll.lon,layerId:S.activeLayerId,rings:[],equipment:{...(EQUIPMENT_DEFAULTS[S._placementMode.type]||{})},isEquipment:!!S._placementMode.isEquipment};S.units.push(u);var wasRoster=!!S._placementMode._rosterSource;S._placementMode=null;selectUnit(u.id);hideModeBar();netBroadcast({type:"unitAdd",unit:u});requestRender();if(wasRoster){renderFloatingPanel();_ipbPlacerOpen=true;renderIPBPlacerPanel()}return}
 
 /* Wargame order destination tap */
 if(S._wargameOrderPending&&moved<10){
@@ -1099,6 +1138,8 @@ function togglePanel(name){
 
 function applyUIScale(v){S.uiScale=Math.round(v*10)/10;document.documentElement.style.setProperty("--ui-scale",S.uiScale);localStorage.setItem("tacmap-uiscale",S.uiScale);renderFloatingPanel()}
 function renderFloatingPanel(){
+  /* Live-update placer if pinned or open */
+  if((_ipbPlacerOpen||_placerPos.pinned)&&document.getElementById('ipb-placer-panel'))renderIPBPlacerPanel();
   const title=document.getElementById("fp-title"),body=document.getElementById("fp-body");
   if(!S._activePanel){title.textContent="";body.innerHTML="";return}
   switch(S._activePanel){
@@ -1123,6 +1164,12 @@ function renderFloatingPanel(){
     case"addunit":title.textContent="Add / Draw";body.innerHTML=renderAddUnitPanel();break;
     case"maptools":title.textContent="Map Tools";body.innerHTML=renderMapToolsPanel();break;
     case"ipb":title.textContent="IPB Wizard";body.innerHTML=renderIPBPanel();break;
+    case"syncmat":title.textContent="SyncMat";body.innerHTML=renderSyncMatPanel();
+      (function(){
+        var _wgToggle=document.getElementById('op-wargame');
+        if(_wgToggle)_wgToggle.onchange=function(){if(S._operation){S._operation.wargameActive=this.checked;IO.autosave();renderFloatingPanel()}};
+      })();
+      break;
   }
   bindPanelEvents()}
 
@@ -1714,6 +1761,20 @@ function renderLayers(){
   const inRoom=S._net&&S._net.mode!=="offline";
   /* Guard: ensure at least default layer exists */
   if(!S.layers||S.layers.length===0){S.layers=[{id:"default",name:"Default",visible:true,hasErrors:false}];S.activeLayerId="default";}
+
+  /* Operation section */
+  h+='<div style="margin-bottom:8px;padding:6px 8px;border:1px solid '+(S._operation?'rgba(74,158,255,.3)':'var(--border)')+';border-radius:6px;background:'+(S._operation?'rgba(74,158,255,.06)':'transparent')+'">';
+  h+='<div style="display:flex;align-items:center;gap:6px">';
+  h+='<span style="font-size:9px;font-weight:600;opacity:.5">OPERATION:</span>';
+  if(S._operation){
+    h+='<span style="font-size:11px;font-weight:700;color:#4a9eff;flex:1">'+escHtml(S._operation.name)+'</span>';
+    h+='<button class="btn" style="font-size:8px;padding:1px 6px;opacity:.5" onclick="if(confirm(\'Leave Operation? Map data stays but Operation context (syncmat, IPB, wargame) will be detached.\')){S._operation=null;S._ipb=null;IO.autosave();updateLayerIndicator();renderFloatingPanel()}">Leave</button>';
+  }else{
+    h+='<span style="font-size:10px;opacity:.4;flex:1">None (sandbox mode)</span>';
+    h+='<button class="btn" style="font-size:8px;padding:1px 6px" onclick="togglePanel(\'syncmat\')">Create</button>';
+  }
+  h+='</div></div>';
+
   h+='<div class="row" style="margin-bottom:8px"><button class="btn primary" onclick="addLayer()">+ Add Layer</button></div>';
   /* Packages section */
   const pkgLayerIds=new Set();
@@ -1730,7 +1791,7 @@ function renderLayers(){
       h+='<span style="font-size:9px;opacity:.4">('+pkgObjCount+')</span>';
       /* Package visibility toggle */
       var pkgVis=pkgLayers.every(l=>l.visible);
-      h+='<span style="cursor:pointer;font-size:14px;opacity:.7;padding:2px 4px" onclick="event.stopPropagation();togglePackageVis(\''+pkg.id+'\')">'+(pkgVis?"\ud83d\udc41":"\ud83d\udc41\u200d\ud83d\udde8")+'</span>';
+      h+='<span style="cursor:pointer;font-size:16px;opacity:.7;padding:2px 4px" onclick="event.stopPropagation();togglePackageVis(\''+pkg.id+'\')">'+(pkgVis?"\ud83d\udc41":"\ud83d\udc41\u200d\ud83d\udde8")+'</span>';
       if(S._confirmDeletePkg===pkg.id){h+='<span style="cursor:pointer;font-size:9px;color:var(--danger);padding:2px 4px;font-weight:700" onclick="event.stopPropagation();removePackage(\''+pkg.id+'\')">Delete all?</span>';h+='<span style="cursor:pointer;font-size:9px;opacity:.5;padding:2px" onclick="event.stopPropagation();S._confirmDeletePkg=null;renderFloatingPanel()">cancel</span>';}else{h+='<span style="cursor:pointer;font-size:10px;opacity:.4;padding:2px" onclick="event.stopPropagation();removePackage(\''+pkg.id+'\')">\u2715</span>';}
       h+='</div>';
       if(!pkg.collapsed){
@@ -1771,7 +1832,7 @@ function renderLayerItem(l,inRoom){
   }else{
     h+=`<span class="layer-name" ondblclick="event.stopPropagation();startLayerRename('${l.id}')">${escHtml(l.name)}</span>`;
     if(objCount>0)h+=`<span style="font-size:9px;opacity:.4;margin-left:2px">(${objCount})</span>`;
-    h+=`<span style="cursor:pointer;font-size:14px;opacity:.7;padding:4px 6px;min-width:28px;text-align:center" onclick="event.stopPropagation();startLayerRename('${l.id}')" title="Rename">\u270e</span>`;
+    h+=`<span style="cursor:pointer;font-size:16px;opacity:.7;padding:4px 6px;min-width:28px;text-align:center" onclick="event.stopPropagation();startLayerRename('${l.id}')" title="Rename">\u270e</span>`;
   }
   h+=`<span class="layer-eye ${l.visible?"visible":""}" onclick="event.stopPropagation();toggleLayerVis('${l.id}')">${l.visible?"\ud83d\udc41":"\ud83d\udc41\u200d\ud83d\udde8"}</span>`;
   if(inRoom){
@@ -1899,7 +1960,7 @@ function renderIPBPanel(){
     var labels=["Define","Effects","Threat","COAs"];
     var done=ipbStepComplete(s);
     var active=ipb.step===s;
-    h+='<button class="btn'+(active?' primary':'')+'" onclick="S._ipb.step='+s+';renderFloatingPanel()" style="flex:1;font-size:9px;padding:3px 2px;position:relative">';
+    h+='<button class="btn'+(active?' primary':'')+'" onclick="ipbLeaveStep('+s+')" style="flex:1;font-size:9px;padding:3px 2px;position:relative">';
     if(done)h+='<span style="color:#44cc44;margin-right:2px">\u2713</span>';
     h+=s+'. '+labels[s-1]+'</button>';
   });
@@ -1908,11 +1969,42 @@ function renderIPBPanel(){
   if(ipb.step===1){
     /* Step 1: Define the Battlefield Environment */
     h+='<div class="section-title">Step 1: Define the Battlefield</div>';
-    h+='<div style="font-size:10px;opacity:.6;margin-bottom:8px;line-height:1.4">Identify your Area of Operations (AO), Area of Interest (AI), and Area of Influence (AOI) from existing graphics, or draw new ones.</div>';
     
-    /* Scan for eligible graphics: polygons, rectangles, boundaries */
+    /* Base Map layer setup */
+    var baseMapLayer=null;
+    if(ipb.baseMapLayerId)baseMapLayer=S.layers.find(function(l){return l.id===ipb.baseMapLayerId});
+    
+    if(!baseMapLayer){
+      /* Prompt to create or select a Base Map layer */
+      h+='<div style="font-size:10px;opacity:.6;margin-bottom:10px;line-height:1.4">Step 1 works on a <b>Base Map</b> layer — this layer holds your AO, AI, and AOI boundaries.</div>';
+      h+='<div style="padding:10px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px">';
+      h+='<div style="font-size:11px;font-weight:600;margin-bottom:8px">Create Base Map Layer</div>';
+      h+='<input type="text" id="ipb-basemap-name" value="Base Map" placeholder="Layer name" style="width:100%;margin-bottom:6px;font-size:11px">';
+      h+='<button class="btn primary" style="width:100%;font-size:11px;padding:8px" onclick="ipbCreateBaseMap()">Create Layer</button>';
+      /* Or select an existing layer */
+      if(S.layers.length>0){
+        h+='<div style="font-size:9px;opacity:.4;text-align:center;margin:8px 0 4px">— or use an existing layer —</div>';
+        S.layers.forEach(function(l){
+          h+='<button class="btn" style="width:100%;font-size:10px;margin-bottom:2px;text-align:left;display:flex;align-items:center;gap:6px" onclick="ipbSetBaseMap(\''+l.id+'\')">';
+          h+='<div style="width:8px;height:8px;border-radius:2px;background:'+(l.color||'#4a9eff')+';flex-shrink:0"></div>';
+          h+=escHtml(l.name)+'</button>';
+        });
+      }
+      h+='</div>';
+    }else{
+      /* Base Map layer is set — show it and allow changing */
+      h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;padding:5px 8px;border-radius:4px;background:rgba(74,158,255,.08);border:1px solid rgba(74,158,255,.2)">';
+      h+='<div style="width:8px;height:8px;border-radius:2px;background:'+(baseMapLayer.color||'#4a9eff')+'"></div>';
+      h+='<span style="font-size:10px;font-weight:600;flex:1">'+escHtml(baseMapLayer.name)+'</span>';
+      h+='<button class="btn" style="font-size:8px;padding:1px 5px;opacity:.5" onclick="delete S._ipb.baseMapLayerId;IO.autosave();renderFloatingPanel()">Change</button>';
+      h+='</div>';
+    
+      h+='<div style="font-size:10px;opacity:.6;margin-bottom:8px;line-height:1.4">Identify your Area of Operations (AO), Area of Interest (AI), and Area of Influence (AOI) from existing graphics, or draw new ones.</div>';
+    
+    /* Scan for eligible graphics: polygons, rectangles, boundaries — ONLY from Base Map layer */
     var eligible=S.graphics.filter(function(g){
       if(!g.points||g.points.length<2)return false;
+      if(baseMapLayer&&g.layerId!==baseMapLayer.id)return false;
       var t=g.tool||"";var ot=g.overlayType||"none";
       return t==="polygon"||t==="rectangle"||t==="circle"||ot==="aa"||ot==="boundary"||(t==="line"&&g.points.length>=3);
     });
@@ -1994,10 +2086,11 @@ function renderIPBPanel(){
         });
       });
       h+='<div style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px">';
-      h+='<button class="btn" onclick="togglePanel(\'addunit\')" style="width:100%;font-size:10px;margin-bottom:4px">\u270e Draw More Graphics</button>';
-      if(aoCount>0)h+='<button class="btn primary" onclick="S._ipb.step=2;renderFloatingPanel()" style="width:100%;font-size:10px">\u25b6 Next: Battlefield Effects</button>';
+      h+='<button class="btn" onclick="if(S._ipb&&S._ipb.baseMapLayerId)S.activeLayerId=S._ipb.baseMapLayerId;updateLayerIndicator();togglePanel(\'addunit\')" style="width:100%;font-size:10px;margin-bottom:4px">\u270e Draw More Graphics</button>';
+      if(aoCount>0)h+='<button class="btn primary" onclick="ipbLeaveStep(2)" style="width:100%;font-size:10px">\u25b6 Next: Battlefield Effects</button>';
       h+='</div>';
     }
+    }/* end baseMapLayer else */
   }else if(ipb.step===2){
     h+='<div class="section-title">Step 2: MCOO (Modified Combined Obstacle Overlay)</div>';
     /* Find AO graphic */
@@ -2008,23 +2101,39 @@ function renderIPBPanel(){
     if(!aoGfx){
       h+='<div style="font-size:10px;opacity:.6;padding:12px;border:1px dashed var(--border);border-radius:6px;text-align:center;line-height:1.5">';
       h+='⚠️ No AO Defined<br><span style="font-size:9px">Go back to Step 1 and assign an Area of Operations</span></div>';
-      h+='<button class="btn" onclick="S._ipb.step=1;renderFloatingPanel()" style="width:100%;margin-top:6px;font-size:10px">← Back to Step 1</button>';
+      h+='<button class="btn" onclick="ipbLeaveStep(1)" style="width:100%;margin-top:6px;font-size:10px">← Back to Step 1</button>';
     }else{
       var aoName=aoGfx.label||aoGfx.name||'AO';
       h+='<div style="font-size:10px;opacity:.7;margin-bottom:6px">AO: <strong>'+escHtml(aoName)+'</strong></div>';
-      if(!aoGfx._mcooEnabled){
-        /* Prompt to enable MCOO on this graphic */
-        h+='<div style="padding:12px;border:1px dashed var(--border);border-radius:6px;text-align:center">';
-        h+='<div style="font-size:10px;opacity:.6;line-height:1.5;margin-bottom:8px">Enable MCOO on this AO to begin freehand annotation.<br><span style="font-size:9px;color:var(--danger)">⚠️ This locks the AO\'s shape and position permanently.</span></div>';
-        h+='<button class="btn primary" onclick="mcooEnable(\''+aoGfx.id+'\')" style="width:100%;font-size:11px">🔒 Enable MCOO on AO</button>';
+
+      /* Check if MCOO layer exists */
+      var mcooLayer=null;
+      if(ipb.mcooLayerId)mcooLayer=S.layers.find(function(l){return l.id===ipb.mcooLayerId});
+
+      if(!mcooLayer){
+        /* Prompt to generate MCOO layer */
+        h+='<div style="font-size:10px;opacity:.6;margin-bottom:10px;line-height:1.4">Create an <b>MCOO Layer</b> with a copy of your AO boundary. This layer can be toggled on/off for map clarity while you annotate terrain effects.</div>';
+        h+='<div style="padding:10px;border:1px solid var(--border);border-radius:6px">';
+        h+='<input type="text" id="ipb-mcoo-name" value="MCOO" placeholder="Layer name" style="width:100%;margin-bottom:6px;font-size:11px">';
+        h+='<button class="btn primary" style="width:100%;font-size:11px;padding:8px" onclick="ipbCreateMCOOLayer(\''+aoGfx.id+'\')">Generate MCOO Layer</button>';
         h+='</div>';
       }else{
-        /* MCOO enabled — show draw controls */
-        _mcooLayerId=aoGfx.layerId;_mcooAoId=aoGfx.id;
-        h+='<div style="font-size:9px;color:#44cc44;margin-bottom:6px">🔒 MCOO enabled — AO locked</div>';
-        h+='<button class="btn primary" onclick="mcooStartDraw(\''+aoGfx.id+'\')" style="width:100%;font-size:11px;margin-bottom:6px">✏️ Draw on MCOO</button>';
+        /* MCOO layer exists — show it and draw controls */
+        h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;padding:5px 8px;border-radius:4px;background:rgba(255,170,0,.08);border:1px solid rgba(255,170,0,.3)">';
+        h+='<div style="width:8px;height:8px;border-radius:2px;background:'+(mcooLayer.color||'#ffaa00')+'"></div>';
+        h+='<span style="font-size:10px;font-weight:600;flex:1">'+escHtml(mcooLayer.name)+'</span>';
+        /* Visibility toggle */
+        var eyeIcon=mcooLayer.visible?'👁':'👁‍🗨';
+        h+='<button class="btn" style="font-size:9px;padding:1px 5px;opacity:.6" onclick="var l=S.layers.find(function(x){return x.id===\''+mcooLayer.id+'\'});if(l)l.visible=!l.visible;requestRender();renderFloatingPanel()" title="Toggle visibility">'+eyeIcon+'</button>';
+        h+='</div>';
+
+        /* Set active layer to MCOO for drawing */
+        _mcooLayerId=mcooLayer.id;_mcooAoId=aoGfx.id;
+
+        h+='<button class="btn primary" onclick="S.activeLayerId=\''+mcooLayer.id+'\';updateLayerIndicator();mcooStartDraw(\''+aoGfx.id+'\')" style="width:100%;font-size:11px;margin-bottom:6px">✏️ Draw on MCOO</button>';
+
         /* Stroke stats */
-        var strokes=S.graphics.filter(function(g){return g.layerId===aoGfx.layerId&&g._freehand});
+        var strokes=S.graphics.filter(function(g){return g.layerId===mcooLayer.id&&g._freehand});
         h+='<div style="font-size:9px;opacity:.4;margin-bottom:6px">Strokes: '+strokes.length+'/'+MCOO_MAX_STROKES;
         var totalPts=0;strokes.forEach(function(s){totalPts+=s.points.length});
         h+=' &nbsp;|&nbsp; Points: '+totalPts+'</div>';
@@ -2041,16 +2150,1013 @@ function renderIPBPanel(){
           h+='</div>';
           h+='<button class="btn danger" onclick="mcooClearAll()" style="width:100%;margin-top:4px;font-size:9px">Clear All Strokes</button>';
         }
+        h+='<div style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px">';
+        h+='<button class="btn primary" onclick="ipbLeaveStep(3)" style="width:100%;font-size:10px">\u25b6 Next: Evaluate the Threat</button>';
+        h+='</div>';
       }
     }
   }else if(ipb.step===3){
     h+='<div class="section-title">Step 3: Evaluate the Threat</div>';
-    h+='<div style="font-size:10px;opacity:.5;line-height:1.4;padding:8px;border:1px dashed var(--border);border-radius:6px;text-align:center">Threat Template<br><span style="font-size:9px">Coming soon — OPFOR unit placement with range rings</span></div>';
+    h+='<div style="font-size:10px;opacity:.6;margin-bottom:8px;line-height:1.4">Build the enemy task organization. Units defined here become the required placement list in Step 4.</div>';
+    if(!ipb.threatRoster)ipb.threatRoster=[];
+    if(!ipb.hvtl)ipb.hvtl={};
+    h+='<button class="btn primary" style="width:100%;font-size:11px;padding:8px;margin-bottom:6px" onclick="ipbShowTaskOrg()">📋 Open Task Organization</button>';
+    var rosterCount=ipb.threatRoster.length;
+    var hvtCount=0,hptCount=0;
+    Object.values(ipb.hvtl).forEach(function(v){if(v.hvt)hvtCount++;if(v.hpt)hptCount++});
+    if(rosterCount){
+      h+='<div style="font-size:9px;opacity:.5;margin-bottom:6px">'+rosterCount+' units';
+      if(hvtCount)h+=' · '+hvtCount+' HVT';
+      if(hptCount)h+=' · '+hptCount+' HPT';
+      h+='</div>';
+    }
+    h+='<div style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px">';
+    if(rosterCount>0)h+='<button class="btn primary" onclick="ipbLeaveStep(4)" style="width:100%;font-size:10px">\u25b6 Next: Determine Threat COAs ('+rosterCount+' units to place)</button>';
+    h+='</div>';
+
   }else if(ipb.step===4){
     h+='<div class="section-title">Step 4: Determine Threat COAs</div>';
-    h+='<div style="font-size:10px;opacity:.5;line-height:1.4;padding:8px;border:1px dashed var(--border);border-radius:6px;text-align:center">Threat COA Overlays<br><span style="font-size:9px">Coming soon — enemy course of action graphics</span></div>';
+    h+='<div style="font-size:10px;opacity:.6;margin-bottom:10px;line-height:1.4">Create enemy COA layers to template threat courses of action. Each COA gets its own layer so you can compare and toggle them independently.</div>';
+
+    /* Threat roster summary */
+    var roster=ipb.threatRoster||[];
+    if(roster.length>0){
+      h+='<div style="font-size:9px;opacity:.5;margin-bottom:6px">Threat Roster: <b>'+roster.length+'</b> units to account for per COA</div>';
+    }
+
+    /* Existing enemy COA layers */
+    if(!ipb.enemyCOAs)ipb.enemyCOAs=[];
+    var coaLayers=[];
+    ipb.enemyCOAs.forEach(function(coa){
+      var l=S.layers.find(function(x){return x.id===coa.layerId});
+      if(l)coaLayers.push({coa:coa,layer:l});
+    });
+
+    if(coaLayers.length>0){
+      coaLayers.forEach(function(cl,i){
+        var isActive=S.activeLayerId===cl.layer.id;
+        h+='<div style="margin-bottom:6px;border:1px solid '+(isActive?'rgba(255,68,68,.5)':'var(--border)')+';border-radius:6px;overflow:hidden;background:'+(isActive?'rgba(255,68,68,.04)':'transparent')+'">';
+        h+='<div style="display:flex;align-items:center;gap:6px;padding:5px 8px">';
+        h+='<div style="width:8px;height:8px;border-radius:2px;background:'+(cl.layer.color||'#ff4444')+'"></div>';
+        h+='<span style="font-size:10px;font-weight:600;flex:1">'+escHtml(cl.layer.name)+'</span>';
+        var uCount=S.units.filter(function(u){return u.layerId===cl.layer.id}).length;
+        var gCount=S.graphics.filter(function(g){return g.layerId===cl.layer.id}).length;
+        h+='<span style="font-size:8px;opacity:.4">'+(uCount+gCount)+' obj</span>';
+        h+='<button class="btn" style="font-size:9px;padding:1px 5px;opacity:.6" onclick="var l=S.layers.find(function(x){return x.id===\''+cl.layer.id+'\'});if(l)l.visible=!l.visible;requestRender();renderFloatingPanel()" title="Toggle visibility">'+(cl.layer.visible?'👁':'👁‍🗨')+'</button>';
+        if(!isActive)h+='<button class="btn" style="font-size:8px;padding:1px 5px" onclick="S.activeLayerId=\''+cl.layer.id+'\';updateLayerIndicator();renderFloatingPanel()">Edit</button>';
+        h+='</div>';
+
+        /* Roster accountability for this COA layer */
+        if(roster.length>0){
+          var layerUnits=S.units.filter(function(u){return u.layerId===cl.layer.id&&u.affiliation==='hostile'});
+          /* Match roster units to placed units by type+echelon */
+          var placed={};/* rosterId -> true */
+          var rosterCopy=roster.map(function(r){return{id:r.id,type:r.type,echelon:r.echelon,designation:r.designation,matched:false}});
+          layerUnits.forEach(function(u){
+            /* Try to match by designation first, then by type+echelon */
+            var match=rosterCopy.find(function(r){return !r.matched&&r.designation&&u.designation&&r.designation===u.designation});
+            if(!match)match=rosterCopy.find(function(r){return !r.matched&&r.type===u.type&&r.echelon===u.echelon});
+            if(match){match.matched=true;placed[match.id]=true}
+          });
+          var placedCount=Object.keys(placed).length;
+          var missing=rosterCopy.filter(function(r){return !r.matched});
+          var pct=roster.length>0?Math.round(placedCount/roster.length*100):0;
+          var barCol=pct>=100?'#44cc44':pct>=50?'#ffaa00':'#ff4444';
+
+          h+='<div style="padding:4px 8px 6px">';
+          h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">';
+          h+='<div style="flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+barCol+';border-radius:2px"></div></div>';
+          h+='<span style="font-size:9px;font-weight:600;color:'+barCol+'">'+placedCount+'/'+roster.length+'</span>';
+          h+='</div>';
+          if(missing.length>0&&missing.length<=8){
+            h+='<div style="font-size:8px;opacity:.5">Missing: ';
+            h+=missing.map(function(m){return escHtml(m.designation||(TYPE_LABELS[m.type]||m.type))}).join(', ');
+            h+='</div>';
+          }else if(missing.length>8){
+            h+='<div style="font-size:8px;opacity:.5">'+missing.length+' units unaccounted for</div>';
+          }
+          h+='</div>';
+        }
+        h+='</div>';
+      });
+      h+='<div style="margin-top:4px;margin-bottom:8px;border-top:1px solid var(--border);padding-top:6px;display:flex;gap:4px">';
+      h+='<button class="btn" onclick="ipbOpenUnitPlacer()" style="flex:1;font-size:10px;padding:6px 8px">\ud83c\udfaf Place Unit</button>';
+      h+='<button class="btn" onclick="togglePanel(\'addunit\')" style="flex:1;font-size:10px;padding:6px 8px">\u270e Draw Graphics</button>';
+      h+='</div>';
+    }
+
+    /* Create new enemy COA layer */
+    var nextNum=ipb.enemyCOAs?ipb.enemyCOAs.length+1:1;
+    var suggestions=['Enemy: MLCOA','Enemy: MDCOA','Enemy: COA '+nextNum];
+    var existingNames=ipb.enemyCOAs?ipb.enemyCOAs.map(function(c){return c.name}):[];
+    if(existingNames.indexOf('Enemy: MLCOA')>=0)suggestions=suggestions.filter(function(s){return s!=='Enemy: MLCOA'});
+    if(existingNames.indexOf('Enemy: MDCOA')>=0)suggestions=suggestions.filter(function(s){return s!=='Enemy: MDCOA'});
+
+    h+='<div style="padding:10px;border:1px solid var(--border);border-radius:6px">';
+    h+='<div style="font-size:11px;font-weight:600;margin-bottom:6px">Add Enemy COA Layer</div>';
+    h+='<div style="display:flex;gap:3px;margin-bottom:6px;flex-wrap:wrap">';
+    suggestions.forEach(function(s){
+      h+='<button class="btn" style="font-size:9px;padding:2px 8px" onclick="document.getElementById(\'ipb-ecoa-name\').value=\''+escAttr(s)+'\'">'+escHtml(s)+'</button>';
+    });
+    h+='</div>';
+    h+='<input type="text" id="ipb-ecoa-name" value="'+escAttr(suggestions[0])+'" placeholder="COA layer name" style="width:100%;margin-bottom:6px;font-size:11px">';
+    h+='<button class="btn primary" style="width:100%;font-size:11px;padding:8px" onclick="ipbCreateEnemyCOALayer()">Create Enemy COA Layer</button>';
+    h+='</div>';
   }
   return h}
+
+/* ===================== TASK ORGANIZATION OVERLAY ===================== */
+var _toSelectedId=null;
+var _toCollapsed={};/* unitId -> true if children collapsed */
+var _toExpandedStacks={};/* "parentId_type_echelon" -> true if stack expanded */
+var _toZoom=1;
+var _toUndoStack=[];
+var _toMaxUndo=40;
+function _toPushUndo(){
+  if(!S._ipb)return;
+  _toUndoStack.push({roster:JSON.parse(JSON.stringify(S._ipb.threatRoster||[])),hvtl:JSON.parse(JSON.stringify(S._ipb.hvtl||{})),sel:_toSelectedId});
+  if(_toUndoStack.length>_toMaxUndo)_toUndoStack.shift();
+}
+function toUndo(){
+  if(!_toUndoStack.length)return;
+  var snap=_toUndoStack.pop();
+  S._ipb.threatRoster=snap.roster;
+  S._ipb.hvtl=snap.hvtl;
+  _toSelectedId=snap.sel;
+  toRender();
+}
+
+function toZoom(delta){
+  _toZoom=Math.max(0.3,Math.min(2,_toZoom+delta));
+  var wrap=document.getElementById('to-tree-wrap');
+  if(wrap){wrap.style.transform='scale('+_toZoom+')';wrap.style.transformOrigin='center top'}
+  var zl=document.getElementById('to-zoom-label');
+  if(zl)zl.textContent=Math.round(_toZoom*100)+'%';
+}
+function toWheelZoom(e){
+  e.preventDefault();toZoom(e.deltaY>0?-0.05:0.05);
+}
+function toResetView(){
+  _toZoom=1;
+  var wrap=document.getElementById('to-tree-wrap');
+  if(wrap){wrap.style.transform='scale(1)'}
+  var zl=document.getElementById('to-zoom-label');
+  if(zl)zl.textContent='100%';
+  var body=document.getElementById('to-body');
+  if(body){body.scrollTop=0;body.scrollLeft=0}
+}
+function toPanStart(e){
+  if(e.target.tagName==='CANVAS'||e.target.tagName==='INPUT'||e.target.tagName==='SELECT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='BUTTON'||e.target.tagName==='A')return;
+  var body=document.getElementById('to-body');
+  if(!body)return;
+  body.style.cursor='grabbing';
+  var sx=e.clientX,sy=e.clientY,sl=body.scrollLeft,st=body.scrollTop;
+  function onMove(ev){body.scrollLeft=sl-(ev.clientX-sx);body.scrollTop=st-(ev.clientY-sy)}
+  function onUp(){body.style.cursor='grab';document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp)}
+  document.addEventListener('mousemove',onMove);
+  document.addEventListener('mouseup',onUp);
+}
+var TO_RELATIONSHIPS=['organic','attached','opcon','tacon','ds','gs','reinforcing','gsr'];
+var TO_REL_LABELS={organic:'Organic',attached:'Attached',opcon:'OPCON',tacon:'TACON',ds:'Direct Spt',gs:'General Spt',reinforcing:'Reinforcing',gsr:'GS-R'};
+var TO_REL_STYLES={organic:{color:'#ccc',dash:[]},attached:{color:'#ffaa00',dash:[]},opcon:{color:'#44aaff',dash:[6,3]},tacon:{color:'#44aaff',dash:[2,2]},ds:{color:'#44cc44',dash:[8,4]},gs:{color:'#44cc44',dash:[4,4]},reinforcing:{color:'#cc44cc',dash:[6,3]},gsr:{color:'#cc44cc',dash:[3,3]}};
+var TO_THREAT_TYPES=[
+  {id:"infantry",label:"Infantry"},{id:"mechanized_infantry",label:"Mech Inf"},{id:"armor",label:"Armor"},
+  {id:"artillery",label:"FA"},{id:"rocket_artillery",label:"Rocket Arty"},{id:"air_defense",label:"ADA"},
+  {id:"anti_armor",label:"AT"},{id:"cavalry",label:"Recon"},{id:"engineer",label:"Engr"},
+  {id:"headquarters",label:"HQ"},{id:"signal",label:"Sig"},{id:"sam",label:"SAM"},
+  {id:"attack_aviation",label:"Atk Avn"},{id:"uav",label:"UAS"},{id:"electronic_warfare",label:"EW"},
+  {id:"special_forces",label:"SOF"},{id:"sustainment",label:"Sust"},{id:"medical",label:"Med"}
+];
+
+function _toEnsureRoster(){
+  if(!S._ipb)S._ipb={step:3,assignments:{}};
+  if(!S._ipb.threatRoster)S._ipb.threatRoster=[];
+  if(!S._ipb.hvtl)S._ipb.hvtl={};
+}
+
+var _toKeyHandler=null;
+function ipbShowTaskOrg(){
+  _ipbPlacerOpen=false;renderIPBPlacerPanel();
+  _toEnsureRoster();
+  document.getElementById('to-overlay').style.display='block';
+  toRender();
+  if(!_toKeyHandler){
+    _toKeyHandler=function(e){
+      if(document.getElementById('to-overlay').style.display==='none')return;
+      if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;
+      if((e.key==='Delete'||e.key==='Backspace')&&_toSelectedId){
+        e.preventDefault();toRemoveUnit(_toSelectedId);
+      }
+      if(e.key==='z'&&(e.ctrlKey||e.metaKey)){
+        e.preventDefault();toUndo();
+      }
+    };
+    document.addEventListener('keydown',_toKeyHandler);
+  }
+}
+
+function ipbCloseTaskOrg(){
+  document.getElementById('to-overlay').style.display='none';
+  IO.autosave();netBroadcastOperation();renderFloatingPanel();
+}
+
+function _toNewId(){return 'tu_'+Date.now()+Math.random().toString(36).substr(2,4)}
+
+function toAddRootUnit(){
+  _toEnsureRoster();_toPushUndo();
+  var id=_toNewId();
+  S._ipb.threatRoster.push({id:id,designation:'',type:'headquarters',echelon:'division',parent:null,relationship:'organic',children:[]});
+  _toSelectedId=id;
+  toRender();
+}
+
+function toAddChild(parentId){
+  _toEnsureRoster();_toPushUndo();
+  var p=S._ipb.threatRoster.find(function(u){return u.id===parentId});
+  if(!p)return;
+  var id=_toNewId();
+  /* Default child echelon one step down from parent */
+  var echOrder=['army_group','army','corps','division','brigade','regiment','battalion','company','platoon','section','squad','team'];
+  var pIdx=echOrder.indexOf(p.echelon);
+  var childEch=pIdx>=0&&pIdx<echOrder.length-1?echOrder[pIdx+1]:'battalion';
+  /* Deep copy parent's weapons, links, notes, image when same type */
+  var childWeapons=p.weapons?JSON.parse(JSON.stringify(p.weapons)):[];
+  var childLinks=p.links?JSON.parse(JSON.stringify(p.links)):[];
+  /* Strip _editing flags from copied links */
+  childLinks.forEach(function(lk){delete lk._editing});
+  S._ipb.threatRoster.push({id:id,designation:'',type:p.type,echelon:childEch,parent:parentId,relationship:'organic',children:[],weapons:childWeapons,links:childLinks,notes:p.notes||'',imageUrl:p.imageUrl||''});
+  /* Copy HVT/HPT from parent */
+  var parentHvt=(S._ipb.hvtl||{})[parentId];
+  if(parentHvt&&(parentHvt.hvt||parentHvt.hpt)){
+    if(!S._ipb.hvtl)S._ipb.hvtl={};
+    S._ipb.hvtl[id]={hvt:parentHvt.hvt,hpt:parentHvt.hpt};
+  }
+  if(!p.children)p.children=[];
+  p.children.push(id);
+  /* Stay on current parent unit, don't jump to new child */
+  toRender();
+}
+
+function toRemoveUnit(uid){
+  _toEnsureRoster();_toPushUndo();
+  var roster=S._ipb.threatRoster;
+  var unit=roster.find(function(u){return u.id===uid});
+  if(!unit)return;
+  /* Remove from parent's children list */
+  if(unit.parent){
+    var par=roster.find(function(u){return u.id===unit.parent});
+    if(par&&par.children)par.children=par.children.filter(function(c){return c!==uid});
+  }
+  /* Recursively remove children */
+  function removeTree(id){
+    var u=roster.find(function(x){return x.id===id});
+    if(!u)return;
+    if(u.children)u.children.forEach(function(cid){removeTree(cid)});
+    S._ipb.threatRoster=S._ipb.threatRoster.filter(function(x){return x.id!==id});
+    if(S._ipb.hvtl)delete S._ipb.hvtl[id];
+  }
+  removeTree(uid);
+  if(_toSelectedId===uid)_toSelectedId=null;
+  toRender();
+}
+
+function toEditUnit(uid,prop,val){
+  var u=S._ipb.threatRoster.find(function(x){return x.id===uid});
+  if(!u)return;
+  _toPushUndo();
+  u[prop]=val;
+  toRender();
+}
+
+function toToggleHVT(uid){
+  _toPushUndo();
+  if(!S._ipb.hvtl)S._ipb.hvtl={};
+  var cur=S._ipb.hvtl[uid]||{hvt:false,hpt:false};
+  if(!cur.hvt&&!cur.hpt){cur.hvt=true;cur.hpt=false}
+  else if(cur.hvt&&!cur.hpt){cur.hvt=false;cur.hpt=true}
+  else if(!cur.hvt&&cur.hpt){cur.hvt=true;cur.hpt=true}
+  else{cur.hvt=false;cur.hpt=false}
+  S._ipb.hvtl[uid]=cur;
+  toRender();
+}
+
+/* ---- Render the T/O tree ---- */
+function _toEchMark(mark){
+  if(mark==='slashO')return 'Ø';
+  if(mark==='dot1')return '•';
+  if(mark==='dot2')return '••';
+  if(mark==='dot3')return '•••';
+  if(mark==='bar1')return '|';
+  if(mark==='bar2')return '||';
+  if(mark==='bar3')return '|||';
+  if(mark==='x1')return '✕';
+  if(mark==='x2')return '✕✕';
+  if(mark==='x3')return '✕✕✕';
+  if(mark==='x4')return '✕✕✕✕';
+  if(mark==='x5')return '✕✕✕✕✕';
+  if(mark==='x6')return '✕✕✕✕✕✕';
+  if(mark==='cmd')return '★';
+  return '?';
+}
+
+function toRender(){
+  _toEnsureRoster();
+  var body=document.getElementById('to-body');
+  if(!body)return;
+  var roster=S._ipb.threatRoster;
+  var countEl=document.getElementById('to-unit-count');
+  if(countEl)countEl.textContent=roster.length+' units';
+
+  /* Find root units (no parent) */
+  var roots=roster.filter(function(u){return !u.parent||!roster.find(function(x){return x.id===u.parent})});
+
+  if(roots.length===0){
+    body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;opacity:.7;font-size:16px;flex-direction:column;gap:12px"><div>No units defined</div><button class="btn primary" style="font-size:12px;padding:8px 20px" onclick="toAddRootUnit()">+ Add Root HQ</button></div>';
+    return;
+  }
+
+  var h='<div style="display:flex;flex-direction:column;align-items:center;gap:0">';
+  var editorHtml='';
+  /* Selected unit editor — rendered at top */
+  if(_toSelectedId){
+    var sel=roster.find(function(u){return u.id===_toSelectedId});
+    if(sel)editorHtml=toRenderEditor(sel);
+  }
+
+  var treeHtml='<div style="display:flex;flex-direction:column;align-items:center;gap:0;padding-top:20px">';
+  roots.forEach(function(root,ri){
+    if(ri>0)treeHtml+='<div style="height:20px"></div>';
+    treeHtml+=toRenderNode(root,0);
+  });
+  treeHtml+='</div>';
+
+  var wrap=document.getElementById('to-tree-wrap');
+  if(wrap){
+    /* Put editor HTML before the wrap */
+    var beforeWrap='';
+    if(editorHtml)beforeWrap=editorHtml;
+    /* Set content: editor is sticky, tree scrolls */
+    wrap.innerHTML=treeHtml;
+    wrap.style.transform='scale('+_toZoom+')';
+    wrap.style.transformOrigin='center top';
+    /* Insert editor before wrap */
+    var existing=body.querySelector('.to-ed-wrap');
+    if(existing)existing.remove();
+    if(editorHtml){
+      var ed=document.createElement('div');
+      ed.className='to-ed-wrap';
+      ed.innerHTML=editorHtml;
+      body.insertBefore(ed,wrap);
+    }
+    var zl=document.getElementById('to-zoom-label');
+    if(zl)zl.textContent=Math.round(_toZoom*100)+'%';
+  }else{
+    body.innerHTML=editorHtml+treeHtml;
+  }
+
+  /* Info card panel */
+  var infoCard=document.getElementById('to-infocard');
+  if(infoCard){
+    if(_toSelectedId){
+      var selUnit=roster.find(function(u){return u.id===_toSelectedId});
+      if(selUnit){
+        infoCard.style.display='block';
+        infoCard.innerHTML=toRenderInfoCard(selUnit);
+        /* Render info card icon */
+        setTimeout(function(){
+          var icv=document.getElementById('to-info-icon');
+          if(icv&&selUnit){
+            var c=icv.getContext('2d');c.clearRect(0,0,icv.width,icv.height);
+            var parentDesig2='';
+            if(selUnit.parent){var par2=roster.find(function(x){return x.id===selUnit.parent});if(par2&&par2.designation)parentDesig2=par2.designation}
+            var _oldLabels=S.showLabels;S.showLabels=true;
+            drawUnitIcon(c,{type:selUnit.type,echelon:selUnit.echelon,affiliation:'hostile',designation:selUnit.designation||'',parentUnit:parentDesig2},icv.width/2,icv.height/2,icv.height*0.7);
+            S.showLabels=_oldLabels;
+          }
+        },20);
+      }else{infoCard.style.display='none'}
+    }else{infoCard.style.display='none'}
+  }
+
+  /* Render icon canvases */
+  setTimeout(function(){
+    document.querySelectorAll('#to-body canvas[data-to-uid]').forEach(function(cv){
+      var u=roster.find(function(x){return x.id===cv.dataset.toUid});
+      if(!u)return;
+      var c=cv.getContext('2d');
+      c.clearRect(0,0,cv.width,cv.height);
+      /* Look up parent's designation for parentUnit label */
+      var parentDesig='';
+      if(u.parent){var par=roster.find(function(x){return x.id===u.parent});if(par&&par.designation)parentDesig=par.designation}
+      drawUnitIcon(c,{type:u.type,echelon:u.echelon,affiliation:'hostile',designation:u.designation||'',parentUnit:parentDesig}, cv.width/2,cv.height/2,cv.width*0.5);
+    });
+  },15);
+}
+
+function toRenderNode(unit,depth){
+  var roster=S._ipb.threatRoster;
+  var children=(unit.children||[]).map(function(cid){return roster.find(function(x){return x.id===cid})}).filter(Boolean);
+  children.sort(function(a,b){var da=(a.designation||'').toLowerCase(),db=(b.designation||'').toLowerCase();return da<db?-1:da>db?1:0});
+  var isSel=_toSelectedId===unit.id;
+  var hvtInfo=(S._ipb.hvtl||{})[unit.id]||{};
+  var tl=TYPE_LABELS[unit.type]||unit.type;
+  var el=ECHELONS.find(function(e){return e.id===unit.echelon});
+  var relStyle=TO_REL_STYLES[unit.relationship||'organic']||TO_REL_STYLES.organic;
+  var isCollapsed=!!_toCollapsed[unit.id];
+
+  var h='<div style="display:flex;flex-direction:column;align-items:center">';
+
+  /* Connection line from parent */
+  if(depth>0){
+    var dashCSS=relStyle.dash.length?'background:repeating-linear-gradient(to bottom,'+relStyle.color+' 0,'+relStyle.color+' '+relStyle.dash[0]+'px,transparent '+relStyle.dash[0]+'px,transparent '+(relStyle.dash[0]+(relStyle.dash[1]||3))+'px)':'background:'+relStyle.color;
+    h+='<div style="width:2px;height:16px;margin-top:-1px;'+dashCSS+'"></div>';
+    if(unit.relationship&&unit.relationship!=='organic'){
+      h+='<div style="font-size:7px;color:'+relStyle.color+';font-weight:700;margin:-2px 0 -2px;letter-spacing:.5px">'+TO_REL_LABELS[unit.relationship]+'</div>';
+    }
+  }
+
+  /* Unit node */
+  h+='<div style="display:flex;flex-direction:column;align-items:center;cursor:pointer;padding:4px;border-radius:6px;border:2px solid '+(isSel?'#ffaa00':'transparent')+';background:'+(isSel?'rgba(255,170,0,.08)':'transparent')+'" onclick="toSelectUnit(&quot;'+unit.id+'&quot;)">';
+  h+='<canvas data-to-uid="'+unit.id+'" width="160" height="80" style="width:80px;height:40px;background:rgba(255,255,255,.85);border-radius:4px"></canvas>';
+  if(hvtInfo.hvt||hvtInfo.hpt){
+    h+='<div style="display:flex;gap:2px;margin-top:1px">';
+    if(hvtInfo.hvt)h+='<span style="font-size:6px;color:#ff6644;font-weight:700;border:1px solid #ff6644;border-radius:2px;padding:0 2px">HVT</span>';
+    if(hvtInfo.hpt)h+='<span style="font-size:6px;color:#ff4444;font-weight:700;border:1px solid #ff4444;border-radius:2px;padding:0 2px">HPT</span>';
+    h+='</div>';
+  }
+  h+='</div>';
+
+  /* Collapse/expand toggle for parent units */
+  if(children.length>0){
+    h+='<div style="cursor:pointer;font-size:9px;opacity:1;color:#ccc;margin:2px 0;padding:2px 8px;border-radius:3px;background:rgba(255,255,255,.12);user-select:none" onclick="event.stopPropagation();toToggleCollapse(&quot;'+unit.id+'&quot;)" title="'+(isCollapsed?'Expand':'Collapse')+' subordinates">'+(isCollapsed?children.length+' subs \u25b8':'\u25be')+'</div>';
+  }
+
+  /* Children — only if not collapsed */
+  if(children.length>0&&!isCollapsed){
+    /* Group children: leaf nodes of same type+echelon stack, others expand */
+    var groups=[];
+    children.forEach(function(child){
+      var cc=(child.children||[]).filter(function(cid){return roster.find(function(x){return x.id===cid})});
+      var isLeaf=cc.length===0;
+      if(isLeaf){
+        var prev=groups.length>0?groups[groups.length-1]:null;
+        if(prev&&prev.gtype==='stack'&&prev.units[0].type===child.type&&prev.units[0].echelon===child.echelon){
+          prev.units.push(child);
+        }else{
+          groups.push({gtype:'stack',units:[child]});
+        }
+      }else{
+        groups.push({gtype:'expanded',units:[child]});
+      }
+    });
+
+    /* Vertical line down — extends 2px into the horizontal bar zone */
+    h+='<div style="width:2px;height:16px;background:#ccc;margin-bottom:-2px;position:relative;z-index:1"></div>';
+
+    if(groups.length===1&&groups[0].units.length===1){
+      h+=toRenderNode(groups[0].units[0],depth+1);
+    }else{
+      var totalChildren=groups.length;
+      h+='<div style="display:flex;align-items:stretch">';
+
+      groups.forEach(function(grp,gi){
+        var isFirst=gi===0,isLast=gi===totalChildren-1;
+        /* Column wrapper */
+        h+='<div style="display:flex;flex-direction:column;align-items:center">';
+        /* Horizontal bar segment: left half + right half with 1px overlap to prevent gaps */
+        h+='<div style="display:flex;align-self:stretch;height:2px">';
+        h+='<div style="flex:1;'+(isFirst?'':'background:#ccc;margin-left:-1px')+'"></div>';
+        h+='<div style="flex:1;'+(isLast?'':'background:#ccc;margin-right:-1px')+'"></div>';
+        h+='</div>';
+
+        if(grp.gtype==='expanded'||grp.units.length===1){
+          h+=toRenderNode(grp.units[0],depth+1);
+        }else{
+          var stackKey=unit.id+'_'+grp.units[0].type+'_'+grp.units[0].echelon;
+          var stackExpanded=!!_toExpandedStacks[stackKey];
+          if(stackExpanded){
+            h+=_toRenderExpandedStack(grp.units,stackKey,depth);
+          }else{
+            h+=_toRenderStack(grp.units,stackKey);
+          }
+        }
+        h+='</div>';
+      });
+      h+='</div>';
+    }
+  }
+
+  h+='</div>';
+  return h;
+}
+
+function _toRenderStack(units,stackKey){
+  /* Overlapping stacked icons for identical leaf units */
+  var first=units[0];
+  var relStyle=TO_REL_STYLES[first.relationship||'organic']||TO_REL_STYLES.organic;
+
+  var h='';
+  var dashCSS=relStyle.dash.length?'background:repeating-linear-gradient(to bottom,'+relStyle.color+' 0,'+relStyle.color+' '+relStyle.dash[0]+'px,transparent '+relStyle.dash[0]+'px,transparent '+(relStyle.dash[0]+(relStyle.dash[1]||3))+'px)':'background:'+relStyle.color;
+  h+='<div style="width:2px;height:16px;margin-top:-1px;'+dashCSS+'"></div>';
+  if(first.relationship&&first.relationship!=='organic'){
+    h+='<div style="font-size:7px;color:'+relStyle.color+';font-weight:700;margin:-2px 0 -2px;letter-spacing:.5px">'+TO_REL_LABELS[first.relationship]+'</div>';
+  }
+
+  var off=5;
+  var totalW=80+off*(units.length-1);
+  var totalH=40+off*(units.length-1);
+  h+='<div style="position:relative;width:'+totalW+'px;height:'+totalH+'px">';
+  for(var i=units.length-1;i>=0;i--){
+    var u=units[i];
+    var uSel=_toSelectedId===u.id;
+    h+='<canvas data-to-uid="'+u.id+'" width="160" height="80" style="position:absolute;left:'+off*i+'px;top:'+off*i+'px;width:80px;height:40px;background:rgba(255,255,255,.85);border-radius:4px;border:2px solid '+(uSel?'#ffaa00':'rgba(0,0,0,.15)')+';cursor:pointer;box-sizing:border-box" onclick="toSelectUnit(&quot;'+u.id+'&quot;)"></canvas>';
+  }
+  h+='</div>';
+  /* Expand toggle */
+  h+='<div style="cursor:pointer;font-size:8px;opacity:1;color:#ccc;margin-top:2px;text-align:center;padding:2px 8px;border-radius:3px;background:rgba(255,255,255,.12);user-select:none" onclick="toToggleStack(&quot;'+stackKey+'&quot;)" title="Expand stack">'+units.length+' units \u25b8</div>';
+  return h;
+}
+
+function _toRenderExpandedStack(units,stackKey,depth){
+  var h='';
+  if(units.length===1){
+    h+=toRenderNode(units[0],depth+1);
+  }else{
+    /* Render units side by side - each gets own connector via toRenderNode style */
+    var first=units[0];
+    var relStyle=TO_REL_STYLES[first.relationship||'organic']||TO_REL_STYLES.organic;
+    var dashCSS=relStyle.dash.length?'background:repeating-linear-gradient(to bottom,'+relStyle.color+' 0,'+relStyle.color+' '+relStyle.dash[0]+'px,transparent '+relStyle.dash[0]+'px,transparent '+(relStyle.dash[0]+(relStyle.dash[1]||3))+'px)':'background:'+relStyle.color;
+    /* Vertical line down to sub-bar */
+    h+='<div style="width:2px;height:16px;margin-bottom:-2px;position:relative;z-index:1;'+dashCSS+'"></div>';
+    /* Sub-bar + units in a flex row */
+    h+='<div style="display:flex;align-items:flex-start">';
+    units.forEach(function(u,ui){
+      var uSel=_toSelectedId===u.id;
+      var isF=ui===0,isL=ui===units.length-1;
+      h+='<div style="display:flex;flex-direction:column;align-items:center">';
+      /* Horizontal bar segment */
+      h+='<div style="display:flex;align-self:stretch;height:2px">';
+      h+='<div style="flex:1;'+(isF?'':'background:#ccc;margin-left:-1px')+'"></div>';
+      h+='<div style="flex:1;'+(isL?'':'background:#ccc;margin-right:-1px')+'"></div>';
+      h+='</div>';
+      h+='<div style="width:2px;height:6px;margin-top:-1px;background:#ccc"></div>';
+      h+='<div style="cursor:pointer;padding:3px;border-radius:6px;border:2px solid '+(uSel?'#ffaa00':'transparent')+';background:'+(uSel?'rgba(255,170,0,.08)':'transparent')+'" onclick="toSelectUnit(&quot;'+u.id+'&quot;)">';
+      h+='<canvas data-to-uid="'+u.id+'" width="160" height="80" style="width:80px;height:40px;background:rgba(255,255,255,.85);border-radius:4px"></canvas>';
+      h+='</div></div>';
+    });
+    h+='</div>';
+  }
+  h+='<div style="cursor:pointer;font-size:8px;opacity:1;color:#ccc;margin-top:2px;text-align:center;padding:2px 8px;border-radius:3px;background:rgba(255,255,255,.12);user-select:none" onclick="toToggleStack(&quot;'+stackKey+'&quot;)" title="Collapse stack">'+units.length+' units \u25be</div>';
+  return h;
+}
+
+function toToggleCollapse(uid){
+  _toCollapsed[uid]=!_toCollapsed[uid];
+  toRender();
+}
+
+function toToggleStack(stackKey){
+  _toExpandedStacks[stackKey]=!_toExpandedStacks[stackKey];
+  toRender();
+}
+
+function toSelectUnit(uid){
+  if(_toSelectedId===uid)_toSelectedId=null;
+  else _toSelectedId=uid;
+  toRender();
+}
+
+function toRenderInfoCard(u){
+  var tl=TYPE_LABELS[u.type]||u.type;
+  var el=ECHELONS.find(function(e){return e.id===u.echelon});
+  var echLabel=el?el.label:'';
+  var hvtInfo=(S._ipb.hvtl||{})[u.id]||{};
+  var relLabel=TO_REL_LABELS[u.relationship||'organic']||'Organic';
+  if(!u.weapons)u.weapons=[];
+  if(!u.links)u.links=[];
+  if(!u.imageUrl)u.imageUrl='';
+  if(!u.notes)u.notes='';
+
+  var h='<div style="padding:14px">';
+
+  /* Header with icon */
+  h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)">';
+  h+='<canvas id="to-info-icon" width="240" height="120" style="width:120px;height:60px;background:rgba(255,255,255,.85);border-radius:4px;flex-shrink:0"></canvas>';
+  h+='<div style="flex:1;min-width:0">';
+  h+='<div style="font-size:15px;font-weight:700;color:var(--fg);letter-spacing:.3px">'+(u.designation?escHtml(u.designation):'—')+'</div>';
+  h+='<div style="font-size:12px;opacity:.8;color:var(--fg)">'+escHtml(tl)+' '+escHtml(echLabel)+'</div>';
+  h+='<div style="font-size:11px;opacity:.6">'+escHtml(relLabel)+'</div>';
+  h+='</div>';
+  h+='</div>';
+
+  /* Image preview */
+  h+='<div style="margin-bottom:12px">';
+  h+='<div style="font-size:11px;font-weight:600;opacity:.5;margin-bottom:4px">REFERENCE IMAGE</div>';
+  h+='<input type="url" value="'+escAttr(u.imageUrl||'')+'" placeholder="Paste image URL (PNG/JPG)..." style="width:100%;font-size:11px;margin-bottom:6px;background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--border);border-radius:4px;padding:5px 8px;box-sizing:border-box" onchange="toEditUnit(\''+u.id+'\',\'imageUrl\',this.value);toRender()">';
+  if(u.imageUrl){
+    h+='<div style="border:1px solid var(--border);border-radius:6px;overflow:hidden;cursor:pointer" onclick="window.open(\''+escAttr(u.imageUrl)+'\',\'_blank\')"><img src="'+escAttr(u.imageUrl)+'" style="width:100%;height:auto;max-height:160px;object-fit:cover;display:block" onerror="this.parentNode.innerHTML=\'<div style=padding:12px;font-size:11px;opacity:.4;text-align:center>Image failed to load</div>\'"></div>';
+  }
+  h+='</div>';
+
+  /* HVT/HPT */
+  h+='<div style="display:flex;gap:6px;margin-bottom:12px">';
+  var hvtActive=hvtInfo.hvt,hptActive=hvtInfo.hpt;
+  h+='<button class="btn" style="font-size:11px;padding:5px 12px;flex:1;border-color:'+(hvtActive?'#ff6644':'var(--border)')+';color:'+(hvtActive?'#ff6644':'inherit')+';background:'+(hvtActive?'rgba(255,102,68,.12)':'transparent')+'" onclick="toSetHVT(\''+u.id+'\',\'hvt\','+!hvtActive+')">HVT</button>';
+  h+='<button class="btn" style="font-size:11px;padding:5px 12px;flex:1;border-color:'+(hptActive?'#ff4444':'var(--border)')+';color:'+(hptActive?'#ff4444':'inherit')+';background:'+(hptActive?'rgba(255,68,68,.12)':'transparent')+'" onclick="toSetHVT(\''+u.id+'\',\'hpt\','+!hptActive+')">HPT</button>';
+  h+='</div>';
+
+  /* Notes */
+  h+='<div style="margin-bottom:12px">';
+  h+='<div style="font-size:11px;font-weight:600;opacity:.5;margin-bottom:4px">NOTES</div>';
+  h+='<textarea style="width:100%;height:60px;font-size:12px;background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--border);border-radius:4px;padding:6px 8px;resize:vertical;line-height:1.4;box-sizing:border-box" placeholder="Capabilities, limitations, doctrine..." onchange="toEditUnit(\''+u.id+'\',\'notes\',this.value)">'+escHtml(u.notes)+'</textarea>';
+  h+='</div>';
+
+  /* Weapons / Equipment with ranges */
+  h+='<div style="margin-bottom:12px">';
+  h+='<div style="display:flex;align-items:center;margin-bottom:6px"><span style="font-size:11px;font-weight:600;opacity:.5;flex:1">WEAPONS / EQUIPMENT</span>';
+  h+='<button class="btn" style="font-size:10px;padding:2px 8px" onclick="toAddWeapon(\''+u.id+'\')">+ Add</button></div>';
+  if(u.weapons.length===0){
+    h+='<div style="font-size:11px;opacity:.3;text-align:center;padding:8px">No weapons listed</div>';
+  }
+  u.weapons.forEach(function(w,wi){
+    h+='<div style="display:flex;gap:4px;margin-bottom:4px;align-items:center">';
+    h+='<input type="number" value="'+(w.qty||1)+'" min="1" style="width:36px;font-size:11px;background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--border);border-radius:4px;padding:4px 2px;text-align:center;box-sizing:border-box" onchange="toEditWeapon(\''+u.id+'\','+wi+',\'qty\',parseInt(this.value)||1)" title="Qty">';
+    h+='<input type="text" value="'+escAttr(w.name||'')+'" placeholder="Weapon system" style="flex:2;font-size:11px;background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--border);border-radius:4px;padding:4px 6px;box-sizing:border-box" onchange="toEditWeapon(\''+u.id+'\','+wi+',\'name\',this.value)">';
+    h+='<input type="number" value="'+(w.rangeKm||'')+'" placeholder="km" style="width:50px;font-size:11px;background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--border);border-radius:4px;padding:4px 4px;text-align:center;box-sizing:border-box" onchange="toEditWeapon(\''+u.id+'\','+wi+',\'rangeKm\',parseFloat(this.value)||0)">';
+    h+='<span style="font-size:10px;opacity:.4">km</span>';
+    h+='<button class="btn danger" style="font-size:10px;padding:1px 5px;min-height:20px" onclick="toRemoveWeapon(\''+u.id+'\','+wi+')">✕</button>';
+    h+='</div>';
+  });
+  h+='</div>';
+
+  /* Reference Links (ODIN, etc.) */
+  h+='<div style="margin-bottom:12px">';
+  h+='<div style="display:flex;align-items:center;margin-bottom:6px"><span style="font-size:11px;font-weight:600;opacity:.5;flex:1">REFERENCES</span>';
+  h+='<button class="btn" style="font-size:10px;padding:2px 8px" onclick="toAddLink(\''+u.id+'\')">+ Add</button></div>';
+  if(u.links.length===0){
+    h+='<div style="font-size:11px;opacity:.3;text-align:center;padding:8px">Add ODIN links, ATP docs, etc.</div>';
+  }
+  u.links.forEach(function(lk,li){
+    if(lk._editing){
+      /* Edit mode: show inputs */
+      h+='<div style="display:flex;gap:4px;margin-bottom:4px;align-items:center">';
+      h+='<input type="text" id="to-link-label-'+li+'" value="'+escAttr(lk.label||'')+'" placeholder="Label" style="flex:1;font-size:11px;background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--border);border-radius:4px;padding:4px 6px;box-sizing:border-box">';
+      h+='<input type="url" id="to-link-url-'+li+'" value="'+escAttr(lk.url||'')+'" placeholder="https://..." style="flex:2;font-size:11px;background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--border);border-radius:4px;padding:4px 6px;box-sizing:border-box" onkeydown="if(event.key===\'Enter\')toCommitLink(\''+u.id+'\','+li+')">';
+      h+='<button class="btn" style="font-size:10px;padding:1px 6px;min-height:20px;color:#44cc44;border-color:#44cc44" onclick="toCommitLink(\''+u.id+'\','+li+')">✓</button>';
+      h+='</div>';
+    }else if(lk.url){
+      /* Display mode: clickable hyperlink */
+      h+='<div style="display:flex;gap:6px;margin-bottom:4px;align-items:center;padding:4px 6px;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.03)">';
+      h+='<a href="'+escAttr(lk.url)+'" target="_blank" style="flex:1;font-size:12px;color:#5dabff;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+escAttr(lk.url)+'">'+escHtml(lk.label||lk.url)+'</a>';
+      h+='<span style="font-size:12px;opacity:.4;cursor:pointer;flex-shrink:0" onclick="toStartEditLink(\''+u.id+'\','+li+')" title="Edit">✎</span>';
+      h+='<span style="font-size:12px;opacity:.4;cursor:pointer;flex-shrink:0;color:var(--danger)" onclick="toRemoveLink(\''+u.id+'\','+li+')" title="Delete">✕</span>';
+      h+='</div>';
+    }else{
+      /* No URL yet — show inputs */
+      h+='<div style="display:flex;gap:4px;margin-bottom:4px;align-items:center">';
+      h+='<input type="text" id="to-link-label-'+li+'" value="'+escAttr(lk.label||'')+'" placeholder="Label" style="flex:1;font-size:11px;background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--border);border-radius:4px;padding:4px 6px;box-sizing:border-box">';
+      h+='<input type="url" id="to-link-url-'+li+'" value="'+escAttr(lk.url||'')+'" placeholder="https://..." style="flex:2;font-size:11px;background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--border);border-radius:4px;padding:4px 6px;box-sizing:border-box" onkeydown="if(event.key===\'Enter\')toCommitLink(\''+u.id+'\','+li+')">';
+      h+='<button class="btn" style="font-size:10px;padding:1px 6px;min-height:20px;color:#44cc44;border-color:#44cc44" onclick="toCommitLink(\''+u.id+'\','+li+')">✓</button>';
+      h+='<button class="btn danger" style="font-size:10px;padding:1px 5px;min-height:20px" onclick="toRemoveLink(\''+u.id+'\','+li+')">✕</button>';
+      h+='</div>';
+    }
+  });
+  h+='</div>';
+
+  /* Actions */
+  h+='<div style="display:flex;gap:6px;padding-top:10px;border-top:1px solid var(--border)">';
+  h+='<button class="btn primary" style="font-size:11px;padding:6px 12px;flex:1" onclick="toAddChild(\''+u.id+'\')">+ Sub Unit</button>';
+  h+='<button class="btn danger" style="font-size:11px;padding:6px 12px" onclick="toRemoveUnit(\''+u.id+'\')">✕ Delete</button>';
+  h+='</div>';
+
+  h+='</div>';
+  return h;
+}
+
+/* Weapon management */
+function toAddWeapon(uid){
+  var u=S._ipb.threatRoster.find(function(x){return x.id===uid});
+  if(!u)return;_toPushUndo();if(!u.weapons)u.weapons=[];
+  u.weapons.push({name:'',qty:1,rangeKm:0});
+  toRender();
+}
+function toEditWeapon(uid,idx,prop,val){
+  var u=S._ipb.threatRoster.find(function(x){return x.id===uid});
+  if(!u||!u.weapons||!u.weapons[idx])return;
+  _toPushUndo();u.weapons[idx][prop]=val;
+}
+function toRemoveWeapon(uid,idx){
+  var u=S._ipb.threatRoster.find(function(x){return x.id===uid});
+  if(!u||!u.weapons)return;
+  _toPushUndo();u.weapons.splice(idx,1);
+  toRender();
+}
+
+/* Link management */
+function toAddLink(uid){
+  var u=S._ipb.threatRoster.find(function(x){return x.id===uid});
+  if(!u)return;_toPushUndo();if(!u.links)u.links=[];
+  u.links.push({label:'',url:'',_editing:true});
+  toRender();
+}
+function toEditLink(uid,idx,prop,val){
+  var u=S._ipb.threatRoster.find(function(x){return x.id===uid});
+  if(!u||!u.links||!u.links[idx])return;
+  u.links[idx][prop]=val;
+}
+function toCommitLink(uid,idx){
+  var u=S._ipb.threatRoster.find(function(x){return x.id===uid});
+  if(!u||!u.links||!u.links[idx])return;
+  _toPushUndo();
+  var labelEl=document.getElementById('to-link-label-'+idx);
+  var urlEl=document.getElementById('to-link-url-'+idx);
+  if(labelEl)u.links[idx].label=labelEl.value;
+  if(urlEl)u.links[idx].url=urlEl.value;
+  delete u.links[idx]._editing;
+  toRender();
+}
+function toStartEditLink(uid,idx){
+  var u=S._ipb.threatRoster.find(function(x){return x.id===uid});
+  if(!u||!u.links||!u.links[idx])return;
+  u.links[idx]._editing=true;
+  toRender();
+}
+function toRemoveLink(uid,idx){
+  var u=S._ipb.threatRoster.find(function(x){return x.id===uid});
+  if(!u||!u.links)return;
+  _toPushUndo();u.links.splice(idx,1);
+  toRender();
+}
+
+/* HVT/HPT direct set */
+function toSetHVT(uid,field,val){
+  _toPushUndo();
+  if(!S._ipb.hvtl)S._ipb.hvtl={};
+  var cur=S._ipb.hvtl[uid]||{hvt:false,hpt:false};
+  cur[field]=val;
+  S._ipb.hvtl[uid]=cur;
+  toRender();
+}
+
+function toRenderEditor(u){
+  var hvtInfo=(S._ipb.hvtl||{})[u.id]||{};
+  var hvtLabel=hvtInfo.hvt&&hvtInfo.hpt?'HVT+HPT':hvtInfo.hvt?'HVT':hvtInfo.hpt?'HPT':'—';
+  var hvtCol=hvtInfo.hpt?'#ff4444':hvtInfo.hvt?'#ff6644':'inherit';
+
+  var h='<div style="position:sticky;top:0;left:0;right:0;background:rgba(50,50,55,.95);border-bottom:1px solid rgba(255,255,255,.1);padding:10px 16px;z-index:5;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)">';
+
+  /* Row 1: Designation + Type + Relationship + Actions */
+  h+='<div style="display:flex;gap:6px;align-items:center;margin-bottom:8px;flex-wrap:wrap">';
+  h+='<input type="text" value="'+escAttr(u.designation||'')+'" placeholder="Designation (e.g. 1/33 MRR)" style="width:160px;font-size:11px;background:rgba(255,255,255,.08);color:#eee;border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:4px 8px" onchange="toEditUnit(\''+u.id+'\',\'designation\',this.value);toRender()">';
+  /* Type */
+  h+='<select style="font-size:11px;background:rgba(255,255,255,.08);color:#eee;border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:4px 6px" onchange="toEditUnit(\''+u.id+'\',\'type\',this.value)">';
+  TO_THREAT_TYPES.forEach(function(t){h+='<option value="'+t.id+'"'+(u.type===t.id?' selected':'')+' style="background:#333;color:#eee">'+t.label+'</option>'});
+  h+='</select>';
+  /* Relationship */
+  h+='<select style="font-size:11px;background:rgba(255,255,255,.08);color:#eee;border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:4px 6px" onchange="toEditUnit(\''+u.id+'\',\'relationship\',this.value)">';
+  TO_RELATIONSHIPS.forEach(function(r){h+='<option value="'+r+'"'+(u.relationship===r?' selected':'')+' style="background:#333;color:#eee">'+TO_REL_LABELS[r]+'</option>'});
+  h+='</select>';
+  h+='<span style="flex:1"></span>';
+  /* HVT/HPT */
+  h+='<button class="btn" style="font-size:9px;padding:3px 10px;color:'+hvtCol+';border-color:'+(hvtCol!=='inherit'?hvtCol:'var(--border)')+'" onclick="toToggleHVT(\''+u.id+'\')">'+hvtLabel+'</button>';
+  h+='<button class="btn primary" style="font-size:10px;padding:3px 10px" onclick="toAddChild(\''+u.id+'\')">+ Sub Unit</button>';
+  h+='<button class="btn" style="font-size:10px;padding:3px 10px;opacity:.5" onclick="_toSelectedId=null;toRender()">✕</button>';
+  h+='</div>';
+
+  /* Row 2: Visual echelon selector */
+  h+='<div style="display:flex;gap:3px;align-items:center;flex-wrap:wrap">';
+  h+='<span style="font-size:9px;opacity:.5;margin-right:4px">ECH:</span>';
+  ECHELONS.forEach(function(e){
+    var isSel=u.echelon===e.id;
+    var mark=_toEchMark(e.mark);
+    h+='<button style="display:flex;flex-direction:column;align-items:center;gap:1px;padding:3px 6px;min-width:36px;border-radius:4px;border:1px solid '+(isSel?'#ffaa00':'rgba(255,255,255,.1)')+';background:'+(isSel?'rgba(255,170,0,.15)':'rgba(255,255,255,.04)')+';color:'+(isSel?'#ffcc00':'rgba(255,255,255,.6)')+';cursor:pointer;font-size:8px" onclick="toEditUnit(\''+u.id+'\',\'echelon\',\''+e.id+'\');toRender()" title="'+e.label+'">';
+    h+='<span style="font-size:16px;line-height:1;font-weight:700">'+mark+'</span>';
+    h+='<span>'+e.label.replace(/Regt\//,'R/').replace('Theater Army','TA').replace('Army Group','AG')+'</span>';
+    h+='</button>';
+  });
+  h+='</div>';
+
+  h+='</div>';
+  return h;
+}
+
+/* Keep old functions as stubs for backward compat */
+function ipbAddThreatUnit(){ipbShowTaskOrg()}
+function ipbRemoveThreatUnit(uid){toRemoveUnit(uid);renderFloatingPanel()}
+function ipbToggleThreatTarget(uid){toToggleHVT(uid);renderFloatingPanel()}
+
+/* Unit placer - shows Step 3 roster as a placement menu */
+var _ipbPlacerOpen=false;
+function ipbOpenUnitPlacer(){
+  _ipbPlacerOpen=!_ipbPlacerOpen;
+  renderIPBPlacerPanel();
+}
+var _placerPos={x:null,y:null,w:null,pinned:false};
+function renderIPBPlacerPanel(){
+  var roster=(S._ipb&&S._ipb.threatRoster)||[];
+  var existing=document.getElementById('ipb-placer-panel');
+
+  if(!_ipbPlacerOpen&&!_placerPos.pinned){
+    if(existing)existing.remove();
+    return;
+  }
+  if(!roster.length){
+    if(existing)existing.remove();
+    _ipbPlacerOpen=false;return;
+  }
+
+  /* Determine placed status */
+  var layerUnits=S.units.filter(function(u){return u.layerId===S.activeLayerId&&u.affiliation==='hostile'});
+  var rosterStatus=roster.map(function(r){
+    /* Count all matches for this roster unit */
+    var matchCount=0;
+    layerUnits.forEach(function(u){
+      if(r.designation&&u.designation&&r.designation===u.designation){matchCount++}
+      else if(u.type===r.type&&u.echelon===r.echelon&&!u._rosterMatched){matchCount++;u._rosterMatched=true}
+    });
+    return {unit:r,placed:matchCount>0,duplicate:matchCount>1,count:matchCount};
+  });
+  layerUnits.forEach(function(u){delete u._rosterMatched});
+
+  var panel=existing;
+  if(panel){panel.style.display='flex'}
+  if(!panel){
+    panel=document.createElement('div');
+    panel.id='ipb-placer-panel';
+    panel.style.cssText='position:fixed;z-index:110;background:var(--panel-bg);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 24px rgba(0,0,0,.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:0;display:flex;flex-direction:column;overflow:hidden;resize:both;min-width:200px;min-height:120px';
+    if(_placerPos.x!==null){
+      panel.style.left=_placerPos.x+'px';panel.style.top=_placerPos.y+'px';
+    }else{
+      var fp=document.querySelector('.float-panel');
+      if(fp){var r=fp.getBoundingClientRect();panel.style.left=r.left+'px';panel.style.top=(r.bottom+6)+'px'}
+      else{panel.style.left='10px';panel.style.top='60px'}
+    }
+    panel.style.width=(_placerPos.w||320)+'px';
+    panel.style.maxHeight='70vh';
+    document.body.appendChild(panel);
+  }
+
+  var placedCount=rosterStatus.filter(function(r){return r.placed}).length;
+  var pinIcon=_placerPos.pinned?'\ud83d\udccc':'\ud83d\udccd';
+  var h='<div id="ipb-placer-header" style="display:flex;align-items:center;padding:6px 10px;border-bottom:1px solid var(--border);cursor:grab;user-select:none;flex-shrink:0">';
+  h+='<span style="font-size:11px;font-weight:700;flex:1">THREAT ROSTER</span>';
+  h+='<span style="font-size:9px;opacity:.5;margin-right:6px">'+placedCount+'/'+roster.length+'</span>';
+  h+='<button class="btn" style="font-size:10px;padding:1px 5px;margin-right:3px;opacity:'+(_placerPos.pinned?'1':'.4')+'" onclick="_placerPos.pinned=!_placerPos.pinned;renderIPBPlacerPanel()" title="'+(_placerPos.pinned?'Unpin':'Pin open')+'">'+pinIcon+'</button>';
+  h+='<button class="btn" style="font-size:14px;padding:1px 6px;opacity:.5" onclick="_ipbPlacerOpen=false;_placerPos.pinned=false;renderIPBPlacerPanel()">\u2715</button>';
+  h+='</div>';
+  h+='<div style="overflow-y:auto;overflow-x:hidden;padding:6px;display:grid;grid-template-columns:1fr 1fr;gap:5px;flex:1">';
+
+  rosterStatus.forEach(function(rs){
+    var u=rs.unit;
+    var borderCol=rs.duplicate?'#ffaa00':rs.placed?'#44cc44':'#ff4444';
+    var bgCol=rs.duplicate?'rgba(255,170,0,.06)':rs.placed?'rgba(68,204,68,.06)':'rgba(255,68,68,.04)';
+    var checkMark=rs.duplicate?'<div style="position:absolute;top:2px;right:3px;font-size:8px;color:#ffaa00;font-weight:700">\u00d7'+rs.count+'</div>':rs.placed?'<div style="position:absolute;top:2px;right:3px;font-size:8px;color:#44cc44;font-weight:700">\u2713</div>':'';
+
+    h+='<div style="position:relative;display:flex;flex-direction:column;align-items:center;padding:4px;border:2px solid '+borderCol+';border-radius:6px;background:'+bgCol+';cursor:pointer;transition:background .15s" onmouseover="this.style.background=\'rgba(255,255,255,.08)\'" onmouseout="this.style.background=\''+bgCol+'\'" onclick="ipbPlaceRosterUnit(\''+u.id+'\')">';
+    h+=checkMark;
+    h+='<canvas data-placer-uid="'+u.id+'" width="240" height="120" style="width:100%;height:auto;aspect-ratio:2/1;border-radius:3px;background:rgba(255,255,255,.85)"></canvas>';
+    h+='</div>';
+  });
+  h+='</div>';
+  panel.innerHTML=h;
+
+  /* Drag header */
+  var hdr=document.getElementById('ipb-placer-header');
+  if(hdr){
+    hdr.onmousedown=function(e){
+      if(e.target.tagName==='BUTTON')return;
+      e.preventDefault();
+      var sx=e.clientX,sy=e.clientY;
+      var rect=panel.getBoundingClientRect();
+      var ox=rect.left,oy=rect.top;
+      function onM(ev){panel.style.left=(ox+ev.clientX-sx)+'px';panel.style.top=(oy+ev.clientY-sy)+'px'}
+      function onU(){
+        document.removeEventListener('mousemove',onM);document.removeEventListener('mouseup',onU);
+        var r=panel.getBoundingClientRect();_placerPos.x=r.left;_placerPos.y=r.top;_placerPos.w=r.width;
+      }
+      document.addEventListener('mousemove',onM);document.addEventListener('mouseup',onU);
+    };
+  }
+
+  /* Render icons */
+  setTimeout(function(){
+    panel.querySelectorAll('canvas[data-placer-uid]').forEach(function(cv){
+      var uid=cv.getAttribute('data-placer-uid');
+      var u=roster.find(function(x){return x.id===uid});
+      if(!u)return;
+      var c=cv.getContext('2d');
+      c.clearRect(0,0,240,120);
+      var _savedLabels=S.showLabels;S.showLabels=true;
+      drawUnitIcon(c,{type:u.type,affiliation:'hostile',echelon:u.echelon,designation:u.designation||'',parentUnit:u.parent?(roster.find(function(p){return p.id===u.parent})||{}).designation||'':'',modifiers:[],isHQ:u.type==='headquarters'},120,60,100);
+      S.showLabels=_savedLabels;
+    });
+  },50);
+}
+
+
+function ipbPlaceRosterUnit(rosterId){
+  var roster=(S._ipb&&S._ipb.threatRoster)||[];
+  var ru=roster.find(function(x){return x.id===rosterId});
+  if(!ru)return;
+  /* Save position before hiding */
+  var panel=document.getElementById('ipb-placer-panel');
+  if(panel){var r=panel.getBoundingClientRect();_placerPos.x=r.left;_placerPos.y=r.top;_placerPos.w=r.width}
+  if(panel)panel.style.display='none';
+  /* Enter placement mode */
+  S._placementMode={type:ru.type,affiliation:'hostile',echelon:ru.echelon,designation:ru.designation||'',modifiers:[],isHQ:ru.type==='headquarters',_rosterSource:rosterId};
+  canvas.style.cursor='crosshair';
+  showModeBar();
+  document.getElementById('mode-bar').innerHTML='<span class="mode-info">Click map to place: '+escHtml(ru.designation||TYPE_LABELS[ru.type]||ru.type)+'</span><button class="btn danger" onclick="S._placementMode=null;canvas.style.cursor=&quot;&quot;;hideModeBar()">\u2715 Cancel</button>';
+}
+
+function ipbCreateEnemyCOALayer(){
+  var nameEl=document.getElementById('ipb-ecoa-name');
+  var name=(nameEl?nameEl.value:'').trim()||'Enemy: COA '+(S._ipb.enemyCOAs?S._ipb.enemyCOAs.length+1:1);
+  var layerId='l'+Date.now();
+  S.layers.push({id:layerId,name:name,color:'#ff4444',visible:true,hasErrors:false});
+  if(!S._ipb)S._ipb={step:1,assignments:{}};
+  if(!S._ipb.enemyCOAs)S._ipb.enemyCOAs=[];
+  S._ipb.enemyCOAs.push({layerId:layerId,name:name,created:new Date().toISOString()});
+  S.activeLayerId=layerId;
+  IO.autosave();netBroadcastOperation();
+  updateLayerIndicator();renderFloatingPanel();
+  IO.notify('Created: '+name,'success');
+}
+
+function ipbLeaveStep(toStep){
+  if(!S._ipb)S._ipb={step:1,assignments:{}};
+  S._ipb.step=toStep;
+  /* If leaving MCOO step, switch active layer away from MCOO */
+  if(S._ipb.mcooLayerId&&S.activeLayerId===S._ipb.mcooLayerId){
+    var fallback=S._ipb.baseMapLayerId||S.layers[0].id||'default';
+    S.activeLayerId=fallback;
+  }
+  /* If leaving enemy COA step, switch away from enemy COA layers */
+  if(S._ipb.enemyCOAs&&S._ipb.enemyCOAs.length){
+    var ecoaIds=S._ipb.enemyCOAs.map(function(c){return c.layerId});
+    if(ecoaIds.indexOf(S.activeLayerId)>=0){
+      S.activeLayerId=S._ipb.baseMapLayerId||S.layers[0].id||'default';
+    }
+  }
+  /* Cancel any active freehand drawing */
+  if(S._mapTool==='freehand'){S._mapTool=null;_mcooOutside=false;canvas.style.cursor='';hideModeBar()}
+  updateLayerIndicator();renderFloatingPanel();
+}
+
+function ipbCreateBaseMap(){
+  var nameEl=document.getElementById('ipb-basemap-name');
+  var name=(nameEl?nameEl.value:'').trim()||'Base Map';
+  var id='l'+Date.now();
+  S.layers.push({id:id,name:name,color:'#4a9eff',visible:true,hasErrors:false});
+  S.activeLayerId=id;
+  if(!S._ipb)S._ipb={step:1,assignments:{}};
+  S._ipb.baseMapLayerId=id;
+  IO.autosave();netBroadcastOperation();
+  updateLayerIndicator();renderFloatingPanel();
+}
+function ipbSetBaseMap(layerId){
+  if(!S._ipb)S._ipb={step:1,assignments:{}};
+  S._ipb.baseMapLayerId=layerId;
+  S.activeLayerId=layerId;
+  IO.autosave();netBroadcastOperation();
+  updateLayerIndicator();renderFloatingPanel();
+}
+
+function ipbCreateMCOOLayer(aoGraphicId){
+  var aoGfx=S.graphics.find(function(x){return x.id===aoGraphicId});
+  if(!aoGfx||!aoGfx.points||!aoGfx.points.length){IO.notify('AO graphic not found','error');return}
+  var nameEl=document.getElementById('ipb-mcoo-name');
+  var name=(nameEl?nameEl.value:'').trim()||'MCOO';
+  /* Create the MCOO layer */
+  var layerId='l'+Date.now();
+  S.layers.push({id:layerId,name:name,color:'#ffaa00',visible:true,hasErrors:false});
+  /* Copy the AO boundary into this layer */
+  var aoCopy={
+    id:'g'+Date.now()+Math.random().toString(36).substr(2,4),
+    tool:aoGfx.tool||'polygon',
+    points:JSON.parse(JSON.stringify(aoGfx.points)),
+    color:aoGfx.color||'#ffaa00',
+    layerId:layerId,
+    label:'',
+    overlayType:aoGfx.overlayType||'none',
+    ipbRole:'ao_mcoo',
+    _mcooEnabled:true,
+    _mcooSourceAoId:aoGraphicId,
+    lineWidth:aoGfx.lineWidth||2,
+    fillColor:aoGfx.fillColor||null,
+    fillOpacity:aoGfx.fillOpacity||0
+  };
+  S.graphics.push(aoCopy);
+  /* Store the MCOO layer ID in IPB state */
+  if(!S._ipb)S._ipb={step:1,assignments:{}};
+  S._ipb.mcooLayerId=layerId;
+  S._ipb.mcooAoGraphicId=aoCopy.id;
+  S.activeLayerId=layerId;
+  IO.autosave();netBroadcastOperation();
+  netBroadcast({type:'graphicAdd',graphic:aoCopy});
+  updateLayerIndicator();renderFloatingPanel();
+  IO.notify('MCOO layer created with AO boundary','success');
+}
 
 function ipbAssign(graphicId,role){
   if(!S._ipb)S._ipb={step:1,assignments:{}};
@@ -2058,6 +3164,7 @@ function ipbAssign(graphicId,role){
   else delete S._ipb.assignments[graphicId];
   var g=S.graphics.find(function(x){return x.id===graphicId});
   if(g)g.ipbRole=role||null;
+  IO.autosave();netBroadcastOperation();
   renderFloatingPanel();requestRender()}
 
 function ipbAssignFromEditor(graphicId,role){
@@ -2140,6 +3247,94 @@ function sanitizeNetMsg(msg){
     if(Array.isArray(msg.data.layers))msg.data.layers=msg.data.layers.slice(0,50).map(l=>{l.name=sanitizeStr(l.name,INPUT_LIMITS.layerName);return l})}
   return msg}
 
+/* Commit current freehand points as a stroke graphic mid-draw (for AO boundary splitting) */
+function _mcooCommitStroke(){
+  if(_freehandPoints.length<2)return;
+  var mcooStrokes=S.graphics.filter(function(g){return g.layerId===_mcooLayerId&&g._freehand}).length;
+  if(mcooStrokes>=MCOO_MAX_STROKES){_freehandPoints=[];_freehandPressures=[];return}
+  var tol=_freehandPoints.length>100?3:_freehandPoints.length>50?2:1.5;
+  var simplified=simplifyFreehand(_freehandPoints,tol);
+  if(simplified.length>MCOO_MAX_PTS_PER_STROKE){
+    var step=Math.ceil(simplified.length/MCOO_MAX_PTS_PER_STROKE);
+    var capped=[simplified[0]];for(var si=step;si<simplified.length-1;si+=step)capped.push(simplified[si]);
+    capped.push(simplified[simplified.length-1]);simplified=capped}
+  var gPoints=simplified.map(function(p){var ll=screenToLatlon(p.x,p.y);return{lat:ll.lat,lon:ll.lon}});
+  var g={id:"g"+Date.now()+Math.random().toString(36).substr(2,4),tool:"line",
+    points:gPoints,color:_freehandOpts.color,
+    lineWidth:_freehandOpts.lineWidth,lineStyle:"solid",
+    overlayType:"none",fill:false,fillColor:_freehandOpts.color,
+    label:"",layerId:_mcooLayerId||S.activeLayerId,arrowSize:1,
+    _freehand:true};
+  S.graphics.push(g);netBroadcast({type:"graphicAdd",graphic:g});
+  _freehandPoints=[];_freehandPressures=[];
+  renderFreehandBar();requestRender();
+}
+
+/* Find the approximate point where a line from inside to outside crosses the AO boundary */
+function _mcooFindEdgeCrossing(insidePt,outsidePt){
+  /* Binary search along the line segment to find the crossing */
+  var ax=insidePt.x,ay=insidePt.y,bx=outsidePt.x,by=outsidePt.y;
+  for(var i=0;i<12;i++){
+    var mx=(ax+bx)/2,my=(ay+by)/2;
+    if(_mcooIsInsideAO({x:mx,y:my})){ax=mx;ay=my}
+    else{bx=mx;by=my}
+  }
+  return{x:ax,y:ay};
+}
+
+function mcooStartDrawFromBanner(){
+  if(!S._ipb||!S._ipb.mcooLayerId)return;
+  _mcooLayerId=S._ipb.mcooLayerId;
+  /* Find the AO graphic */
+  _mcooAoId=null;
+  if(S._ipb.assignments){
+    var aoIds=Object.keys(S._ipb.assignments).filter(function(k){return S._ipb.assignments[k]==='ao'});
+    if(aoIds.length)_mcooAoId=aoIds[0];
+  }
+  S.activeLayerId=_mcooLayerId;
+  updateLayerIndicator();
+  S._activePanel=null;
+  document.getElementById("float-panel").classList.remove("open");
+  document.querySelectorAll(".stack-btn").forEach(function(b){b.classList.remove("active")});
+  S._mapTool="freehand";
+  canvas.style.cursor="crosshair";
+  _mcooOutside=false;
+  showFreehandBar();
+  requestRender();
+}
+
+function _mcooIsInsideAO(screenPos){
+  /* Find the original AO graphic (from Step 1 assignment, not the MCOO copy) */
+  var aoGfx=null;
+  if(S._ipb&&S._ipb.assignments){
+    var aoIds=Object.keys(S._ipb.assignments).filter(function(k){return S._ipb.assignments[k]==='ao'});
+    for(var i=0;i<aoIds.length;i++){var g=S.graphics.find(function(x){return x.id===aoIds[i]});if(g&&g.points&&g.points.length>=2){aoGfx=g;break}}
+  }
+  /* Fallback: check the MCOO copy */
+  if(!aoGfx&&S._ipb&&S._ipb.mcooAoGraphicId){aoGfx=S.graphics.find(function(x){return x.id===S._ipb.mcooAoGraphicId})}
+  if(!aoGfx||!aoGfx.points||aoGfx.points.length<2)return true;/* no AO = no clipping */
+
+  if(aoGfx.tool==='rectangle'&&aoGfx.points.length>=2){
+    /* Rectangle: 2-point AABB check */
+    var ra=latlonToScreen(aoGfx.points[0].lat,aoGfx.points[0].lon);
+    var rb=latlonToScreen(aoGfx.points[1].lat,aoGfx.points[1].lon);
+    var minX=Math.min(ra.x,rb.x),maxX=Math.max(ra.x,rb.x);
+    var minY=Math.min(ra.y,rb.y),maxY=Math.max(ra.y,rb.y);
+    return screenPos.x>=minX&&screenPos.x<=maxX&&screenPos.y>=minY&&screenPos.y<=maxY;
+  }else if(aoGfx.tool==='circle'&&aoGfx.points.length>=2){
+    /* Circle: distance from center <= radius */
+    var cp=latlonToScreen(aoGfx.points[0].lat,aoGfx.points[0].lon);
+    var ep=latlonToScreen(aoGfx.points[1].lat,aoGfx.points[1].lon);
+    var r=Math.hypot(ep.x-cp.x,ep.y-cp.y);
+    return Math.hypot(screenPos.x-cp.x,screenPos.y-cp.y)<=r;
+  }else if(aoGfx.points.length>=3){
+    /* Polygon: ray-cast */
+    var screenPts=aoGfx.points.map(function(p){return latlonToScreen(p.lat,p.lon)});
+    return pointInPoly(screenPos.x,screenPos.y,screenPts);
+  }
+  return true;
+}
+
 function mcooEnable(aoId){
   var g=S.graphics.find(function(x){return x.id===aoId});
   if(!g)return;
@@ -2150,12 +3345,16 @@ function mcooEnable(aoId){
   renderFloatingPanel();requestRender()}
 
 function mcooStartDraw(aoId){
+  /* Use MCOO layer if IPB has one, otherwise fall back to AO's layer */
+  var mcooLid=S._ipb&&S._ipb.mcooLayerId?S._ipb.mcooLayerId:null;
   var aoGfx=S.graphics.find(function(x){return x.id===aoId});
-  if(!aoGfx||!aoGfx._mcooEnabled){notify("Enable MCOO first","error");return}
-  _mcooLayerId=aoGfx.layerId;_mcooAoId=aoId;
-  S.activeLayerId=aoGfx.layerId;
+  if(!mcooLid&&(!aoGfx||!aoGfx._mcooEnabled)){notify("Create MCOO layer first","error");return}
+  _mcooLayerId=mcooLid||aoGfx.layerId;_mcooAoId=aoId;
+  S.activeLayerId=_mcooLayerId;
+  updateLayerIndicator();
   S._activePanel=null;
-  renderFloatingPanel();
+  document.getElementById("float-panel").classList.remove("open");
+  document.querySelectorAll(".stack-btn").forEach(function(b){b.classList.remove("active")});
   S._mapTool="freehand";
   canvas.style.cursor="crosshair";
   showFreehandBar();
@@ -2183,6 +3382,15 @@ function ipbStepComplete(step){
   if(step===1){
     var vals=Object.values(S._ipb.assignments);
     return vals.indexOf("ao")>=0;
+  }
+  if(step===2){
+    return !!S._ipb.mcooLayerId&&!!S.layers.find(function(l){return l.id===S._ipb.mcooLayerId});
+  }
+  if(step===3){
+    return S._ipb.threatRoster&&S._ipb.threatRoster.length>0;
+  }
+  if(step===4){
+    return S._ipb.enemyCOAs&&S._ipb.enemyCOAs.length>0;
   }
   return false}
 
@@ -2526,6 +3734,56 @@ function renderEditor(){
       h+='</div>';
       h+='<div style="font-size:10px;opacity:.6;white-space:pre-wrap;word-break:break-word;background:var(--btn-bg);border-radius:4px;padding:6px 8px;margin-bottom:6px;max-height:80px;overflow-y:auto">'+u.importNotes.replace(/</g,"&lt;").replace(/>/g,"&gt;")+'</div>';
     }
+    /* Roster intel — show Step 3 data if this unit was placed from threat roster */
+    var _rosterUnit=null;
+    if(S._ipb&&S._ipb.threatRoster){
+      if(u._rosterSource)_rosterUnit=S._ipb.threatRoster.find(function(r){return r.id===u._rosterSource});
+      if(!_rosterUnit&&u.designation)_rosterUnit=S._ipb.threatRoster.find(function(r){return r.designation===u.designation});
+      if(!_rosterUnit&&u.affiliation==='hostile')_rosterUnit=S._ipb.threatRoster.find(function(r){return r.type===u.type&&r.echelon===u.echelon});
+    }
+    if(_rosterUnit){
+      var ru=_rosterUnit;
+      var hvtInfo=(S._ipb.hvtl||{})[ru.id]||{};
+      h+='<div class="ed-section-title" style="margin-top:10px">THREAT INTEL (Step 3)</div>';
+      /* HVT/HPT badges */
+      if(hvtInfo.hvt||hvtInfo.hpt){
+        h+='<div style="display:flex;gap:4px;margin-bottom:6px">';
+        if(hvtInfo.hvt)h+='<span style="font-size:9px;font-weight:700;color:#ff6644;background:rgba(255,102,68,.12);padding:2px 8px;border-radius:3px;border:1px solid rgba(255,102,68,.3)">HVT</span>';
+        if(hvtInfo.hpt)h+='<span style="font-size:9px;font-weight:700;color:#ff4444;background:rgba(255,68,68,.12);padding:2px 8px;border-radius:3px;border:1px solid rgba(255,68,68,.3)">HPT</span>';
+        h+='</div>';
+      }
+      /* Image */
+      if(ru.imageUrl){
+        h+='<div style="margin-bottom:6px;text-align:center"><img src="'+escAttr(ru.imageUrl)+'" style="max-width:100%;max-height:120px;border-radius:4px;border:1px solid var(--border)" onerror="this.style.display=\'none\'"></div>';
+      }
+      /* Weapons/Equipment */
+      if(ru.weapons&&ru.weapons.length){
+        h+='<div style="font-size:10px;font-weight:600;margin-bottom:3px;opacity:.7">WEAPONS & EQUIPMENT</div>';
+        h+='<div style="margin-bottom:6px">';
+        ru.weapons.forEach(function(w){
+          if(!w.name)return;
+          h+='<div style="display:flex;align-items:center;gap:4px;font-size:10px;padding:2px 0">';
+          h+='<span style="font-weight:600;min-width:24px;text-align:center">'+(w.qty||1)+'x</span>';
+          h+='<span style="flex:1">'+escHtml(w.name)+'</span>';
+          if(w.rangeKm)h+='<span style="opacity:.5">'+w.rangeKm+' km</span>';
+          h+='</div>';
+        });
+        h+='</div>';
+      }
+      /* Notes */
+      if(ru.notes){
+        h+='<div style="font-size:10px;font-weight:600;margin-bottom:3px;opacity:.7">NOTES</div>';
+        h+='<div style="font-size:10px;opacity:.8;white-space:pre-wrap;word-break:break-word;background:var(--btn-bg);border-radius:4px;padding:6px 8px;margin-bottom:6px;max-height:100px;overflow-y:auto;line-height:1.4">'+escHtml(ru.notes)+'</div>';
+      }
+      /* Reference links */
+      if(ru.links&&ru.links.length){
+        h+='<div style="font-size:10px;font-weight:600;margin-bottom:3px;opacity:.7">REFERENCES</div>';
+        ru.links.forEach(function(lk){
+          if(!lk.url)return;
+          h+='<div style="margin-bottom:3px"><a href="'+escAttr(lk.url)+'" target="_blank" rel="noopener" style="font-size:10px;color:var(--accent);text-decoration:underline">'+escHtml(lk.label||lk.url)+'</a></div>';
+        });
+      }
+    }
   } else if(tab==="equip"){
     var eq=u.equipment||{};
     h+='<div class="ed-section-title">EQUIPMENT</div>';
@@ -2707,6 +3965,8 @@ function finishDrawing(){
   if(!S._drawMode)return;const dm=S._drawMode;
   if(dm.points.length<getMinPoints(dm.tool)){notify("Not enough points","error");return}
   const g={id:"g"+Date.now()+Math.random().toString(36).substr(2,4),tool:dm.tool,points:[...dm.points],color:dm.color,lineWidth:dm.lineWidth,lineStyle:dm.lineStyle,overlayType:dm.overlayType,fill:dm.fill,fillColor:dm.color,label:dm.label||"",layerId:S.activeLayerId,arrowSize:dm.arrowSize||1,rotation:dm.rotation||0};
+  /* For text tool: store font size as ground meters so it scales with the map */
+  if(dm.tool==="text"&&dm.points.length){g.fontSize=dm.fontSize||14;g._zoomRef=S.zoom}
   S.graphics.push(g);S._drawMode=null;hideModeBar();document.getElementById("sb-addunit").classList.remove("active");selectGraphic(g.id);netBroadcast({type:"graphicAdd",graphic:g});requestRender();if(S._activePanel==="addunit")renderFloatingPanel();
   setTimeout(()=>fitToGraphic(g),200)}
 function fitToGraphic(g){
@@ -2766,7 +4026,7 @@ function undoDrawPoint(){if(!S._drawMode||!S._drawMode.points.length)return;S._d
 
 // Mode bar
 function showModeBar(){document.getElementById("mode-bar").classList.add("open");document.getElementById("mode-bar").style.display="flex";updateModeBar()}
-function hideModeBar(){const mb=document.getElementById("mode-bar");mb.classList.remove("open");mb.style.display="none"}
+function hideModeBar(){const mb=document.getElementById("mode-bar");mb.classList.remove("open");mb.style.display="none";updateLayerIndicator()}
 function showPlacementBar(){document.getElementById("mode-bar").style.display="flex";document.getElementById("mode-bar").classList.add("open");document.getElementById("mode-bar").innerHTML='<span class="mode-info">TAP MAP TO PLACE UNIT</span><button class="btn danger" onclick="S._placementMode=null;hideModeBar()">\u2715 Cancel</button>'}
 function updateModeBar(){
   /* Map tools mode bar */
@@ -2786,7 +4046,7 @@ function mapToolUndo(){if(S._mapTool==="distance"&&S._measurePoints.length)S._me
 function addLayer(){const id="l"+Date.now();S.layers.push({id,name:"Layer "+(S.layers.length+1),visible:true,hasErrors:false});S.activeLayerId=id;renderFloatingPanel();updateLayerIndicator()}
 function setActiveLayer(id){S.activeLayerId=id;renderFloatingPanel();updateLayerIndicator();requestRender()}
 function toggleLayerVis(id){const l=S.layers.find(x=>x.id===id);if(l)l.visible=!l.visible;renderFloatingPanel();requestRender()}
-function removeLayer(id){if(S.layers.length<=1)return;const l=S.layers.find(x=>x.id===id);const unitCount=S.units.filter(u=>u.layerId===id).length;const gfxCount=S.graphics.filter(g=>g.layerId===id).length;const total=unitCount+gfxCount;const name=l?l.name:id;if(total>0){if(!S._confirmDeleteLayer||S._confirmDeleteLayer!==id){S._confirmDeleteLayer=id;renderFloatingPanel();return}}S._confirmDeleteLayer=null;S.units=S.units.filter(u=>u.layerId!==id);S.graphics=S.graphics.filter(g=>g.layerId!==id);S.layers=S.layers.filter(l=>l.id!==id);/* Remove from packages */S.packages.forEach(p=>{p.layerIds=p.layerIds.filter(lid=>lid!==id)});S.packages=S.packages.filter(p=>p.layerIds.length>0);if(S.activeLayerId===id)S.activeLayerId=S.layers[0].id;if(S.selectedUnitId&&!S.units.find(u=>u.id===S.selectedUnitId)){S.selectedUnitId=null;closeEditor()}if(S.selectedGraphicId&&!S.graphics.find(g=>g.id===S.selectedGraphicId)){S.selectedGraphicId=null;closeEditor()}renderFloatingPanel();updateLayerIndicator();requestRender()}
+function removeLayer(id){const l=S.layers.find(x=>x.id===id);const unitCount=S.units.filter(u=>u.layerId===id).length;const gfxCount=S.graphics.filter(g=>g.layerId===id).length;const total=unitCount+gfxCount;const name=l?l.name:id;if(total>0){if(!S._confirmDeleteLayer||S._confirmDeleteLayer!==id){S._confirmDeleteLayer=id;renderFloatingPanel();return}}S._confirmDeleteLayer=null;S.units=S.units.filter(u=>u.layerId!==id);S.graphics=S.graphics.filter(g=>g.layerId!==id);S.layers=S.layers.filter(l=>l.id!==id);/* Remove from packages */S.packages.forEach(p=>{p.layerIds=p.layerIds.filter(lid=>lid!==id)});S.packages=S.packages.filter(p=>p.layerIds.length>0);if(S.layers.length===0){S.layers.push({id:'l'+Date.now(),name:'Layer 1',visible:true,hasErrors:false})}if(S.activeLayerId===id)S.activeLayerId=S.layers[0].id;if(S.selectedUnitId&&!S.units.find(u=>u.id===S.selectedUnitId)){S.selectedUnitId=null;closeEditor()}if(S.selectedGraphicId&&!S.graphics.find(g=>g.id===S.selectedGraphicId)){S.selectedGraphicId=null;closeEditor()}renderFloatingPanel();updateLayerIndicator();requestRender()}
 function startLayerRename(id){S._renamingLayerId=id;renderFloatingPanel();setTimeout(()=>{const inp=document.getElementById("layer-rename-"+id);if(inp){inp.focus();inp.select()}},50)}
 function commitLayerRename(id){const inp=document.getElementById("layer-rename-"+id);if(inp){const l=S.layers.find(x=>x.id===id);if(l){const v=sanitizeStr(inp.value.trim(),INPUT_LIMITS.layerName);if(v)l.name=v}}S._renamingLayerId=null;renderFloatingPanel();updateLayerIndicator()}
 function moveToLayer(kind,id,newLayerId){if(kind==="unit"){const u=S.units.find(x=>x.id===id);if(u){u.layerId=newLayerId;netBroadcast({type:"unitEdit",unit:u})}}else{const g=S.graphics.find(x=>x.id===id);if(g){g.layerId=newLayerId;netBroadcast({type:"graphicEdit",graphic:g})}}renderFloatingPanel();requestRender()}
@@ -2795,13 +4055,36 @@ function togglePackageCollapse(id){const p=S.packages.find(x=>x.id===id);if(p)p.
 function togglePackageVis(id){const p=S.packages.find(x=>x.id===id);if(!p)return;const layers=p.layerIds.map(lid=>S.layers.find(l=>l.id===lid)).filter(Boolean);const allVis=layers.every(l=>l.visible);layers.forEach(l=>l.visible=!allVis);requestRender();renderFloatingPanel()}
 function removePackage(id){const p=S.packages.find(x=>x.id===id);if(!p)return;if(!S._confirmDeletePkg||S._confirmDeletePkg!==id){S._confirmDeletePkg=id;renderFloatingPanel();return}S._confirmDeletePkg=null;p.layerIds.forEach(lid=>{S.units=S.units.filter(u=>u.layerId!==lid);S.graphics=S.graphics.filter(g=>g.layerId!==lid);S.layers=S.layers.filter(l=>l.id!==lid)});S.packages=S.packages.filter(x=>x.id!==id);if(!S.layers.find(l=>l.id===S.activeLayerId))S.activeLayerId=S.layers[0]?S.layers[0].id:"default";renderFloatingPanel();updateLayerIndicator();requestRender()}
 function layerDotColor(l){if(l.hasErrors)return"#ff4444";if(l.id===S.activeLayerId)return"#44cc44";if(l.visible)return"#4a9eff";return"#666"}
-function updateLayerIndicator(){const el=document.querySelector(".layer-indicator");if(!el)return;const l=S.layers.find(x=>x.id===S.activeLayerId);var h=l?`<div class="dot" style="background:${layerDotColor(l)}"></div>${l.name}`:``;
+function updateLayerIndicator(){const el=document.querySelector(".layer-indicator");if(!el)return;const l=S.layers.find(x=>x.id===S.activeLayerId);var h='';
+  /* Show Operation name if active */
+  if(S._operation){
+    h+='<span style="color:#4a9eff;font-weight:700;cursor:pointer;white-space:nowrap" onclick="togglePanel(\'syncmat\')">'+escHtml(S._operation.name)+'</span>';
+    h+='<span style="opacity:.3;margin:0 2px">›</span>';
+  }
+  h+=l?'<div class="dot" style="background:'+layerDotColor(l)+'"></div><span style="white-space:nowrap">'+escHtml(l.name)+'</span>':'';
   var wg=S._net.wargame;if(wg.active){
     var roleLabel=S._net.isHost?"GM":wg.myRole==="blufor"?"BLU":wg.myRole==="opfor"?"OPF":"OBS";
     var roleCol=S._net.isHost?"#ffd700":wg.myRole==="blufor"?"#4a9eff":wg.myRole==="opfor"?"#ff4444":"#888";
     h+=' <span style="padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700;color:'+roleCol+';border:1px solid '+roleCol+';margin-left:6px">'+roleLabel+' T'+wg.turnNumber+'</span>';
   }
-  el.innerHTML=h}
+  el.innerHTML=h;
+  /* MCOO active banner */
+  var mcooBanner=document.getElementById('mcoo-banner');
+  if(mcooBanner){
+    var isMcoo=S._ipb&&S._ipb.mcooLayerId&&S.activeLayerId===S._ipb.mcooLayerId;
+    if(isMcoo){
+      mcooBanner.style.display='block';
+      var isDrawing=S._mapTool==='freehand';
+      if(isDrawing){
+        mcooBanner.innerHTML='<div style="background:rgba(40,30,0,.85);border:1px solid rgba(255,170,0,.7);color:#ffcc00;border-radius:8px;padding:6px 20px;font-size:12px;font-weight:700;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 2px 12px rgba(255,170,0,.3);letter-spacing:.3px">✏️ Drawing on MCOO</div>';
+      }else{
+        mcooBanner.innerHTML='<div style="display:flex;align-items:center;gap:8px;background:rgba(40,30,0,.85);border:1px solid rgba(255,170,0,.7);color:#ffcc00;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 2px 12px rgba(255,170,0,.3);letter-spacing:.3px"><span>✏️ MCOO Layer Active</span><button onclick="mcooStartDrawFromBanner()" style="background:#ffaa00;color:#000;border:none;border-radius:5px;padding:4px 14px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">Draw</button></div>';
+      }
+    }else{
+      mcooBanner.style.display='none';
+    }
+  }
+}
 
 // Undo
 function undo(){if(!S.undoStack.length)return;const a=S.undoStack.pop();switch(a.type){case"delete":S.units.push(a.unit);netBroadcast({type:"unitAdd",unit:stripHeavyProps(a.unit)});break;case"deleteGraphic":S.graphics.push(a.graphic);netBroadcast({type:"graphicAdd",graphic:a.graphic});break;case"move":{const u=S.units.find(x=>x.id===a.unitId);if(u){u.lat=a.lat;u.lon=a.lon;netBroadcast({type:"unitEdit",unit:stripHeavyProps(u)})}}break;case"edit":{const idx=S.units.findIndex(x=>x.id===a.unitId);if(idx>=0){S.units[idx]=a.prev;netBroadcast({type:"unitEdit",unit:stripHeavyProps(a.prev)})}}break}requestRender();updateUndoBtn();if(S._activePanel)renderFloatingPanel()}
@@ -2838,11 +4121,11 @@ function updateUndoBtn(){const btn=document.getElementById("undo-btn");if(btn){b
 function toggleFileMenu(){_fileMenuOpen=!_fileMenuOpen;const m=document.getElementById("file-menu");if(m){renderFileMenuItems();m.classList.toggle("open",_fileMenuOpen)}}
 function closeFileMenu(){_fileMenuOpen=false;const m=document.getElementById("file-menu");if(m)m.classList.remove("open")}
 function renderFileMenuItems(){const m=document.getElementById("file-menu");if(!m)return;
-  const hasData=S.units.length||S.graphics.length;
+  const hasData=S.units.length||S.graphics.length||S._operation||S._ipb;
   m.innerHTML=`<div class="fm-section">PROJECT</div>
-<div class="fm-item" onclick="if(S.units.length||S.graphics.length){if(!confirm('Delete all units and graphics? This cannot be undone.'))return}IO.autosaveClear();S.units=[];S.graphics=[];S.packages=[];S.layers=[{id:'default',name:'Default',visible:true,hasErrors:false}];S.activeLayerId='default';S.selectedUnitId=null;S.selectedGraphicId=null;closeEditor();requestRender();updateLayerIndicator();closeFileMenu()">New Project</div>
+<div class="fm-item" onclick="var op=S._operation;var msg=op?\x27Delete Operation \x27+(op.name||\x27\x27)+\x27 and all its data?\x27:\x27Delete all units and graphics?\x27;if(S.units.length||S.graphics.length||op){if(!confirm(msg))return}IO.autosaveClear();S.units=[];S.graphics=[];S.packages=[];S.layers=[{id:\x27default\x27,name:\x27Default\x27,visible:true,hasErrors:false}];S.activeLayerId=\x27default\x27;S.selectedUnitId=null;S.selectedGraphicId=null;S._operation=null;S._ipb=null;closeEditor();renderFloatingPanel();requestRender();updateLayerIndicator();closeFileMenu()">New Project</div>
 <div class="fm-item danger" onclick="S.units=[];S.graphics=[];S.layers=[];S.packages=[];IO.autosaveClear();localStorage.clear();location.reload()">Clear All Data &amp; Reload</div>
-<div class="fm-item" onclick="IO.projectSave();closeFileMenu()">Save Project (.tacmap)</div>
+<div class="fm-item" onclick="IO.projectSave();closeFileMenu()">Save (.tacmap)</div>
 <div class="fm-item" onclick="closeFileMenu();IO.requestImport()">Open Project</div>
 <div class="fm-section">IMPORT</div>
 <div class="fm-item" onclick="closeFileMenu();IO.requestImport()">Import File (.tacmap .geojson .kml .kmz)</div>
@@ -3046,8 +4329,9 @@ function attemptHostMigration(){
   n.peer.on("connection",function(conn){
     conn.on("open",function(){
       n.conns.push({conn:conn,peerId:conn.peer,joinOrder:n.nextJoinOrder++,_lastPong:Date.now()});
-      /* Send full state to reconnecting peer */
-      var fMsg={type:"fullState",units:S.units,graphics:S.graphics,layers:S.layers,packages:S.packages,activeLayerId:S.activeLayerId,sharedLayers:n.sharedLayers};
+      /* Send full state including Operation to reconnecting peer */
+      if(S._operation)opSyncToOperation();
+      var fMsg={type:"fullState",units:S.units,graphics:S.graphics,layers:S.layers,packages:S.packages,activeLayerId:S.activeLayerId,sharedLayers:n.sharedLayers,operation:S._operation||null,ipb:S._ipb||null};
       conn.send(JSON.stringify(fMsg));
       n.status=n.conns.length+" peer(s)";renderFloatingPanel();
     });
@@ -3234,6 +4518,8 @@ function shouldBroadcastEdit(msg){
   if(layerId){const sh=n.sharedLayers[layerId];if(!sh||!sh.editable)return false}
   return true}
 function netBroadcast(msg){const n=S._net;if(n.mode==="offline")return;if(!shouldBroadcastEdit(msg))return;const str=JSON.stringify(msg);if(n.isHost){n.conns.forEach(c=>{try{c.conn.send(str)}catch(e){}})}else if(n.hostConn){try{n.hostConn.send(str)}catch(e){}}}
+/* Broadcast full Operation state to all peers (host only, bypasses shouldBroadcastEdit) */
+function netBroadcastOperation(){var n=S._net;if(n.mode==="offline"||!n.isHost||!S._operation)return;opSyncToOperation();var str=JSON.stringify({type:"operationSync",operation:JSON.parse(JSON.stringify(S._operation))});n.conns.forEach(function(c){try{c.conn.send(str)}catch(e){}})}
 function netCreateRoom(fixedCode){
   const n=S._net;n.roomCode=fixedCode||Math.random().toString(36).substr(2,6).toUpperCase();
   n.peer=new Peer("staffmaps-"+n.roomCode,_peerOpts());
@@ -3247,7 +4533,15 @@ function netCreateRoom(fixedCode){
       S.units.forEach(function(u){if(_fsSharedIds.has(u.layerId))_fsUnits.push(u)});
       S.graphics.forEach(function(g){if(_fsSharedIds.has(g.layerId))_fsGraphics.push(g)});
       S.packages.forEach(function(p){var pIds=p.layerIds.filter(function(id){return _fsSharedIds.has(id)});if(pIds.length)_fsPkgs.push({id:p.id,name:p.name,collapsed:p.collapsed,layerIds:pIds})});
-      var fMsg={type:"fullState",units:_fsUnits,graphics:_fsGraphics,layers:_fsLayers,packages:_fsPkgs,activeLayerId:n.sharedEditLayer||S.activeLayerId,editMode:n.editMode,sharedLayers:n.sharedLayers,sharedEditLayer:n.sharedEditLayer};conn.send(JSON.stringify(fMsg));/* Send wargame state if active */if(n.wargame.active){setTimeout(function(){var pRole="observer";var wgMsg={type:"wargameState",active:true,phase:n.wargame.phase,turnNumber:n.wargame.turnNumber,myRole:pRole,layerRoles:n.wargame.layerRoles,orders:[],roles:n.wargame.roles};try{conn.send(JSON.stringify(wgMsg))}catch(e){}},100)}n.status=n.conns.length+" peer(s)";renderFloatingPanel()});
+      /* Sync and include Operation snapshot */
+      if(S._operation)opSyncToOperation();
+      var _fsOp=null;
+      if(S._operation){
+        _fsOp=JSON.parse(JSON.stringify(S._operation));
+        /* Override Operation map data with only shared layers */
+        _fsOp.units=_fsUnits;_fsOp.graphics=_fsGraphics;_fsOp.layers=_fsLayers;_fsOp.packages=_fsPkgs;
+      }
+      var fMsg={type:"fullState",units:_fsUnits,graphics:_fsGraphics,layers:_fsLayers,packages:_fsPkgs,activeLayerId:n.sharedEditLayer||S.activeLayerId,editMode:n.editMode,sharedLayers:n.sharedLayers,sharedEditLayer:n.sharedEditLayer,operation:_fsOp,ipb:S._ipb||null};conn.send(JSON.stringify(fMsg));/* Send wargame state if active */if(n.wargame.active){setTimeout(function(){var pRole="observer";var wgMsg={type:"wargameState",active:true,phase:n.wargame.phase,turnNumber:n.wargame.turnNumber,myRole:pRole,layerRoles:n.wargame.layerRoles,orders:[],roles:n.wargame.roles};try{conn.send(JSON.stringify(wgMsg))}catch(e){}},100)}n.status=n.conns.length+" peer(s)";renderFloatingPanel()});
     conn.on("data",data=>{try{var msg=JSON.parse(data);sanitizeNetMsg(msg);handleNetMsg(msg,conn.peer)}catch(e){}});
     conn.on("close",()=>{const pid=conn.peer;n.conns=n.conns.filter(c=>c.conn!==conn);delete n.peerNames[pid];delete n.peerPermissions[pid];n.status=n.conns.length+" peer(s)";broadcastRoster();renderFloatingPanel()});
     conn.on("error",()=>{const pid=conn.peer;n.conns=n.conns.filter(c=>c.conn!==conn);delete n.peerNames[pid];delete n.peerPermissions[pid];n.status=n.conns.length+" peer(s)";broadcastRoster();renderFloatingPanel()})});
@@ -3471,7 +4765,7 @@ function handleNetMsg(msg,fromPeer){
       S._net.conns.forEach(function(c){if(c.peerId!==fromPeer)try{c.conn.send(_str)}catch(e){}});
     }
   }
-  if(msg.type==="fullState"){S.units=(msg.units||[]).map(u=>sanitizeUnit(u)).filter(Boolean);S.graphics=(msg.graphics||[]).map(g=>sanitizeGraphic(g)).filter(Boolean);S.layers=(msg.layers||S.layers).slice(0,50);S.layers.forEach(l=>{l.name=sanitizeStr(l.name,INPUT_LIMITS.layerName)});if(msg.packages)S.packages=msg.packages.slice(0,100);if(msg.activeLayerId)S.activeLayerId=msg.activeLayerId;S._net.editMode=msg.editMode||"observer";if(msg.sharedLayers)S._net.sharedLayers=msg.sharedLayers;if(msg.sharedEditLayer){S._net.sharedEditLayer=msg.sharedEditLayer;const el=S.layers.find(x=>x.id===msg.sharedEditLayer);if(el){setTimeout(()=>{if(confirm("Host is sharing '"+escHtml(el.name)+"' as primary edit layer. Switch to it and edit in room?")){S.activeLayerId=msg.sharedEditLayer;S._net.editScope="room";updateLayerIndicator();renderFloatingPanel()}},300)}}requestRender();updateLayerIndicator()}
+  if(msg.type==="fullState"){S.units=(msg.units||[]).map(u=>sanitizeUnit(u)).filter(Boolean);S.graphics=(msg.graphics||[]).map(g=>sanitizeGraphic(g)).filter(Boolean);S.layers=(msg.layers||S.layers).slice(0,50);S.layers.forEach(l=>{l.name=sanitizeStr(l.name,INPUT_LIMITS.layerName)});if(msg.packages)S.packages=msg.packages.slice(0,100);if(msg.activeLayerId)S.activeLayerId=msg.activeLayerId;S._net.editMode=msg.editMode||"observer";if(msg.sharedLayers)S._net.sharedLayers=msg.sharedLayers;/* Load Operation if included */if(msg.operation){S._operation=msg.operation;if(msg.operation.ipb)S._ipb=msg.operation.ipb}else if(msg.ipb){S._ipb=msg.ipb}if(msg.sharedEditLayer){S._net.sharedEditLayer=msg.sharedEditLayer;const el=S.layers.find(x=>x.id===msg.sharedEditLayer);if(el){setTimeout(()=>{if(confirm("Host is sharing '"+escHtml(el.name)+"' as primary edit layer. Switch to it and edit in room?")){S.activeLayerId=msg.sharedEditLayer;S._net.editScope="room";updateLayerIndicator();renderFloatingPanel()}},300)}}if(S._operation)IO.notify("Joined Operation: "+escHtml(S._operation.name),"success");requestRender();updateLayerIndicator()}
   else if(msg.type==="sharedConfig"){
     const n=S._net;n.sharedLayers=msg.sharedLayers||{};n.sharedEditLayer=msg.sharedEditLayer||null;n.editMode=msg.editMode||"observer";
     /* Merge shared layers — add/update layers that host is sharing */
@@ -3581,6 +4875,9 @@ function handleNetMsg(msg,fromPeer){
     if(S._net.isHost){var wg3=S._net.wargame;
       wg3.orders=wg3.orders.filter(function(o){return o.id!==msg.orderId});
       requestRender();renderFloatingPanel()}}
+  else if(msg.type==="operationSync"){
+    /* Host pushed updated Operation data (syncmat, IPB, phases, wargame journal) */
+    if(msg.operation){S._operation=msg.operation;if(msg.operation.ipb)S._ipb=msg.operation.ipb;updateLayerIndicator();if(S._activePanel==="syncmat"||S._activePanel==="ipb")renderFloatingPanel()}}
 }
 function updateNetDot(state){const dot=document.querySelector(".topbar-dot");if(dot)dot.className="topbar-dot"+(state?" "+state:"");const cb=document.getElementById("sb-comms");if(cb){cb.classList.remove("conn-blue","conn-green");if(S._net.mode==="hosting")cb.classList.add("conn-green");else if(S._net.mode==="connected")cb.classList.add("conn-blue")}}
 
@@ -3596,11 +4893,33 @@ const IO={
   isNative(){return!!window.nativeBridge},
   notify(msg,type){notify(msg,type)},
   projectSave(){
-    const data={version:"3.0",app:"StaffMaps",timestamp:new Date().toISOString(),map:{lat:S.lat,lon:S.lon,zoom:S.zoom,tileSource:S.tileSource},units:S.units,graphics:S.graphics,layers:S.layers,packages:S.packages};
+    if(S._operation)opSyncToOperation();
+    const data={version:"4.0",app:"StaffMaps",timestamp:new Date().toISOString(),map:{lat:S.lat,lon:S.lon,zoom:S.zoom,tileSource:S.tileSource},units:S.units,graphics:S.graphics,layers:S.layers,packages:S.packages,operation:S._operation||null,ipb:S._ipb||null};
+    var fname=S._operation?escHtml(S._operation.name).replace(/[^a-zA-Z0-9_\- ]/g,"").replace(/\s+/g,"-").toLowerCase():"staffmaps-"+new Date().toISOString().slice(0,10);
     const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
-    dlBlob(blob,"staffmaps-"+new Date().toISOString().slice(0,10)+".tacmap");IO.notify("Project saved")},
+    dlBlob(blob,fname+".tacmap");IO.notify("Project saved"+(S._operation?" — "+S._operation.name:""))},
   projectLoad(text){
-    try{const data=JSON.parse(text);if(data.units)S.units=data.units.slice(0,2000).map(u=>sanitizeUnit(u)).filter(Boolean);if(data.graphics)S.graphics=data.graphics.slice(0,1000).map(g=>sanitizeGraphic(g)).filter(Boolean);if(data.layers){S.layers=data.layers.slice(0,50);S.layers.forEach(l=>{l.name=sanitizeStr(l.name,INPUT_LIMITS.layerName)})}if(data.packages)S.packages=data.packages.slice(0,100);if(data.map){S.lat=data.map.lat;S.lon=data.map.lon;S.zoom=data.map.zoom;if(data.map.tileSource)S.tileSource=data.map.tileSource}requestRender();updateLayerIndicator();IO.notify("Project loaded: "+S.units.length+" units")}catch(e){IO.notify("Load error: "+e.message,"error")}},
+    try{const data=JSON.parse(text);
+    /* If file contains an Operation, load it as the container */
+    if(data.operation&&data.operation.units){
+      data.operation.units=(data.operation.units||[]).slice(0,2000).map(u=>sanitizeUnit(u)).filter(Boolean);
+      data.operation.graphics=(data.operation.graphics||[]).slice(0,1000).map(g=>sanitizeGraphic(g)).filter(Boolean);
+      if(data.operation.layers){data.operation.layers=data.operation.layers.slice(0,50);data.operation.layers.forEach(l=>{l.name=sanitizeStr(l.name,INPUT_LIMITS.layerName)})}
+      if(data.operation.packages)data.operation.packages=data.operation.packages.slice(0,100);
+      opLoadIntoState(data.operation);
+      IO.notify("Operation loaded: "+escHtml(data.operation.name));
+    }else{
+      /* Legacy file or sandbox — load directly */
+      if(data.units)S.units=data.units.slice(0,2000).map(u=>sanitizeUnit(u)).filter(Boolean);
+      if(data.graphics)S.graphics=data.graphics.slice(0,1000).map(g=>sanitizeGraphic(g)).filter(Boolean);
+      if(data.layers){S.layers=data.layers.slice(0,50);S.layers.forEach(l=>{l.name=sanitizeStr(l.name,INPUT_LIMITS.layerName)})}
+      if(data.packages)S.packages=data.packages.slice(0,100);
+      if(data.map){S.lat=data.map.lat;S.lon=data.map.lon;S.zoom=data.map.zoom;if(data.map.tileSource)S.tileSource=data.map.tileSource}
+      if(data.operation)S._operation=data.operation;
+      if(data.ipb)S._ipb=data.ipb;
+      requestRender();updateLayerIndicator();
+      IO.notify("Project loaded: "+S.units.length+" units");
+    }IO.autosave()}catch(e){IO.notify("Load error: "+e.message,"error")}},
   requestImport(){
     if(IO.isNative()){window.nativeBridge.requestImport();return}
     const inp=document.createElement("input");inp.type="file";inp.accept=".tacmap,.geojson,.kml,.kmz,.milx,.milxly,.milxlyz,.json,application/vnd.google-earth.kmz,application/vnd.google-earth.kml+xml,application/geo+json,application/json,application/octet-stream";inp.style.cssText="position:fixed;top:-9999px;left:-9999px;opacity:0";inp.onchange=e=>{const f=e.target.files[0];if(inp.parentNode)inp.parentNode.removeChild(inp);if(!f)return;const ext=f.name.split(".").pop().toLowerCase();if(ext==="kmz"||ext==="milxlyz"){f.arrayBuffer().then(buf=>{if(ext==="milxlyz")IO.importMilXZ(buf);else IO.importKMZ(buf)}).catch(e=>IO.notify("Import error: "+e.message,"error"));return}const reader=new FileReader();reader.onload=ev=>{if(ext==="tacmap"||ext==="json")IO.projectLoad(ev.target.result);else if(ext==="geojson")IO.importGeoJSON(ev.target.result);else if(ext==="kml")IO.importKML(ev.target.result);else if(ext==="milx"||ext==="milxly")IO.importMilX(ev.target.result);else IO.notify("Unsupported file type","error")};reader.readAsText(f)};document.body.appendChild(inp);inp.click()},
@@ -4148,7 +5467,7 @@ const IO={
     var fmt="kmz";
     function countForLayer(lid){return S.units.filter(u=>u.layerId===lid).length+S.graphics.filter(g=>g.layerId===lid).length}
     function render(){
-      var h='<div class="export-modal"><div class="export-modal-header"><span>Export</span><button class="btn" onclick="this.closest(\'.export-modal-backdrop\').remove()" style="padding:2px 8px;font-size:14px">✕</button></div>';
+      var h='<div class="export-modal"><div class="export-modal-header"><span>Export</span><button class="btn" onclick="this.closest(\'.export-modal-backdrop\').remove()" style="padding:2px 8px;font-size:16px">✕</button></div>';
       h+='<div class="export-modal-body">';
       h+='<div class="export-pkg-header">Format</div>';
       h+='<div style="display:flex;gap:6px;margin-bottom:12px">';
@@ -4236,9 +5555,13 @@ const IO={
     var exportPkgs=packages?packages.map(p=>({...p,layerIds:p.layerIds.filter(id=>layerIds.has(id))})).filter(p=>p.layerIds.length>0):[];
     var exportUnits=S.units.filter(u=>layerIds.has(u.layerId));
     var exportGraphics=S.graphics.filter(g=>layerIds.has(g.layerId));
-    const data={version:"3.0",app:"StaffMaps",timestamp:new Date().toISOString(),map:{lat:S.lat,lon:S.lon,zoom:S.zoom,tileSource:S.tileSource},units:exportUnits,graphics:exportGraphics,layers:exportLayers,packages:exportPkgs};
+    /* Include Operation if active — build a snapshot with filtered map data */
+    var exportOp=null;
+    if(S._operation){opSyncToOperation();exportOp=JSON.parse(JSON.stringify(S._operation));exportOp.units=exportUnits;exportOp.graphics=exportGraphics;exportOp.layers=exportLayers;exportOp.packages=exportPkgs}
+    const data={version:"4.0",app:"StaffMaps",timestamp:new Date().toISOString(),map:{lat:S.lat,lon:S.lon,zoom:S.zoom,tileSource:S.tileSource},units:exportUnits,graphics:exportGraphics,layers:exportLayers,packages:exportPkgs,operation:exportOp,ipb:S._ipb||null};
+    var fname=S._operation?escHtml(S._operation.name).replace(/[^a-zA-Z0-9_\- ]/g,"").replace(/\s+/g,"-").toLowerCase():"staffmaps-export-"+new Date().toISOString().slice(0,10);
     const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
-    dlBlob(blob,"staffmaps-export-"+new Date().toISOString().slice(0,10)+".tacmap");IO.notify("Exported "+(exportUnits.length+exportGraphics.length)+" features as .tacmap")},
+    dlBlob(blob,fname+".tacmap");IO.notify("Exported "+(exportUnits.length+exportGraphics.length)+" features as .tacmap")},
   importKMZ(buf){
     try{
       const dv=new DataView(buf);let off=0;let kmlText=null;const embeddedFiles={};const pendingDeflates=[];
@@ -4435,8 +5758,8 @@ const IO={
     var total=S.units.filter(u=>layerIds.has(u.layerId)).length+S.graphics.filter(g=>layerIds.has(g.layerId)).length;
     var blob=new Blob([kml],{type:"application/vnd.google-earth.kml+xml"});dlBlob(blob,"staffmaps-export.kml");IO.notify("Exported "+total+" features as KML")
   },
-  autosave(){try{localStorage.setItem("staffmaps_autosave",JSON.stringify({v:"4.5",units:S.units,graphics:S.graphics,layers:S.layers,packages:S.packages,lat:S.lat,lon:S.lon,zoom:S.zoom,tileSource:S.tileSource,gridColor:S.gridColor,gridOpacity:S.gridOpacity,showLabels:S.showLabels,persistentRoom:S._net.persistentRoom,sharedLayers:S._net.sharedLayers,sharedEditLayer:S._net.sharedEditLayer}))}catch(e){}},
-  autorestore(){try{const d=localStorage.getItem("staffmaps_autosave");if(d){const s=JSON.parse(d);if(!s.v||s.v<"4.5"){localStorage.removeItem("staffmaps_autosave");return false}if(s.units&&s.units.length){S.units=s.units.slice(0,2000).map(u=>sanitizeUnit(u)).filter(Boolean);S.graphics=(s.graphics||[]).slice(0,1000).map(g=>sanitizeGraphic(g)).filter(Boolean);S.layers=(s.layers||S.layers).slice(0,50);S.layers.forEach(l=>{l.name=sanitizeStr(l.name,INPUT_LIMITS.layerName)});S.packages=s.packages||[];S.lat=s.lat||S.lat;S.lon=s.lon||S.lon;S.zoom=s.zoom||S.zoom;S.tileSource=s.tileSource||S.tileSource;S.gridColor=s.gridColor||S.gridColor;S.gridOpacity=s.gridOpacity!==undefined?s.gridOpacity:S.gridOpacity;if(s.showLabels!==undefined)S.showLabels=s.showLabels;if(s.persistentRoom)S._net.persistentRoom=s.persistentRoom;if(s.sharedLayers)S._net.sharedLayers=s.sharedLayers;if(s.sharedEditLayer)S._net.sharedEditLayer=s.sharedEditLayer;return true}}}catch(e){}return false},
+  autosave(){try{if(S._operation)opSyncToOperation();localStorage.setItem("staffmaps_autosave",JSON.stringify({v:"4.7",units:S.units,graphics:S.graphics,layers:S.layers,packages:S.packages,lat:S.lat,lon:S.lon,zoom:S.zoom,tileSource:S.tileSource,gridColor:S.gridColor,gridOpacity:S.gridOpacity,showLabels:S.showLabels,persistentRoom:S._net.persistentRoom,sharedLayers:S._net.sharedLayers,sharedEditLayer:S._net.sharedEditLayer,operation:S._operation||null,ipb:S._ipb||null}))}catch(e){}},
+  autorestore(){try{const d=localStorage.getItem("staffmaps_autosave");if(d){const s=JSON.parse(d);if(!s.v||s.v<"4.5"){localStorage.removeItem("staffmaps_autosave");return false}if(s.units&&s.units.length||s.operation){S.units=(s.units||[]).slice(0,2000).map(u=>sanitizeUnit(u)).filter(Boolean);S.graphics=(s.graphics||[]).slice(0,1000).map(g=>sanitizeGraphic(g)).filter(Boolean);S.layers=(s.layers||S.layers).slice(0,50);S.layers.forEach(l=>{l.name=sanitizeStr(l.name,INPUT_LIMITS.layerName)});S.packages=s.packages||[];S.lat=s.lat||S.lat;S.lon=s.lon||S.lon;S.zoom=s.zoom||S.zoom;S.tileSource=s.tileSource||S.tileSource;S.gridColor=s.gridColor||S.gridColor;S.gridOpacity=s.gridOpacity!==undefined?s.gridOpacity:S.gridOpacity;if(s.showLabels!==undefined)S.showLabels=s.showLabels;if(s.persistentRoom)S._net.persistentRoom=s.persistentRoom;if(s.sharedLayers)S._net.sharedLayers=s.sharedLayers;if(s.sharedEditLayer)S._net.sharedEditLayer=s.sharedEditLayer;if(s.ipb)S._ipb=s.ipb;if(s.operation){S._operation=s.operation;/* Migrate: if Operation has map data inside, it's the source of truth */if(s.operation.units){S.units=s.operation.units.slice(0,2000).map(u=>sanitizeUnit(u)).filter(Boolean);S.graphics=(s.operation.graphics||[]).slice(0,1000).map(g=>sanitizeGraphic(g)).filter(Boolean);S.layers=(s.operation.layers||S.layers).slice(0,50);S.layers.forEach(l=>{l.name=sanitizeStr(l.name,INPUT_LIMITS.layerName)});S.packages=s.operation.packages||[];if(s.operation.ipb)S._ipb=s.operation.ipb;if(s.operation.map){S.lat=s.operation.map.lat||S.lat;S.lon=s.operation.map.lon||S.lon;S.zoom=s.operation.map.zoom||S.zoom;if(s.operation.map.tileSource)S.tileSource=s.operation.map.tileSource}}}return true}}}catch(e){}return false},
   autosaveClear(){localStorage.removeItem("staffmaps_autosave")},
 };
 
@@ -4524,12 +5847,571 @@ window.togglePersistRoom=function(cb){
   renderFloatingPanel();
 };
 
+// ─── OPERATIONS SYSTEM ──────────────────────────────────────────
+
+const WFF_SECTIONS=[
+  {id:"wff_adj",name:"Adjacent Units",type:"header"},
+  {id:"wff_intel",name:"Intelligence",type:"wff"},
+  {id:"wff_engcrit",name:"Engagement Criteria",type:"header"},
+  {id:"wff_man",name:"Maneuver",type:"wff"},
+  {id:"wff_fires",name:"Fires",type:"wff"},
+  {id:"wff_log",name:"Logistics",type:"wff"},
+  {id:"wff_prot",name:"Force Protection",type:"wff"},
+  {id:"wff_info",name:"Information",type:"wff"},
+  {id:"wff_c2",name:"C2",type:"wff"},
+  {id:"wff_air",name:"Air",type:"wff"},
+  {id:"wff_branch",name:"Branches",type:"header"}
+];
+
+const WFF_ROW_SUGGESTIONS={
+  wff_intel:["Collection Assets","NAIs","PIRs"],
+  wff_man:["__UNITS__"],
+  wff_fires:["EFSTs","Mortars","Artillery","HIMARS","OPFM","FW AIR","RW AIR","EW","RADAR","FSCMs"],
+  wff_log:["Supply","Transportation/Distro","HSS/Medical","Engr","Maint"],
+  wff_prot:["Air Defense","Survivability","EW","OPSEC"],
+  wff_info:["TACD","CYBER","COMMSTRAT","Key Leader Engagement","CMO/CA"],
+  wff_c2:["MAIN","FWD","JUMP","EMCON"],
+  wff_air:["F-35B","MV-22B","CH-53","UH/AH","MQ-9 Reaper"]
+};
+
+function createOperation(name,unitDesig,coaName){
+  var op={
+    id:"op_"+Date.now(),name:name||"New Operation",unitDesignation:unitDesig||"",
+    type:"",coaName:coaName||"COA 1",hHour:null,dDay:null,
+    phases:[],
+    wffSections:WFF_SECTIONS.map(function(s){return{id:s.id,name:s.name,type:s.type,rows:[]}}),
+    phaseTasks:{},
+    phaseReviewStatus:{},
+    wargameJournal:[],
+    wargameActive:false,
+    /* Operation is the container — absorb current map state */
+    units:JSON.parse(JSON.stringify(S.units)),
+    graphics:JSON.parse(JSON.stringify(S.graphics)),
+    layers:JSON.parse(JSON.stringify(S.layers)),
+    packages:JSON.parse(JSON.stringify(S.packages)),
+    ipb:S._ipb?JSON.parse(JSON.stringify(S._ipb)):null,
+    map:{lat:S.lat,lon:S.lon,zoom:S.zoom,tileSource:S.tileSource}
+  };
+  S._operation=op;
+  IO.autosave();updateLayerIndicator();netBroadcastOperation();
+  return op;
+}
+
+/* Sync current working state back into the Operation container */
+function opSyncToOperation(){
+  var op=S._operation;if(!op)return;
+  op.units=S.units;
+  op.graphics=S.graphics;
+  op.layers=S.layers;
+  op.packages=S.packages;
+  op.ipb=S._ipb||null;
+  op.map={lat:S.lat,lon:S.lon,zoom:S.zoom,tileSource:S.tileSource};
+}
+
+/* Load an Operation's data into the working state */
+function opLoadIntoState(op){
+  if(!op)return;
+  S._operation=op;
+  if(op.units)S.units=op.units;
+  if(op.graphics)S.graphics=op.graphics;
+  if(op.layers&&op.layers.length)S.layers=op.layers;
+  if(op.packages)S.packages=op.packages;
+  if(op.ipb)S._ipb=op.ipb;
+  if(op.map){
+    if(op.map.lat!=null)S.lat=op.map.lat;
+    if(op.map.lon!=null)S.lon=op.map.lon;
+    if(op.map.zoom!=null)S.zoom=op.map.zoom;
+    if(op.map.tileSource)S.tileSource=op.map.tileSource;
+  }
+  S.activeLayerId=S.layers.length?S.layers[0].id:"default";
+  S.selectedUnitId=null;S.selectedGraphicId=null;
+  requestRender();updateLayerIndicator();renderFloatingPanel();
+}
+
+/* Build the full Operation snapshot for sharing/saving */
+function opBuildSnapshot(){
+  opSyncToOperation();
+  var op=S._operation;if(!op)return null;
+  return JSON.parse(JSON.stringify(op));
+}
+
+function opAddPhase(name,desc){
+  var op=S._operation;if(!op)return null;
+  var ph={id:"ph_"+Date.now()+Math.random().toString(36).substr(2,4),name:name||"Phase "+(op.phases.length+1),description:desc||"",beginsWith:"",endsWith:"",criticalEvents:"",timeline:""};
+  /* Carry forward: copy all unit row tasks from previous phase */
+  if(op.phases.length>0){
+    var prevPh=op.phases[op.phases.length-1];
+    op.wffSections.forEach(function(sec){
+      sec.rows.forEach(function(row){
+        var prevKey=row.id+"_"+prevPh.id;
+        var newKey=row.id+"_"+ph.id;
+        if(op.phaseTasks[prevKey]){
+          op.phaseTasks[newKey]={text:op.phaseTasks[prevKey].text,wargameAdditions:[]};
+          op.phaseReviewStatus[newKey]="unreviewed";
+        }
+      });
+    });
+  }
+  op.phases.push(ph);IO.autosave();netBroadcastOperation();return ph;
+}
+
+function opRemovePhase(phId){
+  var op=S._operation;if(!op)return;
+  op.phases=op.phases.filter(function(p){return p.id!==phId});
+  /* Clean up tasks and review status */
+  Object.keys(op.phaseTasks).forEach(function(k){if(k.indexOf("_"+phId)>-1)delete op.phaseTasks[k]});
+  Object.keys(op.phaseReviewStatus).forEach(function(k){if(k.indexOf("_"+phId)>-1)delete op.phaseReviewStatus[k]});
+  IO.autosave();netBroadcastOperation();
+}
+
+function opAddRow(sectionId,label,type,unitId){
+  var op=S._operation;if(!op)return null;
+  var sec=op.wffSections.find(function(s){return s.id===sectionId});if(!sec)return null;
+  var row={id:"row_"+Date.now()+Math.random().toString(36).substr(2,4),type:type||"guidance",label:label||"",unitId:unitId||null};
+  sec.rows.push(row);IO.autosave();netBroadcastOperation();return row;
+}
+
+function opRemoveRow(sectionId,rowId){
+  var op=S._operation;if(!op)return;
+  var sec=op.wffSections.find(function(s){return s.id===sectionId});if(!sec)return;
+  sec.rows=sec.rows.filter(function(r){return r.id!==rowId});
+  /* Clean up tasks */
+  Object.keys(op.phaseTasks).forEach(function(k){if(k.indexOf(rowId+"_")===0)delete op.phaseTasks[k]});
+  IO.autosave();netBroadcastOperation();
+}
+
+function opSetTask(rowId,phaseId,text){
+  var op=S._operation;if(!op)return;
+  var key=rowId+"_"+phaseId;
+  if(!op.phaseTasks[key])op.phaseTasks[key]={text:"",wargameAdditions:[]};
+  if(op.wargameActive){
+    /* During wargame: add red text, don't modify original */
+    op.phaseTasks[key].wargameAdditions.push({text:text,journalEntryId:null,timestamp:new Date().toISOString()});
+  }else{
+    op.phaseTasks[key].text=text;
+  }
+  op.phaseReviewStatus[key]="updated";
+  IO.autosave();netBroadcastOperation();
+}
+
+function opConfirmNoChange(rowId,phaseId){
+  var op=S._operation;if(!op)return;
+  op.phaseReviewStatus[rowId+"_"+phaseId]="confirmed";
+  IO.autosave();netBroadcastOperation();
+}
+
+function opAddJournalEntry(phaseId,entryType,text,linkedCells){
+  var op=S._operation;if(!op)return null;
+  var entry={
+    id:"wj_"+Date.now()+Math.random().toString(36).substr(2,4),
+    phaseId:phaseId,timestamp:new Date().toISOString(),
+    author:S._net.peerName||"Author",entryType:entryType||"note",
+    text:text||"",linkedCells:linkedCells||[]
+  };
+  op.wargameJournal.push(entry);
+  /* Link to any wargame additions */
+  if(linkedCells&&linkedCells.length){
+    linkedCells.forEach(function(cellKey){
+      var task=op.phaseTasks[cellKey];
+      if(task&&task.wargameAdditions.length){
+        var last=task.wargameAdditions[task.wargameAdditions.length-1];
+        if(!last.journalEntryId)last.journalEntryId=entry.id;
+      }
+    });
+  }
+  IO.autosave();netBroadcastOperation();
+  return entry;
+}
+
+// ─── SYNCMAT PANEL RENDERER ─────────────────────────────────────
+
+function renderSyncMatPanel(){
+  var op=S._operation;
+  var h='';
+  
+  if(!op){
+    /* No operation — show create prompt */
+    h+='<div style="text-align:center;padding:20px 10px">';
+    h+='<div style="font-size:13px;font-weight:600;margin-bottom:8px">No Operation Active</div>';
+    h+='<div style="font-size:11px;opacity:.6;margin-bottom:12px;line-height:1.5">An Operation is the top-level container for everything — map layers, units, graphics, IPB products, synchronization matrix, and wargame data. When you share or join an Operation, all of it comes with it.</div>';
+    var hasExisting=S.units.length||S.graphics.length;
+    if(hasExisting)h+='<div style="font-size:10px;color:var(--accent);margin-bottom:12px;padding:6px;border:1px solid rgba(74,158,255,.3);border-radius:4px">'+S.units.length+' units and '+S.graphics.length+' graphics on the map will be absorbed into this Operation.</div>';
+    h+='<input type="text" id="op-name" placeholder="Operation Name (e.g., OPN IRON FURY)" style="width:100%;margin-bottom:6px">';
+    h+='<input type="text" id="op-unit" placeholder="Unit Designation (e.g., V16, 1/6)" style="width:100%;margin-bottom:6px">';
+    h+='<input type="text" id="op-coa" placeholder="COA Name (e.g., COA 3)" style="width:100%;margin-bottom:12px">';
+    h+='<button class="btn primary" style="width:100%;padding:12px;font-size:13px" onclick="createOpFromUI()">Create Operation</button>';
+    h+='</div>';
+    return h;
+  }
+
+  /* Active operation header */
+  h+='<div style="background:rgba(74,158,255,.08);border:1px solid rgba(74,158,255,.2);border-radius:6px;padding:8px;margin-bottom:8px">';
+  h+='<div style="display:flex;justify-content:space-between;align-items:center">';
+  h+='<div><span style="font-weight:700;font-size:12px">'+escHtml(op.name)+'</span>';
+  if(op.unitDesignation)h+=' <span style="opacity:.6;font-size:10px">'+escHtml(op.unitDesignation)+'</span>';
+  if(op.coaName)h+=' <span style="opacity:.6;font-size:10px">— '+escHtml(op.coaName)+'</span>';
+  h+='</div>';
+  h+='<button class="btn" style="font-size:9px;padding:2px 6px" onclick="S._opShowSettings=!S._opShowSettings;renderFloatingPanel()">⚙</button>';
+  h+='</div>';
+  /* Contents summary */
+  h+='<div style="display:flex;gap:8px;font-size:9px;opacity:.5;margin-top:4px">';
+  h+='<span>'+S.units.length+' units</span>';
+  h+='<span>'+S.graphics.length+' graphics</span>';
+  h+='<span>'+S.layers.length+' layers</span>';
+  h+='<span>'+op.phases.length+' phases</span>';
+  if(S._ipb)h+='<span style="color:var(--accent)">IPB</span>';
+  h+='</div>';
+  if(S._opShowSettings){
+    h+='<div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.1)">';
+    h+='<input type="text" id="op-edit-name" value="'+escAttr(op.name)+'" placeholder="Operation Name" style="width:100%;margin-bottom:4px;font-size:10px" onchange="S._operation.name=this.value;IO.autosave();renderFloatingPanel()">';
+    h+='<div style="display:flex;gap:4px;margin-bottom:4px"><input type="text" id="op-edit-unit" value="'+escAttr(op.unitDesignation)+'" placeholder="Unit Designation" style="flex:1;font-size:10px" onchange="S._operation.unitDesignation=this.value;IO.autosave()"><input type="text" id="op-edit-coa" value="'+escAttr(op.coaName)+'" placeholder="COA" style="flex:1;font-size:10px" onchange="S._operation.coaName=this.value;IO.autosave()"></div>';
+    h+='<div style="display:flex;gap:4px"><button class="btn" style="font-size:9px;flex:1" onclick="exportSyncMatXLSX()">Export SyncMat (Excel)</button><button class="btn" style="font-size:9px;flex:1" onclick="exportWargameJournal()">Export Journal (Word)</button></div>';
+    h+='<button class="btn danger" style="font-size:9px;width:100%;margin-top:4px" onclick="if(confirm(\'Delete this operation and all its data? Units, graphics, and layers will remain on the map but the syncmat, IPB, and wargame data will be lost.\')){S._operation=null;S._ipb=null;IO.autosave();renderFloatingPanel()}">Delete Operation</button>';
+    h+='</div>';
+  }
+  h+='</div>';
+
+  /* Wargame mode toggle */
+  h+='<div class="toggle-row" style="margin-bottom:6px"><label class="switch"><input type="checkbox" id="op-wargame"'+(op.wargameActive?' checked':'')+'><span class="slider"></span></label><span style="font-size:11px;'+(op.wargameActive?'color:#ff6644;font-weight:600':'')+'">Wargame Mode'+(op.wargameActive?' (ACTIVE)':'')+'</span></div>';
+
+  /* Phase tabs */
+  h+='<div style="margin-bottom:8px">';
+  h+='<div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;flex-wrap:wrap">';
+  h+='<span style="font-size:10px;font-weight:600;opacity:.6">PHASES:</span>';
+  op.phases.forEach(function(ph,i){
+    var isActive=S._opActivePhase===ph.id;
+    h+='<button class="btn'+(isActive?' primary':'')+'" style="font-size:9px;padding:2px 8px;min-height:22px" onclick="S._opActivePhase=\''+ph.id+'\';renderFloatingPanel()">'+escHtml(ph.name)+'</button>';
+  });
+  h+='<button class="btn" style="font-size:9px;padding:2px 6px;min-height:22px;opacity:.6" onclick="opAddPhaseUI()">+</button>';
+  h+='</div>';
+  
+  /* Phase metadata (editable when phase selected) */
+  var activePh=op.phases.find(function(p){return p.id===S._opActivePhase});
+  if(activePh&&S._opShowPhaseMeta){
+    h+='<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:6px;font-size:10px">';
+    h+='<div style="display:flex;gap:4px;margin-bottom:3px"><label style="width:60px;opacity:.5">Name</label><input type="text" value="'+escAttr(activePh.name)+'" style="flex:1;font-size:10px;padding:2px 4px" onchange="opEditPhase(\''+activePh.id+'\',\'name\',this.value)"></div>';
+    h+='<div style="display:flex;gap:4px;margin-bottom:3px"><label style="width:60px;opacity:.5">Description</label><input type="text" value="'+escAttr(activePh.description)+'" style="flex:1;font-size:10px;padding:2px 4px" onchange="opEditPhase(\''+activePh.id+'\',\'description\',this.value)"></div>';
+    h+='<div style="display:flex;gap:4px;margin-bottom:3px"><label style="width:60px;opacity:.5">Begins</label><input type="text" value="'+escAttr(activePh.beginsWith)+'" style="flex:1;font-size:10px;padding:2px 4px" onchange="opEditPhase(\''+activePh.id+'\',\'beginsWith\',this.value)"></div>';
+    h+='<div style="display:flex;gap:4px;margin-bottom:3px"><label style="width:60px;opacity:.5">Ends</label><input type="text" value="'+escAttr(activePh.endsWith)+'" style="flex:1;font-size:10px;padding:2px 4px" onchange="opEditPhase(\''+activePh.id+'\',\'endsWith\',this.value)"></div>';
+    h+='<div style="display:flex;gap:4px;margin-bottom:3px"><label style="width:60px;opacity:.5">Timeline</label><input type="text" value="'+escAttr(activePh.timeline)+'" style="flex:1;font-size:10px;padding:2px 4px" onchange="opEditPhase(\''+activePh.id+'\',\'timeline\',this.value)"></div>';
+    h+='<button class="btn danger" style="font-size:9px;margin-top:2px" onclick="if(confirm(\'Remove this phase?\')){opRemovePhase(\''+activePh.id+'\');S._opActivePhase=null;renderFloatingPanel()}">Remove Phase</button>';
+    h+='</div>';
+  }
+  if(activePh){
+    h+='<button class="btn" style="font-size:9px;padding:1px 6px;min-height:18px;opacity:.5" onclick="S._opShowPhaseMeta=!S._opShowPhaseMeta;renderFloatingPanel()">'+(S._opShowPhaseMeta?'▼':'▶')+' Phase Details</button>';
+  }
+  h+='</div>';
+
+  /* SyncMat table */
+  if(op.phases.length===0){
+    h+='<div style="text-align:center;padding:16px;opacity:.5;font-size:11px">Add a phase to begin building the SyncMat.</div>';
+    return h;
+  }
+
+  h+='<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -10px;padding:0 10px">';
+  h+='<table style="width:100%;border-collapse:collapse;font-size:10px;min-width:'+(120+op.phases.length*160)+'px">';
+  
+  /* Table header */
+  h+='<thead><tr style="background:rgba(255,255,255,.06)">';
+  h+='<th style="text-align:left;padding:4px 6px;font-size:9px;width:50px;border:1px solid rgba(255,255,255,.1)">WFF</th>';
+  h+='<th style="text-align:left;padding:4px 6px;font-size:9px;width:70px;border:1px solid rgba(255,255,255,.1)">Element</th>';
+  op.phases.forEach(function(ph){
+    h+='<th style="text-align:center;padding:4px 6px;font-size:9px;border:1px solid rgba(255,255,255,.1);min-width:140px">'+escHtml(ph.name);
+    if(ph.timeline)h+='<br><span style="opacity:.5;font-weight:400">'+escHtml(ph.timeline)+'</span>';
+    h+='</th>';
+  });
+  h+='</tr></thead><tbody>';
+
+  /* Render each WFF section */
+  op.wffSections.forEach(function(sec){
+    var rowCount=Math.max(1,sec.rows.length);
+    /* Section header row */
+    h+='<tr style="background:rgba(255,255,255,.04)">';
+    h+='<td rowspan="'+rowCount+'" style="vertical-align:middle;text-align:center;font-weight:700;font-size:9px;padding:4px;border:1px solid rgba(255,255,255,.1);background:rgba(128,128,128,.15);writing-mode:vertical-lr;text-orientation:mixed;letter-spacing:1px">'+escHtml(sec.name)+'</td>';
+    
+    if(sec.rows.length===0){
+      /* Empty section */
+      h+='<td style="padding:4px 6px;border:1px solid rgba(255,255,255,.1);opacity:.3;font-style:italic" colspan="'+(1+op.phases.length)+'">';
+      h+='<span style="cursor:pointer" onclick="opAddRowUI(\''+sec.id+'\')">+ Add row</span></td></tr>';
+    }else{
+      sec.rows.forEach(function(row,ri){
+        if(ri>0)h+='<tr>';
+        h+='<td style="padding:3px 5px;border:1px solid rgba(255,255,255,.1);font-weight:600;white-space:nowrap;font-size:9px;position:relative">'+escHtml(row.label);
+        h+='<span style="cursor:pointer;opacity:.3;margin-left:2px;font-size:8px" onclick="opRemoveRow(\''+sec.id+'\',\''+row.id+'\');renderFloatingPanel()" title="Remove">✕</span></td>';
+        
+        /* Phase cells */
+        op.phases.forEach(function(ph){
+          var key=row.id+"_"+ph.id;
+          var task=op.phaseTasks[key];
+          var txt=task?task.text:"";
+          var additions=task?task.wargameAdditions:[];
+          var status=op.phaseReviewStatus[key]||"";
+          
+          var cellStyle="padding:3px 5px;border:1px solid rgba(255,255,255,.1);vertical-align:top;font-size:9px;cursor:pointer;max-width:180px;word-wrap:break-word";
+          if(status==="unreviewed")cellStyle+=";background:rgba(255,165,0,.08);border-left:2px solid rgba(255,165,0,.4)";
+          
+          h+='<td style="'+cellStyle+'" onclick="opEditCell(\''+row.id+'\',\''+ph.id+'\')" title="Click to edit">';
+          if(txt){
+            h+='<div style="white-space:pre-wrap;line-height:1.3">'+escHtml(txt).replace(/\n/g,'<br>')+'</div>';
+          }
+          /* Wargame additions in red */
+          additions.forEach(function(a){
+            h+='<div style="color:#ff4444;white-space:pre-wrap;line-height:1.3;margin-top:2px;border-top:1px solid rgba(255,68,68,.2);padding-top:2px">'+escHtml(a.text).replace(/\n/g,'<br>')+'</div>';
+          });
+          if(!txt&&additions.length===0){
+            h+='<span style="opacity:.2">—</span>';
+          }
+          if(status==="unreviewed"){
+            h+='<div style="margin-top:2px"><button class="btn" style="font-size:7px;padding:1px 4px;min-height:14px;opacity:.6" onclick="event.stopPropagation();opConfirmNoChange(\''+row.id+'\',\''+ph.id+'\');renderFloatingPanel()">✓ No Change</button></div>';
+          }
+          h+='</td>';
+        });
+        h+='</tr>';
+      });
+    }
+    /* Add row button after section */
+    h+='<tr><td style="border:none"></td><td colspan="'+(1+op.phases.length)+'" style="border:none;padding:1px 5px">';
+    h+='<span style="cursor:pointer;opacity:.3;font-size:8px" onclick="opAddRowUI(\''+sec.id+'\')">+ Add row</span></td></tr>';
+  });
+
+  h+='</tbody></table></div>';
+
+  /* Wargame journal (if active or has entries) */
+  if(op.wargameActive||op.wargameJournal.length>0){
+    h+=renderWargameJournalSection();
+  }
+
+  return h;
+}
+
+function renderWargameJournalSection(){
+  var op=S._operation;if(!op)return'';
+  var h='';
+  h+='<div style="margin-top:12px;border-top:1px solid rgba(255,255,255,.1);padding-top:8px">';
+  h+='<div style="font-weight:700;font-size:11px;margin-bottom:6px">Wargame Journal <span style="opacity:.4;font-size:9px">('+op.wargameJournal.length+' entries)</span></div>';
+  
+  /* Journal entries - show last 10 */
+  var entries=op.wargameJournal.slice(-10);
+  if(entries.length){
+    h+='<div style="max-height:200px;overflow-y:auto;margin-bottom:8px">';
+    entries.forEach(function(e){
+      var ph=op.phases.find(function(p){return p.id===e.phaseId});
+      var typeColors={action:'#ff8844',reaction:'#44aaff',counteraction:'#ff4444',decision:'#ffd700',note:'#888'};
+      var col=typeColors[e.entryType]||'#888';
+      h+='<div style="margin-bottom:4px;padding:4px 6px;border-radius:4px;background:rgba(255,255,255,.03);border-left:3px solid '+col+';font-size:9px">';
+      h+='<div style="display:flex;justify-content:space-between;opacity:.5;margin-bottom:2px"><span>'+escHtml(e.author)+'</span><span>'+escHtml(e.entryType.toUpperCase())+(ph?' — '+escHtml(ph.name):'')+'</span></div>';
+      h+='<div style="line-height:1.3">'+escHtml(e.text)+'</div>';
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+  
+  /* New entry input */
+  if(op.wargameActive){
+    h+='<div style="display:flex;gap:3px;margin-bottom:4px;flex-wrap:wrap">';
+    var types=['action','reaction','counteraction','decision','note'];
+    var curType=S._wjEntryType||'note';
+    types.forEach(function(t){
+      h+='<button class="btn'+(curType===t?' primary':'')+'" style="font-size:8px;padding:1px 5px;min-height:18px;text-transform:uppercase" onclick="S._wjEntryType=\''+t+'\';renderFloatingPanel()">'+t.substr(0,3)+'</button>';
+    });
+    h+='</div>';
+    h+='<div style="display:flex;gap:4px">';
+    h+='<select id="wj-phase" style="font-size:9px;padding:2px;flex:0 0 auto">';
+    op.phases.forEach(function(ph){h+='<option value="'+ph.id+'"'+(S._opActivePhase===ph.id?' selected':'')+'>'+escHtml(ph.name)+'</option>'});
+    h+='</select>';
+    h+='<input type="text" id="wj-text" placeholder="Journal entry..." style="flex:1;font-size:10px;padding:3px 6px">';
+    h+='<button class="btn primary" style="font-size:9px;padding:2px 8px;min-height:0" onclick="submitJournalEntry()">Add</button>';
+    h+='</div>';
+  }
+  h+='</div>';
+  return h;
+}
+
+/* UI action handlers */
+window.createOpFromUI=function(){
+  var name=(document.getElementById('op-name')||{}).value||'New Operation';
+  var unit=(document.getElementById('op-unit')||{}).value||'';
+  var coa=(document.getElementById('op-coa')||{}).value||'COA 1';
+  createOperation(name,unit,coa);
+  renderFloatingPanel();
+};
+
+window.opAddPhaseUI=function(){
+  var op=S._operation;if(!op)return;
+  var name=prompt('Phase/Stage name:','Phase '+(op.phases.length+1));
+  if(!name)return;
+  var ph=opAddPhase(name);
+  S._opActivePhase=ph.id;
+  renderFloatingPanel();
+};
+
+window.opEditPhase=function(phId,prop,val){
+  var op=S._operation;if(!op)return;
+  var ph=op.phases.find(function(p){return p.id===phId});
+  if(ph){ph[prop]=val;IO.autosave()}
+};
+
+window.opAddRowUI=function(sectionId){
+  var op=S._operation;if(!op)return;
+  var sec=op.wffSections.find(function(s){return s.id===sectionId});if(!sec)return;
+  
+  /* Build suggestion list */
+  var suggestions=WFF_ROW_SUGGESTIONS[sectionId]||[];
+  var unitSuggestions=[];
+  if(suggestions.indexOf('__UNITS__')>-1){
+    suggestions=[];
+    S.units.forEach(function(u){
+      var lbl=u.designation||u.uniqueDesig||u.id.substr(0,6);
+      unitSuggestions.push(lbl);
+    });
+    suggestions=unitSuggestions;
+  }
+  /* Filter out already-added labels */
+  var existing=sec.rows.map(function(r){return r.label.toLowerCase()});
+  suggestions=suggestions.filter(function(s){return existing.indexOf(s.toLowerCase())<0});
+  
+  var label;
+  if(suggestions.length>0){
+    label=prompt('Add row to '+sec.name+':\n\nSuggestions: '+suggestions.join(', ')+'\n\nOr type custom name:','');
+  }else{
+    label=prompt('Add row to '+sec.name+':','');
+  }
+  if(!label)return;
+  
+  /* Check if this matches a map unit */
+  var matchUnit=S.units.find(function(u){return(u.designation||u.uniqueDesig||'')==label});
+  opAddRow(sectionId,label,matchUnit?'unit':'guidance',matchUnit?matchUnit.id:null);
+  renderFloatingPanel();
+};
+
+window.opEditCell=function(rowId,phaseId){
+  var op=S._operation;if(!op)return;
+  var key=rowId+"_"+phaseId;
+  var task=op.phaseTasks[key];
+  var currentText=task?task.text:'';
+  
+  if(op.wargameActive){
+    var addition=prompt('Wargame addition (will appear in RED):\n\nOriginal: '+currentText.substr(0,100),'');
+    if(addition===null)return;
+    if(addition.trim()){
+      opSetTask(rowId,phaseId,addition);
+      renderFloatingPanel();
+    }
+  }else{
+    var newText=prompt('Task/entry:',currentText);
+    if(newText===null)return;
+    opSetTask(rowId,phaseId,newText);
+    renderFloatingPanel();
+  }
+};
+
+window.submitJournalEntry=function(){
+  var op=S._operation;if(!op)return;
+  var phSel=document.getElementById('wj-phase');
+  var textEl=document.getElementById('wj-text');
+  if(!phSel||!textEl||!textEl.value.trim())return;
+  opAddJournalEntry(phSel.value,S._wjEntryType||'note',textEl.value.trim());
+  textEl.value='';
+  renderFloatingPanel();
+};
+
+// ─── EXPORT: SYNCMAT TO EXCEL ───────────────────────────────────
+
+function exportSyncMatXLSX(){
+  var op=S._operation;if(!op){IO.notify('No operation','error');return}
+  /* Build CSV-style data, then use xlsx skill if available. Fallback to CSV. */
+  var rows=[];
+  /* Header row 1: Operation name */
+  var hdr1=[op.name,op.unitDesignation];
+  op.phases.forEach(function(ph){hdr1.push(ph.name)});
+  rows.push(hdr1);
+  /* Row 2: descriptions */
+  var hdr2=['Description',''];op.phases.forEach(function(ph){hdr2.push(ph.description)});rows.push(hdr2);
+  /* Row 3: begins with */
+  var hdr3=['Begins With',''];op.phases.forEach(function(ph){hdr3.push(ph.beginsWith)});rows.push(hdr3);
+  /* Row 4: ends with */
+  var hdr4=['Ends With',''];op.phases.forEach(function(ph){hdr4.push(ph.endsWith)});rows.push(hdr4);
+  /* Row 5: timeline */
+  var hdr5=['Timeline',''];op.phases.forEach(function(ph){hdr5.push(ph.timeline)});rows.push(hdr5);
+  
+  /* WFF sections */
+  op.wffSections.forEach(function(sec){
+    if(sec.rows.length===0)return;
+    sec.rows.forEach(function(row,ri){
+      var r=[ri===0?sec.name:'',row.label];
+      op.phases.forEach(function(ph){
+        var key=row.id+'_'+ph.id;
+        var task=op.phaseTasks[key];
+        var cellText=task?task.text:'';
+        if(task&&task.wargameAdditions.length){
+          task.wargameAdditions.forEach(function(a){
+            cellText+='\n[WG] '+a.text;
+          });
+        }
+        r.push(cellText);
+      });
+      rows.push(r);
+    });
+  });
+
+  /* Generate CSV for download (Excel-compatible) */
+  var csv=rows.map(function(r){
+    return r.map(function(c){
+      var s=String(c||'').replace(/"/g,'""');
+      return '"'+s+'"';
+    }).join(',');
+  }).join('\n');
+  
+  var bom='\uFEFF';/* BOM for Excel UTF-8 */
+  var blob=new Blob([bom+csv],{type:'text/csv;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download=(op.name||'SyncMat').replace(/[^a-zA-Z0-9 _-]/g,'')+'_SyncMat.csv';
+  a.click();URL.revokeObjectURL(url);
+  IO.notify('SyncMat exported as CSV (open in Excel)','success');
+}
+
+// ─── EXPORT: WARGAME JOURNAL TO WORD (HTML) ─────────────────────
+
+function exportWargameJournal(){
+  var op=S._operation;if(!op||!op.wargameJournal.length){IO.notify('No journal entries','error');return}
+  
+  var html='<html><head><meta charset="utf-8"><style>body{font-family:Calibri,Arial,sans-serif;margin:40px;font-size:11pt;line-height:1.4}h1{font-size:16pt;margin-bottom:4px}h2{font-size:13pt;margin-top:20px;border-bottom:1px solid #999;padding-bottom:4px}.meta{color:#666;font-size:9pt;margin-bottom:12px}.entry{margin-bottom:8px;padding:6px 10px;border-left:4px solid #ccc}.entry.action{border-color:#ff8844}.entry.reaction{border-color:#4488ff}.entry.counteraction{border-color:#ff4444}.entry.decision{border-color:#ffd700}.entry .type{font-weight:bold;text-transform:uppercase;font-size:9pt;color:#666}.entry .author{font-size:9pt;color:#888;float:right}.entry .text{margin-top:4px}</style></head><body>';
+  html+='<h1>Wargame Journal</h1>';
+  html+='<div class="meta">'+escHtml(op.name)+' — '+escHtml(op.coaName||'')+'<br>'+escHtml(op.unitDesignation||'')+'<br>Exported: '+new Date().toLocaleString()+'</div>';
+  
+  /* Group by phase */
+  op.phases.forEach(function(ph){
+    var entries=op.wargameJournal.filter(function(e){return e.phaseId===ph.id});
+    if(!entries.length)return;
+    html+='<h2>'+escHtml(ph.name)+(ph.timeline?' ('+escHtml(ph.timeline)+')':'')+'</h2>';
+    entries.forEach(function(e){
+      html+='<div class="entry '+e.entryType+'">';
+      html+='<span class="type">'+escHtml(e.entryType)+'</span>';
+      html+='<span class="author">'+escHtml(e.author)+' — '+new Date(e.timestamp).toLocaleTimeString()+'</span>';
+      html+='<div class="text">'+escHtml(e.text).replace(/\n/g,'<br>')+'</div>';
+      if(e.linkedCells&&e.linkedCells.length){
+        html+='<div style="font-size:8pt;color:#999;margin-top:2px">→ Modified: '+e.linkedCells.join(', ')+'</div>';
+      }
+      html+='</div>';
+    });
+  });
+  
+  html+='</body></html>';
+  var blob=new Blob([html],{type:'application/msword'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download=(op.name||'WargameJournal').replace(/[^a-zA-Z0-9 _-]/g,'')+'_Journal.doc';
+  a.click();URL.revokeObjectURL(url);
+  IO.notify('Wargame Journal exported as Word doc','success');
+}
+
 function init(){
   document.getElementById("app").innerHTML=`
     <div class="topbar">
       <div class="topbar-left">
         <div class="topbar-dot"></div>
-        <span class="topbar-title">STAFFMAPS</span><span style="font-size:9px;opacity:0.4;margin-left:4px">v15.8</span>
+        <span class="topbar-title">STAFFMAPS</span><span style="font-size:9px;opacity:0.4;margin-left:4px">v16.1</span>
         <button class="btn" id="file-btn" style="padding:4px 10px;font-size:11px;margin-left:4px;min-height:32px">\u2630 FILE</button>
         <div class="file-menu" id="file-menu"></div>
         <button class="btn" id="undo-btn" style="padding:2px 6px;opacity:0.3;pointer-events:none" title="Undo" onclick="undo()">\u21a9</button>
@@ -4545,16 +6427,42 @@ function init(){
         <button class="stack-btn" id="sb-layers" title="Layers" onclick="togglePanel('layers')"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></button>
         <button class="stack-btn" id="sb-addunit" title="Add Unit / Draw" onclick="togglePanel('addunit')"><svg viewBox="0 0 24 24"><defs><mask id="pm"><rect width="24" height="24" fill="white"/><circle cx="19" cy="17" r="5.5" fill="black"/></mask></defs><g mask="url(#pm)"><rect x="2" y="4" width="15" height="11" rx="1" fill="none"/><line x1="2" y1="4" x2="17" y2="15"/><line x1="17" y1="4" x2="2" y2="15"/></g><line x1="19" y1="13.5" x2="19" y2="20.5"/><line x1="15.5" y1="17" x2="22.5" y2="17"/></svg></button>
         <button class="stack-btn" id="sb-maptools" title="Map Tools" onclick="togglePanel('maptools')"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="currentColor"/></svg></button>
+        <button class="stack-btn" id="sb-syncmat" title="Operations / SyncMat" onclick="togglePanel('syncmat')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" fill="none"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg></button>
         <button class="stack-btn" id="sb-ipb" title="IPB Wizard" onclick="togglePanel('ipb')"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12l2 2 4-4"/></svg></button>
       </div>
       <div class="float-panel" id="float-panel">
-        <div class="fp-header"><span class="fp-title" id="fp-title"></span><button class="btn" id="fp-close" style="width:32px;height:32px;min-height:32px;padding:0;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0">\u2715</button></div>
+        <div class="fp-header"><span class="fp-title" id="fp-title"></span><button class="btn" id="fp-close" style="width:32px;height:32px;min-height:32px;padding:0;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0">\u2715</button></div>
         <div class="fp-body" id="fp-body"></div>
       </div>
       <div class="editor-overlay" id="editor" style="display:none"></div>
       <div class="mode-bar" id="mode-bar" style="display:none"></div>
       <div class="zoom-ctrl"><button class="stack-btn" id="sb-panlock" title="Pan Only Mode (lock editing)" onclick="togglePanLock()" style="margin-bottom:4px"><svg viewBox="0 0 24 24"><path d="M5 9h14l1 12H4L5 9z"/><path d="M8 9V6a4 4 0 018 0v3"/></svg></button><button class="btn" id="zoom-in">+</button><button class="btn" id="zoom-out">\u2212</button></div>
       <div class="layer-indicator"><div class="dot" style="background:#4a9eff"></div>Default</div>
+      <div id="mcoo-banner" style="display:none;position:absolute;top:calc(8px + var(--safe-top,0px));left:50%;transform:translateX(-50%);z-index:55;white-space:nowrap"></div>
+      <!-- Task Organization Overlay -->
+      <div id="to-overlay" style="display:none;position:fixed;inset:0;z-index:200;pointer-events:none">
+        <div id="to-panel" style="position:absolute;top:5%;left:5%;width:90%;height:90%;background:var(--panel-bg);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);pointer-events:auto;display:flex;flex-direction:column;overflow:hidden">
+          <div id="to-header" style="display:flex;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border);flex-shrink:0">
+            <span style="font-size:16px;font-weight:700;flex:1">ENEMY TASK ORGANIZATION</span>
+            <span id="to-unit-count" style="font-size:10px;opacity:.5;margin-right:12px"></span>
+            <button class="btn" style="font-size:10px;padding:4px 10px;margin-right:6px" onclick="toAddRootUnit()">+ Add Unit</button>
+            <button class="btn" style="font-size:16px;padding:2px 8px;opacity:.6" onclick="ipbCloseTaskOrg()">✕</button>
+          </div>
+          <div style="flex:1;display:flex;overflow:hidden">
+            <div id="to-body" style="flex:1;overflow:auto;padding:20px;position:relative;cursor:grab" onmousedown="toPanStart(event)" onwheel="toWheelZoom(event)">
+              <div id="to-tree-wrap" style="transform-origin:center top;display:flex;justify-content:center;min-width:100%"></div>
+            </div>
+            <div id="to-infocard" style="display:none;width:320px;border-left:1px solid var(--border);overflow-y:auto;flex-shrink:0"></div>
+          </div>
+          <div style="position:absolute;bottom:12px;left:12px;display:flex;align-items:center;gap:4px;background:rgba(30,30,35,.9);border:1px solid var(--border);border-radius:6px;padding:4px 8px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:5">
+            <button class="btn" style="font-size:16px;padding:2px 8px;min-width:28px" onclick="toZoom(-0.1)" title="Zoom out">−</button>
+            <span id="to-zoom-label" style="font-size:10px;opacity:.7;min-width:36px;text-align:center">100%</span>
+            <button class="btn" style="font-size:16px;padding:2px 8px;min-width:28px" onclick="toZoom(0.1)" title="Zoom in">+</button>
+            <div style="width:1px;height:16px;background:var(--border);margin:0 2px"></div>
+            <button class="btn" style="font-size:9px;padding:3px 8px" onclick="toResetView()">Reset</button>
+          </div>
+        </div>
+      </div>
     </div>`;
 
   canvas=document.getElementById("mapCanvas");ctx=canvas.getContext("2d");
