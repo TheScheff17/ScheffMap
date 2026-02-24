@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.json">
 <title>StaffMaps — Tactical Map Engine</title>
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js" onerror="console.warn('PeerJS primary CDN failed, will retry on demand')"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root{--bg:#1a1a1a;--fg:#f0f0f0;--accent:#4a9eff;--accent2:#ffd700;--panel-bg:#1a1a1a;--btn-bg:rgba(255,255,255,0.1);--btn-hover:rgba(255,255,255,0.2);--border:rgba(255,255,255,0.15);--danger:#ff4444;--success:#44cc44;--warning:#ffaa00;--safe-top:env(safe-area-inset-top,0px);--safe-right:env(safe-area-inset-right,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--safe-left:env(safe-area-inset-left,0px);--font:'SF Mono','Fira Code',Consolas,Monaco,monospace;--ui-scale:1}
@@ -132,11 +132,11 @@ input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:20
 const SVG_W=120,SVG_H=140,CX=60,CY=62,FRAME_W=70,FRAME_H=50,U=10,DEG=Math.PI/180,TILE_SIZE=256,MAX_UNDO=30;
 const TILE_SOURCES={esri_topo:{name:"ESRI Topo",url:"https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",maxZoom:19},osm:{name:"OpenStreetMap",url:"https://tile.openstreetmap.org/{z}/{x}/{y}.png",maxZoom:19},esri_sat:{name:"ESRI Satellite",url:"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",maxZoom:19},esri_natgeo:{name:"ESRI NatGeo",url:"https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}",maxZoom:16},opentopo:{name:"OpenTopo",url:"https://tile.opentopomap.org/{z}/{x}/{y}.png",maxZoom:17},usgs_topo:{name:"USGS Topo",url:"https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}",maxZoom:16},google_sat:{name:"Google Satellite",url:"https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",maxZoom:20},google_hybrid:{name:"Google Hybrid",url:"https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",maxZoom:20},google_terrain:{name:"Google Terrain",url:"https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}",maxZoom:20},google_roads:{name:"Google Roads",url:"https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",maxZoom:20}};
 const AFFILIATIONS={friendly:{color:"#000",fill:"#80E0FF",shape:"rect",label:"Friendly"},hostile:{color:"#000",fill:"#FF8080",shape:"diamond",label:"Hostile"},neutral:{color:"#000",fill:"#AAFFAA",shape:"square",label:"Neutral"},unknown:{color:"#000",fill:"#FFFF80",shape:"quatrefoil",label:"Unknown"}};
-const UNIT_CATEGORIES=[{name:"Infantry, Tanks & Artillery",types:[{id:"infantry",label:"Infantry"},{id:"light_infantry",label:"Light Infantry"},{id:"motorized_infantry",label:"Motorized Inf"},{id:"naval_infantry",label:"Naval Infantry"},{id:"mechanized_infantry",label:"Mech Infantry"},{id:"ifv",label:"IFV"},{id:"armor",label:"Armor"},{id:"amphibious_armor",label:"Amphib Armor"},{id:"armored_wheeled",label:"Armor (Whl)"},{id:"recon",label:"Recon"},{id:"armored_recon",label:"Armored Recon"},{id:"artillery",label:"Field Artillery"},{id:"mechanized_artillery",label:"Mech Artillery"},{id:"rocket_artillery",label:"Rocket Arty"},{id:"mortar",label:"Mortar"},{id:"mortar_wheeled",label:"Mortar (Whl)"},{id:"air_defense",label:"Air Defense Arty"},{id:"anti_armor",label:"Anti-Armor"},{id:"magtf",label:"MAGTF"}]},{name:"Aviation & Air Defense",types:[{id:"aviation",label:"Aviation"},{id:"fixed_wing",label:"Fixed Wing"},{id:"medevac_aviation",label:"MEDEVAC"},{id:"uav",label:"UAS"},{id:"sam",label:"SAM"}]},{name:"Engineer",types:[{id:"engineer",label:"Engineer"},{id:"combat_engineer",label:"Combat Engineer"},{id:"bridging",label:"Bridging"}]},{name:"Command, Signal & EW",types:[{id:"headquarters",label:"HQ"},{id:"signal",label:"Signal"},{id:"military_intelligence",label:"MI"},{id:"electronic_warfare",label:"EW"},{id:"cyber",label:"Cyber"}]},{name:"Logistics & Medical",types:[{id:"sustainment",label:"Sustainment"},{id:"combat_service_support",label:"Combat Svc Spt"},{id:"medical",label:"Medical"},{id:"maintenance",label:"Maintenance"},{id:"transportation",label:"Transport"},{id:"supply",label:"Supply"},{id:"ordnance",label:"Ordnance"}]},{name:"Special Forces",types:[{id:"special_forces",label:"SF"},{id:"ranger",label:"Ranger"},{id:"civil_affairs",label:"Civil Affairs"},{id:"psyop",label:"PSYOP"}]},{name:"Waypoints",types:[{id:"waypoint",label:"Waypoint"}]}];
+const UNIT_CATEGORIES=[{name:"Infantry & Armor",types:[{id:"infantry",label:"Infantry"},{id:"light_infantry",label:"Light Infantry"},{id:"motorized_infantry",label:"Motorized Inf"},{id:"naval_infantry",label:"Naval Infantry"},{id:"mechanized_infantry",label:"Mech Infantry"},{id:"mechanized_infantry_wheeled",label:"Mech Inf (Whl)"},{id:"ifv",label:"IFV"},{id:"lav_infantry",label:"LAV Infantry"},{id:"armor",label:"Armor"},{id:"amphibious_armor",label:"Amphib Armor"},{id:"armored_wheeled",label:"Armor (Whl)"},{id:"recon",label:"Recon"},{id:"armored_recon",label:"Armored Recon"},{id:"armored_recon_wheeled",label:"Arm Recon (Whl)"},{id:"anti_armor",label:"Anti-Armor"},{id:"magtf",label:"MAGTF"}]},{name:"Fires",types:[{id:"artillery",label:"Field Artillery"},{id:"mechanized_artillery",label:"Mech Artillery"},{id:"rocket_artillery",label:"Rocket Arty"},{id:"mortar",label:"Mortar"},{id:"mortar_wheeled",label:"Mortar (Whl)"}]},{name:"Aviation & Air Defense",types:[{id:"aviation",label:"Aviation"},{id:"fixed_wing",label:"Fixed Wing"},{id:"medevac_aviation",label:"MEDEVAC"},{id:"uav",label:"UAS"},{id:"air_defense",label:"Air Defense Arty"},{id:"sam",label:"SAM"}]},{name:"Engineer",types:[{id:"engineer",label:"Engineer"},{id:"combat_engineer",label:"Combat Engineer"},{id:"bridging",label:"Bridging"}]},{name:"Command, Signal & EW",types:[{id:"headquarters",label:"HQ"},{id:"signal",label:"Signal"},{id:"military_intelligence",label:"MI"},{id:"electronic_warfare",label:"EW"},{id:"cyber",label:"Cyber"}]},{name:"Logistics & Medical",types:[{id:"sustainment",label:"Sustainment"},{id:"combat_service_support",label:"Combat Svc Spt"},{id:"medical",label:"Medical"},{id:"maintenance",label:"Maintenance"},{id:"transportation",label:"Transport"},{id:"supply",label:"Supply"},{id:"ordnance",label:"Ordnance"}]},{name:"Special Forces",types:[{id:"special_forces",label:"SF"},{id:"ranger",label:"Ranger"},{id:"civil_affairs",label:"Civil Affairs"},{id:"psyop",label:"PSYOP"}]},{name:"Waypoints",types:[{id:"waypoint",label:"Waypoint"},{id:"blank",label:"Blank"}]}];
 const TYPE_LABELS={};UNIT_CATEGORIES.forEach(c=>c.types.forEach(t=>{TYPE_LABELS[t.id]=t.label}));
 const ECHELONS=[{id:"team",label:"Team/Crew",mark:"slashO"},{id:"squad",label:"Squad",mark:"dot1"},{id:"section",label:"Section",mark:"dot2"},{id:"platoon",label:"Platoon",mark:"dot3"},{id:"company",label:"Company",mark:"bar1"},{id:"battalion",label:"Battalion",mark:"bar2"},{id:"regiment",label:"Regt/Group",mark:"bar3"},{id:"brigade",label:"Brigade",mark:"x1"},{id:"division",label:"Division",mark:"x2"},{id:"corps",label:"Corps",mark:"x3"},{id:"army",label:"Theater Army",mark:"x4"},{id:"army_group",label:"Army Group",mark:"x5"},{id:"theater",label:"Theater",mark:"x6"},{id:"command",label:"Command",mark:"cmd"}];
 const MODIFIERS=[{id:"reinforced",label:"+",symbol:"+"},{id:"reduced",label:"\u2212",symbol:"\u2212"},{id:"airborne",label:"Airborne",symbol:"\u2297"},{id:"air_assault",label:"Air Assault",symbol:"\u2298"},{id:"mountain",label:"Mountain",symbol:"\u25b2"},{id:"arctic",label:"Arctic",symbol:"\u2744"},{id:"amphibious",label:"Amphibious",symbol:"\u2248"},{id:"light",label:"Light",symbol:"L"},{id:"heavy",label:"Heavy",symbol:"H"},{id:"motorized",label:"Motorized",symbol:"\u2299"},{id:"mechanized",label:"Mechanized",symbol:"\u229b"},{id:"wheeled",label:"Wheeled",symbol:"W"}];
-const EQUIPMENT_DEFAULTS={infantry:{vehicle:"HMMWV",crew:9,weapon:"M4/M249",maxRange:3600},light_infantry:{vehicle:"Foot",crew:9,weapon:"M4/M249",maxRange:3600},motorized_infantry:{vehicle:"HMMWV/JLTV",crew:9,weapon:"M4/M249",maxRange:3600,speed:100},naval_infantry:{vehicle:"AAV-7A1",crew:21,weapon:"M4/M249/Mk19",maxRange:3600},mechanized_infantry:{vehicle:"M2 Bradley",crew:9,weapon:"25mm/TOW",maxRange:3750,sensorRange:4000},ifv:{vehicle:"M2A3 Bradley",crew:9,weapon:"25mm/TOW",maxRange:3750,sensorRange:4000,speed:61},armor:{vehicle:"M1A2 Abrams",crew:4,weapon:"120mm",maxRange:4000,sensorRange:5000,speed:67},amphibious_armor:{vehicle:"AAV-7A1/ACV",crew:3,weapon:"Mk19/M2",maxRange:2200,speed:13},armored_wheeled:{vehicle:"Stryker",crew:9,weapon:"M2/.50 cal",maxRange:1800,sensorRange:4000,speed:97},recon:{vehicle:"HMMWV/JLTV",crew:4,weapon:"M4/M249",maxRange:3600,sensorRange:6000},artillery:{vehicle:"M777",crew:8,weapon:"155mm",maxRange:30000},mechanized_artillery:{vehicle:"M109A7",crew:4,weapon:"155mm",maxRange:30000,speed:56},rocket_artillery:{vehicle:"M270 MLRS",crew:3,weapon:"MLRS",maxRange:70000},mortar:{vehicle:"M1129",crew:4,weapon:"120mm Mortar",maxRange:7200},mortar_wheeled:{vehicle:"M1064",crew:5,weapon:"120mm Mortar",maxRange:7200},air_defense:{vehicle:"M-SHORAD",crew:3,weapon:"Stinger/30mm",maxRange:8000,sensorRange:15000},anti_armor:{vehicle:"HMMWV",crew:4,weapon:"Javelin/TOW",maxRange:4750},magtf:{vehicle:"Various",crew:0,weapon:"Combined Arms"},aviation:{vehicle:"UH-60",crew:4,speed:294},fixed_wing:{vehicle:"C-130",crew:5,speed:592},uav:{vehicle:"MQ-1C Gray Eagle",sensorRange:25000,speed:280},sam:{vehicle:"Patriot",crew:3,weapon:"MIM-104",maxRange:160000,sensorRange:180000},engineer:{vehicle:"M9 ACE",crew:1},combat_engineer:{vehicle:"M9 ACE",crew:1,weapon:"M4/Demolitions"},special_forces:{crew:12,weapon:"Various"},ranger:{crew:12,weapon:"Various"}};
+const EQUIPMENT_DEFAULTS={infantry:{vehicle:"HMMWV",crew:9,weapon:"M4/M249",maxRange:3600},light_infantry:{vehicle:"Foot",crew:9,weapon:"M4/M249",maxRange:3600},motorized_infantry:{vehicle:"HMMWV/JLTV",crew:9,weapon:"M4/M249",maxRange:3600,speed:100},naval_infantry:{vehicle:"AAV-7A1",crew:21,weapon:"M4/M249/Mk19",maxRange:3600},mechanized_infantry:{vehicle:"M2 Bradley",crew:9,weapon:"25mm/TOW",maxRange:3750,sensorRange:4000},mechanized_infantry_wheeled:{vehicle:"Stryker ICV",crew:9,weapon:"M2/.50 cal",maxRange:1800,sensorRange:4000,speed:97},lav_infantry:{vehicle:"LAV-25",crew:6,weapon:"25mm/M240",maxRange:2500,sensorRange:4000,speed:100},ifv:{vehicle:"M2A3 Bradley",crew:9,weapon:"25mm/TOW",maxRange:3750,sensorRange:4000,speed:61},armor:{vehicle:"M1A2 Abrams",crew:4,weapon:"120mm",maxRange:4000,sensorRange:5000,speed:67},amphibious_armor:{vehicle:"AAV-7A1/ACV",crew:3,weapon:"Mk19/M2",maxRange:2200,speed:13},armored_wheeled:{vehicle:"Stryker",crew:9,weapon:"M2/.50 cal",maxRange:1800,sensorRange:4000,speed:97},recon:{vehicle:"HMMWV/JLTV",crew:4,weapon:"M4/M249",maxRange:3600,sensorRange:6000},armored_recon_wheeled:{vehicle:"Stryker RV",crew:4,weapon:"M2/.50 cal",maxRange:1800,sensorRange:8000,speed:97},artillery:{vehicle:"M777",crew:8,weapon:"155mm",maxRange:30000},mechanized_artillery:{vehicle:"M109A7",crew:4,weapon:"155mm",maxRange:30000,speed:56},rocket_artillery:{vehicle:"M270 MLRS",crew:3,weapon:"MLRS",maxRange:70000},mortar:{vehicle:"M1129",crew:4,weapon:"120mm Mortar",maxRange:7200},mortar_wheeled:{vehicle:"M1064",crew:5,weapon:"120mm Mortar",maxRange:7200},air_defense:{vehicle:"M-SHORAD",crew:3,weapon:"Stinger/30mm",maxRange:8000,sensorRange:15000},anti_armor:{vehicle:"HMMWV",crew:4,weapon:"Javelin/TOW",maxRange:4750},magtf:{vehicle:"Various",crew:0,weapon:"Combined Arms"},aviation:{vehicle:"UH-60",crew:4,speed:294},fixed_wing:{vehicle:"C-130",crew:5,speed:592},uav:{vehicle:"MQ-1C Gray Eagle",sensorRange:25000,speed:280},sam:{vehicle:"Patriot",crew:3,weapon:"MIM-104",maxRange:160000,sensorRange:180000},engineer:{vehicle:"M9 ACE",crew:1},combat_engineer:{vehicle:"M9 ACE",crew:1,weapon:"M4/Demolitions"},special_forces:{crew:12,weapon:"Various"},ranger:{crew:12,weapon:"Various"}};
 const GRAPHIC_COLORS=["#ff4444","#4a9eff","#44cc44","#ffd700","#80E0FF","#FF8080","#80FF80","#FFFF80","#ff8800","#ffffff","#000000","#00ffff","#ff00ff","#8b4513"];
 const OVERLAY_TYPES=[{id:"none",label:"Basic"},{id:"pl",label:"Phase Line"},{id:"ld",label:"Line of Departure"},{id:"boundary",label:"Boundary"},{id:"aa",label:"Assembly Area"},{id:"axis",label:"Axis of Advance"},{id:"route",label:"Route"}];
 
@@ -368,7 +368,12 @@ const CUSTOM_ICON_DEFS = {
 "amphibious_armor":[{"op":"label","name":"left propeller lobe"},{"op":"label","name":"right propeller lobe"},{"op":"label","name":"sine wave"},{"op":"moveTo","x":-1.05,"y":0.14},{"op":"lineTo","x":-0.9,"y":-0.06},{"op":"lineTo","x":-0.85,"y":-0.13},{"op":"lineTo","x":-0.81,"y":-0.15},{"op":"lineTo","x":-0.76,"y":-0.12},{"op":"lineTo","x":-0.71,"y":-0.04},{"op":"lineTo","x":-0.66,"y":0.06},{"op":"lineTo","x":-0.62,"y":0.15},{"op":"lineTo","x":-0.57,"y":0.2},{"op":"lineTo","x":-0.52,"y":0.21},{"op":"lineTo","x":-0.47,"y":0.16},{"op":"lineTo","x":-0.43,"y":0.07},{"op":"lineTo","x":-0.38,"y":-0.03},{"op":"lineTo","x":-0.33,"y":-0.11},{"op":"lineTo","x":-0.29,"y":-0.15},{"op":"lineTo","x":-0.24,"y":-0.14},{"op":"lineTo","x":-0.19,"y":-0.08},{"op":"lineTo","x":-0.14,"y":0.02},{"op":"lineTo","x":-0.09,"y":0.11},{"op":"lineTo","x":-0.05,"y":0.18},{"op":"lineTo","x":0,"y":0.21},{"op":"lineTo","x":0.05,"y":0.18},{"op":"lineTo","x":0.09,"y":0.11},{"op":"lineTo","x":0.14,"y":0.02},{"op":"lineTo","x":0.19,"y":-0.08},{"op":"lineTo","x":0.24,"y":-0.14},{"op":"lineTo","x":0.28,"y":-0.15},{"op":"lineTo","x":0.33,"y":-0.11},{"op":"lineTo","x":0.38,"y":-0.03},{"op":"lineTo","x":0.43,"y":0.07},{"op":"lineTo","x":0.47,"y":0.16},{"op":"lineTo","x":0.52,"y":0.21},{"op":"lineTo","x":0.57,"y":0.2},{"op":"lineTo","x":0.62,"y":0.15},{"op":"lineTo","x":0.67,"y":0.06},{"op":"lineTo","x":0.71,"y":-0.04},{"op":"lineTo","x":0.76,"y":-0.12},{"op":"lineTo","x":0.81,"y":-0.15},{"op":"lineTo","x":0.86,"y":-0.13},{"op":"lineTo","x":0.9,"y":-0.06},{"op":"lineTo","x":1.02,"y":0.15},{"op":"stroke","lw":0.1},{"op":"racetrack","cx":0,"cy":0,"w":0.65,"h":0.5,"lw":0.1}],
 "supply":[{"op":"line","x1":-0.99,"y1":0.4,"x2":1,"y2":0.4,"lw":0.1}],
 "aviation":[{"op":"label","name":"left propeller lobe"},{"op":"moveTo","x":0,"y":0.08},{"op":"lineTo","x":-0.42,"y":-0.2},{"op":"lineTo","x":-0.49,"y":-0.19},{"op":"lineTo","x":-0.55,"y":-0.18},{"op":"lineTo","x":-0.62,"y":-0.13},{"op":"lineTo","x":-0.66,"y":-0.06},{"op":"lineTo","x":-0.69,"y":0.01},{"op":"lineTo","x":-0.7,"y":0.08},{"op":"lineTo","x":-0.69,"y":0.15},{"op":"lineTo","x":-0.66,"y":0.22},{"op":"lineTo","x":-0.62,"y":0.28},{"op":"lineTo","x":-0.56,"y":0.32},{"op":"lineTo","x":-0.49,"y":0.35},{"op":"lineTo","x":-0.42,"y":0.36},{"op":"lineTo","x":0,"y":0.08},{"op":"fill","lw":0.1},{"op":"label","name":"right propeller lobe"},{"op":"moveTo","x":0,"y":0.08},{"op":"lineTo","x":0.42,"y":-0.2},{"op":"lineTo","x":0.49,"y":-0.19},{"op":"lineTo","x":0.56,"y":-0.16},{"op":"lineTo","x":0.62,"y":-0.12},{"op":"lineTo","x":0.66,"y":-0.06},{"op":"lineTo","x":0.69,"y":0},{"op":"lineTo","x":0.7,"y":0.08},{"op":"lineTo","x":0.69,"y":0.15},{"op":"lineTo","x":0.66,"y":0.22},{"op":"lineTo","x":0.62,"y":0.28},{"op":"lineTo","x":0.56,"y":0.32},{"op":"lineTo","x":0.49,"y":0.35},{"op":"lineTo","x":0.42,"y":0.36},{"op":"lineTo","x":0,"y":0.08},{"op":"fill","lw":0.1},{"op":"label","name":"sine wave"},{"op":"moveTo","x":0,"y":0.13},{"op":"lineTo","x":0.25,"y":0.77},{"op":"lineTo","x":-0.25,"y":0.77},{"op":"lineTo","x":0,"y":0.13},{"op":"fill","lw":0.02},{"op":"moveTo","x":0,"y":0.02},{"op":"lineTo","x":0.28,"y":-0.72},{"op":"lineTo","x":-0.25,"y":-0.72},{"op":"lineTo","x":0,"y":0.02},{"op":"fill","lw":0.02}],
-"fixed_wing":[{"op":"label","name":"left propeller lobe"},{"op":"moveTo","x":0,"y":0.08},{"op":"lineTo","x":-0.42,"y":-0.2},{"op":"lineTo","x":-0.49,"y":-0.19},{"op":"lineTo","x":-0.55,"y":-0.18},{"op":"lineTo","x":-0.62,"y":-0.13},{"op":"lineTo","x":-0.66,"y":-0.06},{"op":"lineTo","x":-0.69,"y":0.01},{"op":"lineTo","x":-0.7,"y":0.08},{"op":"lineTo","x":-0.69,"y":0.15},{"op":"lineTo","x":-0.66,"y":0.22},{"op":"lineTo","x":-0.62,"y":0.28},{"op":"lineTo","x":-0.56,"y":0.32},{"op":"lineTo","x":-0.49,"y":0.35},{"op":"lineTo","x":-0.42,"y":0.36},{"op":"lineTo","x":0,"y":0.08},{"op":"fill","lw":0.1},{"op":"label","name":"right propeller lobe"},{"op":"moveTo","x":0,"y":0.08},{"op":"lineTo","x":0.42,"y":-0.2},{"op":"lineTo","x":0.49,"y":-0.19},{"op":"lineTo","x":0.56,"y":-0.16},{"op":"lineTo","x":0.62,"y":-0.12},{"op":"lineTo","x":0.66,"y":-0.06},{"op":"lineTo","x":0.69,"y":0},{"op":"lineTo","x":0.7,"y":0.08},{"op":"lineTo","x":0.69,"y":0.15},{"op":"lineTo","x":0.66,"y":0.22},{"op":"lineTo","x":0.62,"y":0.28},{"op":"lineTo","x":0.56,"y":0.32},{"op":"lineTo","x":0.49,"y":0.35},{"op":"lineTo","x":0.42,"y":0.36},{"op":"lineTo","x":0,"y":0.08},{"op":"fill","lw":0.1}]
+"fixed_wing":[{"op":"label","name":"left propeller lobe"},{"op":"moveTo","x":0,"y":0.08},{"op":"lineTo","x":-0.42,"y":-0.2},{"op":"lineTo","x":-0.49,"y":-0.19},{"op":"lineTo","x":-0.55,"y":-0.18},{"op":"lineTo","x":-0.62,"y":-0.13},{"op":"lineTo","x":-0.66,"y":-0.06},{"op":"lineTo","x":-0.69,"y":0.01},{"op":"lineTo","x":-0.7,"y":0.08},{"op":"lineTo","x":-0.69,"y":0.15},{"op":"lineTo","x":-0.66,"y":0.22},{"op":"lineTo","x":-0.62,"y":0.28},{"op":"lineTo","x":-0.56,"y":0.32},{"op":"lineTo","x":-0.49,"y":0.35},{"op":"lineTo","x":-0.42,"y":0.36},{"op":"lineTo","x":0,"y":0.08},{"op":"fill","lw":0.1},{"op":"label","name":"right propeller lobe"},{"op":"moveTo","x":0,"y":0.08},{"op":"lineTo","x":0.42,"y":-0.2},{"op":"lineTo","x":0.49,"y":-0.19},{"op":"lineTo","x":0.56,"y":-0.16},{"op":"lineTo","x":0.62,"y":-0.12},{"op":"lineTo","x":0.66,"y":-0.06},{"op":"lineTo","x":0.69,"y":0},{"op":"lineTo","x":0.7,"y":0.08},{"op":"lineTo","x":0.69,"y":0.15},{"op":"lineTo","x":0.66,"y":0.22},{"op":"lineTo","x":0.62,"y":0.28},{"op":"lineTo","x":0.56,"y":0.32},{"op":"lineTo","x":0.49,"y":0.35},{"op":"lineTo","x":0.42,"y":0.36},{"op":"lineTo","x":0,"y":0.08},{"op":"fill","lw":0.1}],
+"air_defense":[{"op":"arc","cx":0,"cy":1.65,"r":1.5,"lw":0.1,"startAngle":-3.142,"endAngle":0.308},{"op":"arc","cx":0.01,"cy":0.33,"r":0.4,"lw":0.06,"startAngle":3.558,"endAngle":-0.442},{"op":"arc","cx":0,"cy":-0.6,"r":0.17,"lw":0.05,"startAngle":-3.142,"endAngle":0.008},{"op":"line","x1":-0.12,"y1":-0.58,"x2":-0.12,"y2":-0.04,"lw":0.05},{"op":"line","x1":-0.12,"y1":-0.58,"x2":-0.12,"y2":-0.04,"lw":0.05},{"op":"line","x1":0.12,"y1":-0.58,"x2":0.12,"y2":-0.04,"lw":0.05},{"op":"line","x1":0,"y1":-0.76,"x2":0,"y2":-0.08,"lw":0.05}],
+"armored_recon_wheeled":[{"op":"line","x1":-1,"y1":1,"x2":1,"y2":-1,"lw":0.12},{"op":"racetrack","cx":0,"cy":0,"w":0.65,"h":0.5,"lw":0.1},{"op":"arc","cx":-0.22,"cy":0.72,"r":0.12,"lw":0.05,"startAngle":0,"endAngle":6.283},{"op":"arc","cx":0,"cy":0.72,"r":0.12,"lw":0.05,"startAngle":0,"endAngle":6.283},{"op":"arc","cx":0.22,"cy":0.72,"r":0.12,"lw":0.05,"startAngle":0,"endAngle":6.283}],
+"mechanized_infantry_wheeled":[{"op":"line","x1":-1,"y1":1,"x2":1,"y2":-1,"lw":0.12},{"op":"racetrack","cx":0,"cy":0,"w":0.65,"h":0.5,"lw":0.1},{"op":"arc","cx":-0.22,"cy":0.72,"r":0.12,"lw":0.05,"startAngle":0,"endAngle":6.283},{"op":"arc","cx":0,"cy":0.72,"r":0.12,"lw":0.05,"startAngle":0,"endAngle":6.283},{"op":"arc","cx":0.22,"cy":0.72,"r":0.12,"lw":0.05,"startAngle":0,"endAngle":6.283},{"op":"line","x1":-1.17,"y1":-1.16,"x2":1.21,"y2":1.19,"lw":0.1}],
+"lav_infantry":[{"op":"line","x1":-1,"y1":1,"x2":1,"y2":-1,"lw":0.12},{"op":"racetrack","cx":0,"cy":0,"w":0.65,"h":0.5,"lw":0.1},{"op":"arc","cx":-0.22,"cy":0.72,"r":0.12,"lw":0.05,"startAngle":0,"endAngle":6.283},{"op":"arc","cx":0,"cy":0.72,"r":0.12,"lw":0.05,"startAngle":0,"endAngle":6.283},{"op":"arc","cx":0.22,"cy":0.72,"r":0.12,"lw":0.05,"startAngle":0,"endAngle":6.283},{"op":"line","x1":-1.17,"y1":-1.16,"x2":1.21,"y2":1.19,"lw":0.1},{"op":"line","x1":-0.73,"y1":1.06,"x2":-0.73,"y2":-1.13,"lw":0.1}],
+"blank":[]
 };
 
 /* Instruction-based icon renderer — matches Icon Editor output exactly */
@@ -483,7 +488,7 @@ ctx.fillStyle="rgba(0,0,0,.75)";ctx.fillRect(lx-3*d,ly-1*d,tw+6*d,13*d);ctx.fill
 }
 }else{
 /* Draw range rings BEFORE the icon so icon sits on top */
-if(u.rings&&u.rings.length)u.rings.forEach(ring=>{const rp=metersToPixels(ring.radius,u.lat,S.zoom)*d;if(rp<2*d)return;ctx.save();ctx.strokeStyle=ring.color||"#f00";ctx.lineWidth=2*d;var rs=ring.lineStyle||"solid";if(rs==="dash")ctx.setLineDash([6*d,4*d]);else if(rs==="dotted")ctx.setLineDash([2*d,3*d]);else ctx.setLineDash([]);ctx.beginPath();ctx.arc(sp.x*d,sp.y*d,rp,0,Math.PI*2);if(ring.fill){ctx.globalAlpha=ring.fillOpacity!=null?ring.fillOpacity:0.35;ctx.fillStyle=ring.color||"#f00";ctx.fill()}ctx.globalAlpha=ring.opacity!=null?ring.opacity:0.75;ctx.stroke();ctx.setLineDash([]);/* Ring label */if(rp>18*d){ctx.globalAlpha=0.9;var fam=getComputedStyle(document.body).fontFamily;ctx.font=`bold ${9*d}px ${fam}`;ctx.textAlign="center";ctx.textBaseline="bottom";var distTxt=ring.radius>=1000?(ring.radius/1000)+"km":ring.radius+"m";var lblTxt=ring.label?ring.label+" ("+distTxt+")":distTxt;ctx.strokeStyle="rgba(0,0,0,.7)";ctx.lineWidth=3*d;ctx.strokeText(lblTxt,sp.x*d,sp.y*d-rp-3*d);ctx.fillStyle=ring.color||"#f00";ctx.fillText(lblTxt,sp.x*d,sp.y*d-rp-3*d)}ctx.restore()});
+if(u.rings&&u.rings.length)u.rings.forEach(ring=>{const rp=metersToPixels(ring.radius,u.lat,S.zoom)*d;if(rp<2*d)return;ctx.save();ctx.strokeStyle=ring.color||"#f00";ctx.lineWidth=2*d;var rs=ring.lineStyle||"solid";if(rs==="dash")ctx.setLineDash([6*d,4*d]);else if(rs==="dotted")ctx.setLineDash([2*d,3*d]);else ctx.setLineDash([]);ctx.beginPath();ctx.arc(sp.x*d,sp.y*d,rp,0,Math.PI*2);if(ring.fill){ctx.globalAlpha=ring.fillOpacity!=null?ring.fillOpacity:0.35;ctx.fillStyle=ring.color||"#f00";ctx.fill()}ctx.globalAlpha=ring.opacity!=null?ring.opacity:0.75;ctx.stroke();ctx.setLineDash([]);/* Ring label — curved along arc */if(rp>18*d){ctx.globalAlpha=0.9;var fam=getComputedStyle(document.body).fontFamily;var fontSize=(ring.labelSize||9)*d;var fontWeight=(ring.labelBold!==false)?'bold':'normal';ctx.font=fontWeight+' '+fontSize+'px '+fam;ctx.textAlign="center";ctx.textBaseline="middle";var ringLblCol=ring.labelColor||(ring.color||"#f00");var distTxt=ring.radius>=1000?(ring.radius/1000)+"km":ring.radius+"m";var lblTxt=ring.label?ring.label+" ("+distTxt+")":distTxt;var cx=sp.x*d,cy=sp.y*d;var textR=rp+fontSize*0.8;/* radius for text baseline */var charWidths=[];var totalW=0;for(var ci=0;ci<lblTxt.length;ci++){var cw=ctx.measureText(lblTxt[ci]).width;charWidths.push(cw);totalW+=cw}var arcAngle=totalW/textR;/* total arc angle for the text */var startAngle=-Math.PI/2-arcAngle/2;/* center text at top of ring */var curAngle=startAngle;ctx.save();for(var ci=0;ci<lblTxt.length;ci++){var halfChar=charWidths[ci]/2;curAngle+=halfChar/textR;var tx=cx+textR*Math.cos(curAngle);var ty=cy+textR*Math.sin(curAngle);ctx.save();ctx.translate(tx,ty);ctx.rotate(curAngle+Math.PI/2);ctx.strokeStyle="rgba(0,0,0,.7)";ctx.lineWidth=3*d;ctx.strokeText(lblTxt[ci],0,0);ctx.fillStyle=ringLblCol;ctx.fillText(lblTxt[ci],0,0);ctx.restore();curAngle+=halfChar/textR}ctx.restore()}ctx.restore()});
 if(u.customIcon&&u.useCustomIcon!==false){
 const isH=u.affiliation==="hostile";const cimg=isH?getTintedIcon(u.customIcon,"#ff4444"):getCustomIconImage(u.customIcon);
 const uScale=u.iconScale||1;
@@ -1077,7 +1082,7 @@ if(dm.tool==="text"&&dm.points.length===0){dm.points.push({lat:ll.lat,lon:ll.lon
 dm.points.push({lat:ll.lat,lon:ll.lon});updateModeBar();requestRender();return}
 return}
 
-if(S._placementMode&&moved<10){const ll=screenToLatlon(pos.x,pos.y);const u={...S._placementMode,id:"u"+Date.now()+Math.random().toString(36).substr(2,4),lat:ll.lat,lon:ll.lon,layerId:S.activeLayerId,rings:[],equipment:{...(EQUIPMENT_DEFAULTS[S._placementMode.type]||{})},isEquipment:!!S._placementMode.isEquipment};S.units.push(u);var wasRoster=!!S._placementMode._rosterSource;S._placementMode=null;S.selectedUnitId=u.id;S.selectedGraphicId=null;openEditor();hideModeBar();netBroadcast({type:"unitAdd",unit:u});requestRender();if(wasRoster){renderFloatingPanel();_ipbPlacerOpen=true;renderIPBPlacerPanel()}return}
+if(S._placementMode&&moved<(S._lastPointerType==="touch"?30:10)){const ll=screenToLatlon(pos.x,pos.y);var _pm=S._placementMode;var _eqp={...(EQUIPMENT_DEFAULTS[_pm.type]||{})};/* For roster units with weapons, compute maxRange from weapon data */if(_pm._rosterSource&&_pm.weapons&&_pm.weapons.length){var _maxR=0;_pm.weapons.forEach(function(w){if(w.rangeKm&&w.rangeKm>0){var rm=w.rangeKm*1000;if(rm>_maxR)_maxR=rm}});if(_maxR>0)_eqp.maxRange=_maxR}var _rings=[];if(_pm._rosterSource&&_pm.weapons&&_pm.weapons.length){_pm.weapons.forEach(function(w){if(w.rangeKm&&w.rangeKm>0){_rings.push({label:w.name||'',radius:w.rangeKm*1000,color:'#ff4444',opacity:0.15,visible:true})}})}const u={..._pm,id:"u"+Date.now()+Math.random().toString(36).substr(2,4),lat:ll.lat,lon:ll.lon,layerId:S.activeLayerId,rings:_rings,equipment:_eqp,isEquipment:!!_pm.isEquipment};S.units.push(u);var wasRoster=!!_pm._rosterSource;S._placementMode=null;_ptrDownPos=null;/* Prevent document-level pointerup from re-processing */hideModeBar();netBroadcast({type:"unitAdd",unit:u});if(wasRoster){/* Roster placement: don't open editor or pan — keep placer ready for next unit */S.selectedUnitId=null;S.selectedGraphicId=null;_ipbPlacerOpen=true;renderIPBPlacerPanel();requestRender()}else{S.selectedUnitId=u.id;S.selectedGraphicId=null;openEditor();requestRender()}return}
 
 /* Wargame order destination tap */
 if(S._wargameOrderPending&&moved<10){
@@ -1109,10 +1114,10 @@ var _tapThresh=S._lastPointerType==="touch"?25:15;
 /* Graphic selection — re-test at original click position */
 var _tapTime=S._lastPointerType==="touch"?400:300;
 var _elapsed=Date.now()-_ptrDownTime;
-if(!_selOnDown&&_ptrDownPos&&_elapsed<_tapTime&&moved<50&&!S._panLockMode&&!S._drawMode&&!S._mapTool){
+if(!_selOnDown&&_ptrDownPos&&_elapsed<_tapTime&&moved<50&&!S._panLockMode&&!S._drawMode&&!S._mapTool&&!S._placementMode){
 var _reHit=hitTestGraphic(_ptrDownPos);
 if(_reHit){selectGraphic(_reHit.id);return}}
-if(_ptrDownPos&&moved<_tapThresh&&!_selOnDown){
+if(_ptrDownPos&&moved<_tapThresh&&!_selOnDown&&!S._placementMode){
 if(S._lastPointerType==="touch"&&!S._drawMode&&!S._placementMode&&checkDoubleTap(pos))return;
 deselectAll()}
 }
@@ -2404,9 +2409,9 @@ var TO_RELATIONSHIPS=['organic','attached','opcon','tacon','ds','gs','reinforcin
 var TO_REL_LABELS={organic:'Organic',attached:'Attached',opcon:'OPCON',tacon:'TACON',ds:'Direct Spt',gs:'General Spt',reinforcing:'Reinforcing',gsr:'GS-R'};
 var TO_REL_STYLES={organic:{color:'#ccc',dash:[]},attached:{color:'#ffaa00',dash:[]},opcon:{color:'#44aaff',dash:[6,3]},tacon:{color:'#44aaff',dash:[2,2]},ds:{color:'#44cc44',dash:[8,4]},gs:{color:'#44cc44',dash:[4,4]},reinforcing:{color:'#cc44cc',dash:[6,3]},gsr:{color:'#cc44cc',dash:[3,3]}};
 var TO_THREAT_TYPES=[
-  {id:"infantry",label:"Infantry"},{id:"light_infantry",label:"Lt Inf"},{id:"motorized_infantry",label:"Mot Inf"},{id:"naval_infantry",label:"Naval Inf"},{id:"mechanized_infantry",label:"Mech Inf"},{id:"armor",label:"Armor"},{id:"amphibious_armor",label:"Amphib Armor"},
+  {id:"infantry",label:"Infantry"},{id:"light_infantry",label:"Lt Inf"},{id:"motorized_infantry",label:"Mot Inf"},{id:"naval_infantry",label:"Naval Inf"},{id:"mechanized_infantry",label:"Mech Inf"},{id:"mechanized_infantry_wheeled",label:"Mech Inf (Whl)"},{id:"lav_infantry",label:"LAV Inf"},{id:"armor",label:"Armor"},{id:"amphibious_armor",label:"Amphib Armor"},
   {id:"artillery",label:"FA"},{id:"rocket_artillery",label:"Rocket Arty"},{id:"mortar",label:"Mortar"},{id:"mortar_wheeled",label:"Mrt (Whl)"},{id:"air_defense",label:"ADA"},
-  {id:"anti_armor",label:"AT"},{id:"recon",label:"Recon"},{id:"armored_recon",label:"Arm Recon"},{id:"engineer",label:"Engr"},{id:"combat_engineer",label:"Cbt Engr"},
+  {id:"anti_armor",label:"AT"},{id:"recon",label:"Recon"},{id:"armored_recon",label:"Arm Recon"},{id:"armored_recon_wheeled",label:"Arm Recon (Whl)"},{id:"engineer",label:"Engr"},{id:"combat_engineer",label:"Cbt Engr"},
   {id:"headquarters",label:"HQ"},{id:"signal",label:"Sig"},{id:"sam",label:"SAM"},
   {id:"aviation",label:"Avn"},{id:"fixed_wing",label:"Fixed Wg"},{id:"uav",label:"UAS"},{id:"electronic_warfare",label:"EW"},
   {id:"special_forces",label:"SOF"},{id:"sustainment",label:"Sust"},{id:"combat_service_support",label:"CSS"},{id:"medical",label:"Med"}
@@ -3364,10 +3369,16 @@ function renderIPBPlacerPanel(){
   /* Determine placed status */
   var layerUnits=S.units.filter(function(u){return u.layerId===S.activeLayerId&&u.affiliation==='hostile'});
   var rosterStatus=roster.map(function(r){
-    /* Count all matches for this roster unit */
+    /* Check for exact roster link first, then fall back to type+echelon matching */
+    var exactMatch=layerUnits.filter(function(u){return u._rosterSource===r.id});
+    if(exactMatch.length>0){
+      return {unit:r,placed:true,duplicate:exactMatch.length>1,count:exactMatch.length};
+    }
+    /* Fallback: match unlinked units by designation or type+echelon */
     var matchCount=0;
     layerUnits.forEach(function(u){
-      if(r.designation&&u.designation&&r.designation===u.designation){matchCount++}
+      if(u._rosterSource)return;/* Skip units already linked to other roster entries */
+      if(r.designation&&u.designation&&r.designation===u.designation){matchCount++;u._rosterMatched=true}
       else if(u.type===r.type&&u.echelon===r.echelon&&!u._rosterMatched){matchCount++;u._rosterMatched=true}
     });
     return {unit:r,placed:matchCount>0,duplicate:matchCount>1,count:matchCount};
@@ -3596,12 +3607,25 @@ function ipbPlaceRosterUnit(rosterId){
   var roster=(S._ipb&&S._ipb.threatRoster)||[];
   var ru=roster.find(function(x){return x.id===rosterId});
   if(!ru)return;
+  /* Deselect any selected graphic/unit and close editor — prevents AO from stealing focus */
+  S.selectedUnitId=null;S.selectedGraphicId=null;
+  var ed=document.getElementById("editor");if(ed){ed.classList.remove("open");ed.style.display="none"}
+  requestRender();
   /* Save position before hiding */
   var panel=document.getElementById('ipb-placer-panel');
   if(panel){var r=panel.getBoundingClientRect();_placerPos.x=r.left;_placerPos.y=r.top;_placerPos.w=r.width}
   if(panel)panel.style.display='none';
   /* Enter placement mode */
-  S._placementMode={type:ru.type,affiliation:'hostile',echelon:ru.echelon,designation:ru.designation||'',modifiers:[],isHQ:ru.type==='headquarters',_rosterSource:rosterId};
+  S._placementMode={type:ru.type,affiliation:'hostile',echelon:ru.echelon,designation:ru.designation||'',modifiers:[],isHQ:ru.type==='headquarters',_rosterSource:rosterId,
+    /* Carry over Step 3 data */
+    weapons:ru.weapons?JSON.parse(JSON.stringify(ru.weapons)):[],
+    links:ru.links?JSON.parse(JSON.stringify(ru.links)):[],
+    notes:ru.notes||'',
+    images:ru.images?JSON.parse(JSON.stringify(ru.images)):[],
+    customIcon:ru.customIcon||'',
+    useCustomIcon:!!ru.useCustomIcon,
+    imageUrl:ru.imageUrl||''
+  };
   canvas.style.cursor='crosshair';
   showModeBar();
   document.getElementById('mode-bar').innerHTML='<span class="mode-info">Click map to place: '+escHtml(ru.designation||TYPE_LABELS[ru.type]||ru.type)+'</span><button class="btn danger" onclick="S._placementMode=null;canvas.style.cursor=&quot;&quot;;hideModeBar()">\u2715 Cancel</button>';
@@ -3752,7 +3776,7 @@ function forceUpdate(){
     }).catch(function(){location.reload(true)});
   }else{location.reload(true)}
 }
-const INPUT_LIMITS={designation:50,parentUnit:50,label:100,name:50,callsign:20,chatMsg:500,layerName:30,roomCode:6,ringLabel:30};
+const INPUT_LIMITS={designation:50,parentUnit:50,label:100,name:50,callsign:20,chatMsg:500,layerName:30,roomCode:6,ringLabel:80};
 /* Sanitize an entire unit object (from P2P or file import) */
 function sanitizeUnit(u){
   if(!u||typeof u!=="object")return null;
@@ -4350,7 +4374,22 @@ function renderEditor(){
       var rStyle=r.lineStyle||"solid";
       h+='<div style="margin-bottom:10px;padding:6px 8px;background:rgba(255,255,255,.04);border-radius:6px;border:1px solid var(--border)">';
       /* Row 0: label + radius + delete */
-      h+='<div style="display:flex;gap:4px;align-items:center;margin-bottom:6px"><input type="text" value="'+escAttr(r.label||'')+'" oninput="editRing(\''+u.id+'\','+i+',\'label\',this.value)" style="width:80px;margin-bottom:0" placeholder="Label" class="ed-input" maxlength="30"><input type="number" value="'+r.radius+'" onchange="editRing(\''+u.id+'\','+i+',\'radius\',this.value)" style="flex:1;margin-bottom:0" placeholder="Radius (m)" class="ed-input"><button class="btn danger" onclick="removeRing(\''+u.id+'\','+i+')" style="padding:4px 8px">\u2715</button></div>';
+      h+='<div style="display:flex;gap:4px;align-items:center;margin-bottom:6px"><input type="text" value="'+escAttr(r.label||'')+'" oninput="editRing(\''+u.id+'\','+i+',\'label\',this.value)" style="flex:2;margin-bottom:0" placeholder="Label" class="ed-input" maxlength="80"><input type="number" value="'+r.radius+'" onchange="editRing(\''+u.id+'\','+i+',\'radius\',this.value)" style="flex:1;margin-bottom:0" placeholder="Radius (m)" class="ed-input"><button class="btn danger" onclick="removeRing(\''+u.id+'\','+i+')" style="padding:4px 8px">\u2715</button></div>';
+      /* Row 1b: label text formatting — size, color, bold */
+      var rLblSize=r.labelSize||9;var rLblColor=r.labelColor||(r.color||'#ff0000');var rLblBold=r.labelBold!==false;
+      h+='<div style="display:flex;gap:4px;align-items:center;margin-bottom:6px">';
+      h+='<span style="font-size:9px;opacity:.5">Lbl:</span>';
+      h+='<input type="number" value="'+rLblSize+'" onchange="editRing(\''+u.id+'\','+i+',\'labelSize\',this.value)" style="width:40px;margin-bottom:0" min="6" max="24" class="ed-input" title="Font size">';
+      h+='<span style="font-size:9px;opacity:.5">px</span>';
+      h+='<div style="width:20px;height:20px;border-radius:3px;background:'+rLblColor+';border:1px solid rgba(255,255,255,.3);cursor:pointer" onclick="var sw=document.getElementById(\'ring-lsw-'+i+'\');sw.style.display=sw.style.display===\'none\'?\'flex\':\'none\'" title="Label color"></div>';
+      h+='<button class="ed-btn'+(rLblBold?' active':'')+'" onclick="editRing(\''+u.id+'\','+i+',\'labelBold\','+(!rLblBold)+')" style="padding:2px 6px;font-size:10px;font-weight:700" title="Bold">B</button>';
+      h+='</div>';
+      h+='<div id="ring-lsw-'+i+'" style="display:none;gap:3px;flex-wrap:wrap;margin-bottom:4px">';
+      ringColors.forEach(function(c){
+        var sel=rLblColor===c;
+        h+='<div style="width:20px;height:20px;border-radius:3px;background:'+c+';cursor:pointer;border:2px solid '+(sel?'#fff':'transparent')+'" onclick="editRing(\''+u.id+'\','+i+',\'labelColor\',\''+c+'\')"></div>';
+      });
+      h+='</div>';
       /* Row 2: line style buttons */
       h+='<div style="display:flex;gap:3px;margin-bottom:6px">';
       [["solid","Solid"],["dash","Dash"],["dotted","Dotted"]].forEach(function(ls){
@@ -4462,8 +4501,8 @@ const RING_COLORS={friendly:"#4a9eff",hostile:"#ff4444",neutral:"#44bb44",unknow
 function addRing(id){const u=S.units.find(x=>x.id===id);if(!u)return;u.rings=u.rings||[];var ac=RING_COLORS[u.affiliation||"friendly"]||"#4a9eff";u.rings.push({radius:1000,color:ac,opacity:0.75,fillOpacity:0.35,lineStyle:"solid",label:""});editUnit(id,{rings:u.rings})}
 function addAutoRing(id,type,radius){const u=S.units.find(x=>x.id===id);if(!u)return;u.rings=u.rings||[];var ac=RING_COLORS[u.affiliation||"friendly"]||"#4a9eff";u.rings.push({radius:radius,color:ac,opacity:0.75,fillOpacity:0.35,lineStyle:"solid",label:""});editUnit(id,{rings:u.rings})}
 function editRing(id,idx,field,val){const u=S.units.find(x=>x.id===id);if(!u||!u.rings||!u.rings[idx])return;
-  if(field==="radius"||field==="opacity"||field==="fillOpacity")u.rings[idx][field]=parseFloat(val);
-  else if(field==="fill")u.rings[idx][field]=!!val;
+  if(field==="radius"||field==="opacity"||field==="fillOpacity"||field==="labelSize")u.rings[idx][field]=parseFloat(val);
+  else if(field==="fill"||field==="labelBold")u.rings[idx][field]=!!val;
   else u.rings[idx][field]=val;
   netBroadcast({type:"unitEdit",unit:u});requestRender();
   if(field!=="opacity"&&field!=="fillOpacity"&&field!=="label")renderEditor()}
@@ -5070,6 +5109,9 @@ function netBroadcast(msg){const n=S._net;if(n.mode==="offline")return;if(!shoul
 /* Broadcast full Operation state to all peers (host only, bypasses shouldBroadcastEdit) */
 function netBroadcastOperation(){var n=S._net;if(n.mode==="offline"||!n.isHost||!S._operation)return;opSyncToOperation();var str=JSON.stringify({type:"operationSync",operation:JSON.parse(JSON.stringify(S._operation))});n.conns.forEach(function(c){try{c.conn.send(str)}catch(e){}})}
 function netCreateRoom(fixedCode){
+  _ensurePeerJS(function(){_netCreateRoomInner(fixedCode)});
+}
+function _netCreateRoomInner(fixedCode){
   const n=S._net;n.roomCode=fixedCode||Math.random().toString(36).substr(2,6).toUpperCase();
   n.peer=new Peer("staffmaps-"+n.roomCode,_peerOpts());
   n.peer.on("open",()=>{n.isHost=true;n.mode="hosting";n.status="Hosting";updateNetDot("connected");renderFloatingPanel()});
@@ -5097,6 +5139,9 @@ function netCreateRoom(fixedCode){
   n.peer.on("error",e=>{n.status="Error: "+e.type;updateNetDot("error");renderFloatingPanel()})}
 
 function netJoinRoom(){
+  _ensurePeerJS(function(){_netJoinRoomInner()});
+}
+function _netJoinRoomInner(){
   const n=S._net,code=(document.getElementById("net-code")||{}).value||n.roomCode;if(!code)return;
   n.roomCode=code.toUpperCase();
   /* Clean up any previous peer */
@@ -5138,7 +5183,9 @@ function netManualCopy(){var el=document.getElementById('net-manual-out');if(!el
 function netManualToggle(){var el=document.getElementById('net-manual');if(el)el.style.display=el.style.display==='none'?'block':'none';}
 function netDiag(){var out=document.getElementById('net-diag-out');if(!out)return;
   out.innerHTML='<div style="color:#4a9eff">⏳ Running diagnostics…</div>';
-  var results={peerjs:null,stun:null,turn:null,localNet:null,webrtc:null};
+  var _RTC=window.RTCPeerConnection||window.webkitRTCPeerConnection||window.mozRTCPeerConnection;
+  var _peerAvail=typeof Peer!=='undefined';
+  var results={peerjs:null,stun:null,turn:null,localNet:null,webrtc:!!_RTC};
   var done=0,total=3;
   var finished=false;
   /* Hard timeout — never hang longer than 12 seconds */
@@ -5152,8 +5199,15 @@ function netDiag(){var out=document.getElementById('net-diag-out');if(!out)retur
     var h='<div style="margin-top:6px">';
     h+='<div style="font-weight:600;margin-bottom:6px;font-size:11px">Network Diagnostic Results</div>';
     /* WebRTC support */
-    if(!results.webrtc){h+='<div style="color:#ff4444;margin-bottom:4px">❌ <b>WebRTC not supported</b> — Your browser cannot make P2P connections. Try Chrome, Edge, or Safari.</div>';out.innerHTML=h+'</div>';return}
+    if(!results.webrtc){
+      var _isStandalone=window.navigator.standalone||window.matchMedia("(display-mode:standalone)").matches;
+      h+='<div style="color:#ff4444;margin-bottom:4px">❌ <b>WebRTC not supported</b> — P2P requires a full browser with WebRTC.</div>';
+      if(_isStandalone)h+='<div style="color:#ffaa00;margin-bottom:4px">💡 You are running as an installed PWA. Try opening the URL directly in Safari instead.</div>';
+      else h+='<div style="color:#ffaa00;margin-bottom:4px">💡 If you\'re in an in-app browser, open this page directly in Safari or Chrome.</div>';
+      h+='<div style="font-size:8px;opacity:.4;word-break:break-all;margin-bottom:4px">'+escHtml((navigator.userAgent||'').substring(0,160))+'</div>';
+      out.innerHTML=h+'</div>';return}
     else h+='<div style="color:#40e060;margin-bottom:4px">✅ WebRTC supported</div>';
+    if(!_peerAvail)h+='<div style="color:#ff4444;margin-bottom:4px">❌ <b>PeerJS library not loaded</b> — CDN may be blocked or still loading. Try refreshing.</div>';
     /* STUN (internet reachability) */
     if(results.stun==='ok') h+='<div style="color:#40e060;margin-bottom:4px">✅ STUN reachable — Internet P2P available</div>';
     else if(results.stun==='partial') h+='<div style="color:#e0a030;margin-bottom:4px">⚠️ STUN partial — Local connections work, internet P2P may fail behind strict NAT</div>';
@@ -5212,11 +5266,19 @@ function netDiag(){var out=document.getElementById('net-diag-out');if(!out)retur
     h+='</div>';
     out.innerHTML=h;
   }
+  /* Test 0: PeerJS library loaded? */
+  if(typeof Peer==='undefined'){
+    var h2='<div style="margin-top:6px"><div style="font-weight:600;margin-bottom:6px;font-size:11px">Network Diagnostic Results</div>';
+    h2+='<div style="color:#ff4444;margin-bottom:4px">❌ <b>PeerJS library failed to load</b> — CDN may be blocked on this network.</div>';
+    h2+='<div style="color:#ffaa00;margin-bottom:4px">💡 Try: Create/Join a room (auto-retries from alternate CDN), or refresh the page.</div>';
+    h2+='</div>';out.innerHTML=h2;return;
+  }
   /* Test 1: WebRTC support */
-  results.webrtc=!!(window.RTCPeerConnection);if(!results.webrtc){done=total;checkDone();return}
+  results.webrtc=!!_RTC;
+  if(!results.webrtc){done=total;checkDone();return}
   /* Test 2: STUN connectivity */
   try{
-    var pc2=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+    var pc2=new _RTC({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
     var iceTypes={};var stunDone=false;
     var stunTimeout=setTimeout(function(){if(stunDone)return;stunDone=true;pc2.close();
       if(iceTypes.srflx||iceTypes.relay)results.stun='ok';
@@ -5231,7 +5293,7 @@ function netDiag(){var out=document.getElementById('net-diag-out');if(!out)retur
   if(S._turnServer&&S._turnServer.host&&S._turnServer.host.trim()){
     /* Test custom TURN */
     try{
-      var pc3=new RTCPeerConnection({iceServers:[{urls:'turn:'+S._turnServer.host.trim()+':'+(S._turnServer.port||3478),username:S._turnServer.user||'staffmaps',credential:S._turnServer.pass||'staffmaps'}],iceTransportPolicy:'relay'});
+      var pc3=new _RTC({iceServers:[{urls:'turn:'+S._turnServer.host.trim()+':'+(S._turnServer.port||3478),username:S._turnServer.user||'staffmaps',credential:S._turnServer.pass||'staffmaps'}],iceTransportPolicy:'relay'});
       var turnDone=false;
       var turnTimeout=setTimeout(function(){if(turnDone)return;turnDone=true;pc3.close();results.turn='blocked';checkDone()},8000);
       pc3.onicecandidate=function(e){if(!e||!e.candidate)return;if(e.candidate.type==='relay'&&!turnDone){turnDone=true;clearTimeout(turnTimeout);pc3.close();results.turn='ok';checkDone()}};
@@ -5240,7 +5302,7 @@ function netDiag(){var out=document.getElementById('net-diag-out');if(!out)retur
   }else{
     /* Test public TURN relay (auto-included) */
     try{
-      var pc3b=new RTCPeerConnection({iceServers:[{urls:'turn:openrelay.metered.ca:443',username:'openrelayproject',credential:'openrelayproject'}],iceTransportPolicy:'relay'});
+      var pc3b=new _RTC({iceServers:[{urls:'turn:openrelay.metered.ca:443',username:'openrelayproject',credential:'openrelayproject'}],iceTransportPolicy:'relay'});
       var turnDone2=false;
       var turnTimeout2=setTimeout(function(){if(turnDone2)return;turnDone2=true;pc3b.close();results.turn='public_blocked';checkDone()},8000);
       pc3b.onicecandidate=function(e){if(!e||!e.candidate)return;if(e.candidate.type==='relay'&&!turnDone2){turnDone2=true;clearTimeout(turnTimeout2);pc3b.close();results.turn='public_ok';checkDone()}};
@@ -6411,6 +6473,20 @@ function _buildIceServers(){
   return servers;
 }
 // Signal server config
+/* Lazy-load PeerJS if initial CDN load failed */
+function _ensurePeerJS(cb){
+  if(typeof Peer!=='undefined'){cb();return}
+  var urls=['https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js','https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'];
+  var idx=0;
+  function tryNext(){
+    if(idx>=urls.length){IO.notify('PeerJS library could not be loaded — check internet','error');return}
+    var s=document.createElement('script');s.src=urls[idx++];
+    s.onload=function(){if(typeof Peer!=='undefined')cb();else tryNext()};
+    s.onerror=tryNext;
+    document.head.appendChild(s);
+  }
+  IO.notify('Loading PeerJS library…');tryNext();
+}
 function _peerOpts(){
   var ss=S._signalServer;
   if(!ss||!ss.host||!ss.host.trim())return{debug:0,config:{iceServers:_buildIceServers()}};
@@ -7120,41 +7196,24 @@ function init(){
     const voffset=vv?vv.offsetTop:0;
     document.documentElement.style.setProperty("--app-h",vh+"px");
     document.documentElement.style.setProperty("--vp-offset",(voffset||0)+"px");
-    /* Detect iOS keyboard open/close */
     var wasOpen=_kbOpen;
     _kbOpen=vv&&(fullH-vh>100);
     if(_kbOpen){
-      /* Keyboard is open — shrink editor/panels to fit above keyboard */
       var ed=document.getElementById("editor-overlay");
-      if(ed&&ed.classList.contains("open")&&window.innerWidth<=700){
-        ed.style.maxHeight=Math.max(140,vh-60)+"px";
-      }
+      if(ed&&ed.classList.contains("open")&&window.innerWidth<=700){ed.style.maxHeight=Math.max(140,vh-60)+"px"}
       var fp=document.getElementById("float-panel");
-      if(fp&&fp.classList.contains("open")&&window.innerWidth<=700){
-        fp.style.maxHeight=Math.max(140,vh-60)+"px";
-      }
+      if(fp&&fp.classList.contains("open")&&window.innerWidth<=700){fp.style.maxHeight=Math.max(140,vh-60)+"px"}
     }else if(wasOpen&&!_kbOpen){
-      /* Keyboard closed — restore panel sizes */
-      var ed=document.getElementById("editor-overlay");
-      if(ed)ed.style.maxHeight="";
-      var fp=document.getElementById("float-panel");
-      if(fp)fp.style.maxHeight="";
+      var ed=document.getElementById("editor-overlay");if(ed)ed.style.maxHeight="";
+      var fp=document.getElementById("float-panel");if(fp)fp.style.maxHeight="";
     }
-    /* Prevent iOS from scrolling the page behind the keyboard */
-    window.scrollTo(0,0);
-    document.body.scrollTop=0;
-    document.documentElement.scrollTop=0;
+    window.scrollTo(0,0);document.body.scrollTop=0;document.documentElement.scrollTop=0;
     resize();
   }
   _canvasRect=null;
   if(window.visualViewport){
     window.visualViewport.addEventListener("resize",updateViewport);
-    window.visualViewport.addEventListener("scroll",()=>{
-      /* iOS sometimes scrolls the viewport when keyboard opens — fight it */
-      window.scrollTo(0,0);
-      document.body.scrollTop=0;
-      document.documentElement.scrollTop=0;
-    });
+    window.visualViewport.addEventListener("scroll",()=>{window.scrollTo(0,0);document.body.scrollTop=0;document.documentElement.scrollTop=0});
   }
 
   
@@ -7165,20 +7224,9 @@ function init(){
     var panel=t.closest(".float-panel,.editor-overlay,.ipb-placer-panel,.export-modal");
     if(!panel)return;
     if(t.tagName!=="INPUT"&&t.tagName!=="TEXTAREA"&&t.tagName!=="SELECT")return;
-    /* Prevent iOS page scroll/zoom — re-anchor after keyboard animation */
-    setTimeout(function(){
-      window.scrollTo(0,0);
-      t.scrollIntoView({block:"nearest",behavior:"smooth"});
-    },350);
-    /* Second pass after keyboard fully settles */
-    setTimeout(function(){
-      window.scrollTo(0,0);
-      if(document.activeElement===t){
-        t.scrollIntoView({block:"nearest",behavior:"smooth"});
-      }
-    },600);
+    setTimeout(function(){window.scrollTo(0,0);t.scrollIntoView({block:"nearest",behavior:"smooth"})},350);
+    setTimeout(function(){window.scrollTo(0,0);if(document.activeElement===t)t.scrollIntoView({block:"nearest",behavior:"smooth"})},600);
   });
-  /* Prevent iOS from scrolling the whole page when keyboard closes */
   document.addEventListener("focusout",function(){
     setTimeout(function(){window.scrollTo(0,0);document.body.scrollTop=0;document.documentElement.scrollTop=0},100);
   });
