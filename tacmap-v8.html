@@ -911,16 +911,26 @@ if(S.pencilMode&&S._lastPointerType==="touch"&&(Date.now()-_pencilLastSeen)<_PAL
 if(!S.pencilMode&&S._lastPointerType==="pen")S._lastPointerType="mouse";
 /* Freehand mode — start stroke */
 if(S._mapTool==="freehand"){
-  /* If on MCOO layer, reject start outside AO */
-  if(_mcooAoId&&S._ipb&&S._ipb.mcooLayerId&&S.activeLayerId===S._ipb.mcooLayerId){
-    if(!_mcooIsInsideAO(pos)){e.preventDefault();return}
-  }
-  _freehandActive=true;_freehandPoints=[pos];_freehandPressures=[e.pressure||0.5];_mcooOutside=false;
-  if(e.pointerId!==undefined)try{canvas.setPointerCapture(e.pointerId)}catch(ex){}
-  e.preventDefault();return}
+  /* Pencil mode: only pen draws, finger pans */
+  if(S.pencilMode&&S._lastPointerType==="touch"&&!_isPen){
+    /* Fall through to pan handling below */
+  }else{
+    /* If on MCOO layer, reject start outside AO */
+    if(_mcooAoId&&S._ipb&&S._ipb.mcooLayerId&&S.activeLayerId===S._ipb.mcooLayerId){
+      if(!_mcooIsInsideAO(pos)){e.preventDefault();return}
+    }
+    _freehandActive=true;_freehandPoints=[pos];_freehandPressures=[e.pressure||0.5];_mcooOutside=false;
+    if(e.pointerId!==undefined)try{canvas.setPointerCapture(e.pointerId)}catch(ex){}
+    e.preventDefault();return}
+}
 const tt=document.getElementById("map-tooltip");if(tt)tt.style.display="none";
 if(e.pointerId!==undefined&&e.pointerType==="touch")S._activePointers.set(e.pointerId,pos);
-if(S._activePointers.size===2){const pts=[...S._activePointers.values()];S._pinchStartDist=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y);S._pinchStartZoom=S.zoom;return}
+if(S._activePointers.size===2){
+  /* Cancel any single-finger state so pinch takes over cleanly */
+  S._isPanning=false;_dragUnit=null;_dragGV=null;_rotUnit=null;
+  /* Cancel freehand if active — pinch always wins */
+  if(_freehandActive){_freehandActive=false;_freehandPoints=[];_freehandPressures=[];requestRender()}
+  const pts=[...S._activePointers.values()];S._pinchStartDist=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y);S._pinchStartZoom=S.zoom;return}
 if(S._placementMode)return;
 /* Allow dragging vertices of selected graphic even without draw mode */
 if(S.selectedGraphicId&&!S._drawMode&&!S._panLockMode){const g=S.graphics.find(x=>x.id===S.selectedGraphicId);if(g&&g.points){
@@ -977,8 +987,22 @@ const hitG=hitTestGraphic(pos);if(hitG){_gfxSelOnDown=hitG.id;S._isPanning=true;
 S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon}}
 
 function onPointerMove(e){const pos=getPos(e);if(e.pointerType==="pen")_pencilLastSeen=Date.now();if(e.pointerId!==undefined&&e.pointerType==="touch")S._activePointers.set(e.pointerId,pos);
-/* Freehand stroke capture */
+/* PINCH ZOOM — always takes priority over everything else */
+if(S._activePointers.size>=2){
+  /* Cancel freehand if it was active */
+  if(_freehandActive){_freehandActive=false;_freehandPoints=[];_freehandPressures=[];requestRender()}
+  /* Cancel pan */
+  S._isPanning=false;
+  if(S._pinchStartDist){
+    const pts=[...S._activePointers.values()],dist=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y);
+    S.zoom=Math.max(2,Math.min(19,S._pinchStartZoom+Math.log2(dist/S._pinchStartDist)));
+    requestRender();updateCoords(pos);return}
+  return}
+/* Freehand stroke capture — skip if finger in pencilMode, cancel on multitouch */
 if(_freehandActive&&S._mapTool==="freehand"){
+  /* Cancel stroke if multitouch (pinch zoom) */
+  if(S._activePointers.size>=2){_freehandActive=false;_freehandPoints=[];_freehandPressures=[];requestRender()}
+  else{
   var isMcooClip=_mcooAoId&&S._ipb&&S._ipb.mcooLayerId&&S.activeLayerId===S._ipb.mcooLayerId;
   if(isMcooClip&&_mcooOutside){
     /* Currently outside AO — check if we re-entered */
@@ -1006,8 +1030,8 @@ if(_freehandActive&&S._mapTool==="freehand"){
       e.preventDefault();return;
     }
     _freehandPoints.push(pos);_freehandPressures.push(e.pressure||0.5);requestRender()}
-  e.preventDefault();return}
-if(S._activePointers.size===2&&S._pinchStartDist){const pts=[...S._activePointers.values()],dist=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y);S.zoom=Math.max(2,Math.min(19,S._pinchStartZoom+Math.log2(dist/S._pinchStartDist)));requestRender();updateCoords(pos);return}
+  e.preventDefault();return}}
+/* (pinch zoom handled at top of pointerMove) */
 if(_rotUnit){canvas.style.cursor="grabbing";const sp=latlonToScreen(_rotUnit.lat,_rotUnit.lon);const dx=pos.x-sp.x,dy=-(pos.y-sp.y);let ang=Math.atan2(dx,dy)/DEG;ang=((ang%360)+360)%360;_rotUnit.rotation=Math.round(ang);debouncedUnitSync(_rotUnit);openEditor();requestRender();return}
 /* Rectangle draw-mode rotation drag */
 if(S._drawMode&&S._drawMode.tool==="rectangle"&&S._drawMode._rotDrag){
@@ -1127,7 +1151,17 @@ if(dm.tool==="text"&&dm.points.length===0){dm.points.push({lat:ll.lat,lon:ll.lon
 dm.points.push({lat:ll.lat,lon:ll.lon});updateModeBar();requestRender();return}
 return}
 
-if(S._placementMode&&moved<(S._lastPointerType==="touch"?30:10)){const ll=screenToLatlon(pos.x,pos.y);var _pm=S._placementMode;var _eqp={...(EQUIPMENT_DEFAULTS[_pm.type]||{})};/* For roster units with weapons, compute maxRange from weapon data */if(_pm._rosterSource&&_pm.weapons&&_pm.weapons.length){var _maxR=0;_pm.weapons.forEach(function(w){if(w.rangeKm&&w.rangeKm>0){var rm=w.rangeKm*1000;if(rm>_maxR)_maxR=rm}});if(_maxR>0)_eqp.maxRange=_maxR}var _rings=[];if(_pm._rosterSource&&_pm.weapons&&_pm.weapons.length){_pm.weapons.forEach(function(w){if(w.rangeKm&&w.rangeKm>0){_rings.push({label:w.name||'',radius:w.rangeKm*1000,color:'#ff4444',opacity:0.15,visible:true})}})}const u={..._pm,id:"u"+Date.now()+Math.random().toString(36).substr(2,4),lat:ll.lat,lon:ll.lon,layerId:S.activeLayerId,rings:_rings,equipment:_eqp,isEquipment:!!_pm.isEquipment};S.units.push(u);var wasRoster=!!_pm._rosterSource;S._placementMode=null;_ptrDownPos=null;/* Prevent document-level pointerup from re-processing */hideModeBar();netBroadcast({type:"unitAdd",unit:u});if(wasRoster){/* Roster placement: don't open editor or pan — keep placer ready for next unit */S.selectedUnitId=null;S.selectedGraphicId=null;_ipbPlacerOpen=true;renderIPBPlacerPanel();requestRender()}else{S.selectedUnitId=u.id;S.selectedGraphicId=null;openEditor();requestRender()}return}
+if(S._placementMode&&moved<(S._lastPointerType==="touch"?30:10)){const ll=screenToLatlon(pos.x,pos.y);var _pm=S._placementMode;var _eqp={...(EQUIPMENT_DEFAULTS[_pm.type]||{})};/* For roster units with weapons, compute maxRange from weapon data */if(_pm._rosterSource&&_pm.weapons&&_pm.weapons.length){var _maxR=0;_pm.weapons.forEach(function(w){if(w.rangeKm&&w.rangeKm>0){var rm=w.rangeKm*1000;if(rm>_maxR)_maxR=rm}});if(_maxR>0)_eqp.maxRange=_maxR}var _rings=[];if(_pm._rosterSource&&_pm.weapons&&_pm.weapons.length){_pm.weapons.forEach(function(w){if(w.rangeKm&&w.rangeKm>0){_rings.push({label:w.name||'',radius:w.rangeKm*1000,color:'#ff4444',opacity:0.15,visible:true})}})}
+/* Roster units: force onto an enemy COA layer, never the base map */
+var _placeLayerId=S.activeLayerId;
+if(_pm._rosterSource&&S._ipb&&S._ipb.enemyCOAs&&S._ipb.enemyCOAs.length){
+  var _coaIds=new Set(S._ipb.enemyCOAs.map(function(c){return c.layerId}));
+  if(!_coaIds.has(S.activeLayerId)){
+    /* Active layer isn't a COA layer — use the first enemy COA */
+    _placeLayerId=S._ipb.enemyCOAs[0].layerId;
+  }
+}
+const u={..._pm,id:"u"+Date.now()+Math.random().toString(36).substr(2,4),lat:ll.lat,lon:ll.lon,layerId:_placeLayerId,rings:_rings,equipment:_eqp,isEquipment:!!_pm.isEquipment};S.units.push(u);var wasRoster=!!_pm._rosterSource;S._placementMode=null;_ptrDownPos=null;/* Prevent document-level pointerup from re-processing */hideModeBar();netBroadcast({type:"unitAdd",unit:u});if(wasRoster){/* Roster placement: don't open editor or pan — keep placer ready for next unit */S.selectedUnitId=null;S.selectedGraphicId=null;_ipbPlacerOpen=true;renderIPBPlacerPanel();requestRender()}else{S.selectedUnitId=u.id;S.selectedGraphicId=null;openEditor();requestRender()}return}
 
 /* Wargame order destination tap */
 if(S._wargameOrderPending&&moved<10){
@@ -3423,9 +3457,8 @@ function renderIPBPlacerPanel(){
     _ipbPlacerOpen=false;return;
   }
 
-  /* Determine placed status — check active layer AND all enemy COA layers */
+  /* Determine placed status — check enemy COA layers only */
   var _placerLayerIds=new Set();
-  _placerLayerIds.add(S.activeLayerId);
   if(S._ipb&&S._ipb.enemyCOAs){S._ipb.enemyCOAs.forEach(function(c){_placerLayerIds.add(c.layerId)})}
   var layerUnits=S.units.filter(function(u){return _placerLayerIds.has(u.layerId)&&u.affiliation==='hostile'});
   var rosterStatus=roster.map(function(r){
@@ -3469,7 +3502,7 @@ function renderIPBPlacerPanel(){
   h+='<span style="font-size:11px;font-weight:700;flex:1">THREAT ROSTER</span>';
   h+='<span style="font-size:9px;opacity:.5;margin-right:6px">'+placedCount+'/'+roster.length+'</span>';
   h+='<button class="btn" style="font-size:10px;padding:1px 5px;margin-right:3px;opacity:'+(_placerPos.pinned?'1':'.4')+'" onclick="_placerPos.pinned=!_placerPos.pinned;renderIPBPlacerPanel()" title="'+(_placerPos.pinned?'Unpin':'Pin open')+'">'+pinIcon+'</button>';
-  h+='<button class="btn" style="font-size:14px;padding:1px 6px;opacity:.5" onclick="_ipbPlacerOpen=false;_placerPos.pinned=false;renderIPBPlacerPanel()">\u2715</button>';
+  h+='<button class="btn" style="font-size:14px;padding:1px 6px;opacity:.5;touch-action:manipulation" onclick="_ipbPlacerOpen=false;_placerPos.pinned=false;renderIPBPlacerPanel()" ontouchend="event.preventDefault();_ipbPlacerOpen=false;_placerPos.pinned=false;renderIPBPlacerPanel()">\u2715</button>';
   h+='</div>';
   h+='<div style="overflow-y:auto;overflow-x:hidden;padding:6px;display:grid;grid-template-columns:1fr 1fr;gap:5px;flex:1">';
 
@@ -7201,6 +7234,7 @@ function init(){
   canvas.addEventListener("pointermove",onPointerMove,{passive:false});
   canvas.addEventListener("pointerup",onPointerUp);
   canvas.addEventListener("pointercancel",onPointerUp);
+  canvas.addEventListener("pointerleave",function(){var tt=document.getElementById("map-tooltip");if(tt)tt.style.display="none";canvas.style.cursor=""});
   document.addEventListener("pointerup",onPointerUp);
   document.addEventListener("pointercancel",onPointerUp);
   canvas.addEventListener("wheel",onWheel,{passive:false});
