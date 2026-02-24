@@ -132,11 +132,11 @@ input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:20
 const SVG_W=120,SVG_H=140,CX=60,CY=62,FRAME_W=70,FRAME_H=50,U=10,DEG=Math.PI/180,TILE_SIZE=256,MAX_UNDO=30;
 const TILE_SOURCES={esri_topo:{name:"ESRI Topo",url:"https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",maxZoom:19},osm:{name:"OpenStreetMap",url:"https://tile.openstreetmap.org/{z}/{x}/{y}.png",maxZoom:19},esri_sat:{name:"ESRI Satellite",url:"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",maxZoom:19},esri_natgeo:{name:"ESRI NatGeo",url:"https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}",maxZoom:16},opentopo:{name:"OpenTopo",url:"https://tile.opentopomap.org/{z}/{x}/{y}.png",maxZoom:17},usgs_topo:{name:"USGS Topo",url:"https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}",maxZoom:16},google_sat:{name:"Google Satellite",url:"https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",maxZoom:20},google_hybrid:{name:"Google Hybrid",url:"https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",maxZoom:20},google_terrain:{name:"Google Terrain",url:"https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}",maxZoom:20},google_roads:{name:"Google Roads",url:"https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",maxZoom:20}};
 const AFFILIATIONS={friendly:{color:"#000",fill:"#80E0FF",shape:"rect",label:"Friendly"},hostile:{color:"#000",fill:"#FF8080",shape:"diamond",label:"Hostile"},neutral:{color:"#000",fill:"#AAFFAA",shape:"square",label:"Neutral"},unknown:{color:"#000",fill:"#FFFF80",shape:"quatrefoil",label:"Unknown"}};
-const UNIT_CATEGORIES=[{name:"Infantry, Tanks & Artillery",types:[{id:"infantry",label:"Infantry"},{id:"naval_infantry",label:"Naval Infantry"},{id:"mechanized_infantry",label:"Mech Infantry"},{id:"ifv",label:"IFV"},{id:"armor",label:"Armor"},{id:"armored_wheeled",label:"Armor (Whl)"},{id:"cavalry",label:"Cavalry"},{id:"armored_recon",label:"Armored Cav"},{id:"artillery",label:"Field Artillery"},{id:"mechanized_artillery",label:"Mech Artillery"},{id:"rocket_artillery",label:"Rocket Arty"},{id:"mortar",label:"Mortar"},{id:"air_defense",label:"Air Defense Arty"},{id:"anti_armor",label:"Anti-Armor"},{id:"magtf",label:"MAGTF"}]},{name:"Aviation & Air Defense",types:[{id:"aviation",label:"Aviation"},{id:"attack_aviation",label:"Attack Aviation"},{id:"recon_aviation",label:"Recon Aviation"},{id:"medevac_aviation",label:"MEDEVAC"},{id:"uav",label:"UAS"},{id:"sam",label:"SAM"}]},{name:"Engineer",types:[{id:"engineer",label:"Engineer"},{id:"bridging",label:"Bridging"}]},{name:"Command, Signal & EW",types:[{id:"headquarters",label:"HQ"},{id:"signal",label:"Signal"},{id:"military_intelligence",label:"MI"},{id:"electronic_warfare",label:"EW"},{id:"cyber",label:"Cyber"}]},{name:"Logistics & Medical",types:[{id:"sustainment",label:"Sustainment"},{id:"medical",label:"Medical"},{id:"maintenance",label:"Maintenance"},{id:"transportation",label:"Transport"},{id:"supply",label:"Supply"},{id:"ordnance",label:"Ordnance"}]},{name:"Special Forces",types:[{id:"special_forces",label:"SF"},{id:"ranger",label:"Ranger"},{id:"civil_affairs",label:"Civil Affairs"},{id:"psyop",label:"PSYOP"}]},{name:"Waypoints",types:[{id:"waypoint",label:"Waypoint"}]}];
+const UNIT_CATEGORIES=[{name:"Infantry, Tanks & Artillery",types:[{id:"infantry",label:"Infantry"},{id:"light_infantry",label:"Light Infantry"},{id:"motorized_infantry",label:"Motorized Inf"},{id:"naval_infantry",label:"Naval Infantry"},{id:"mechanized_infantry",label:"Mech Infantry"},{id:"ifv",label:"IFV"},{id:"armor",label:"Armor"},{id:"amphibious_armor",label:"Amphib Armor"},{id:"armored_wheeled",label:"Armor (Whl)"},{id:"recon",label:"Recon"},{id:"armored_recon",label:"Armored Recon"},{id:"artillery",label:"Field Artillery"},{id:"mechanized_artillery",label:"Mech Artillery"},{id:"rocket_artillery",label:"Rocket Arty"},{id:"mortar",label:"Mortar"},{id:"mortar_wheeled",label:"Mortar (Whl)"},{id:"air_defense",label:"Air Defense Arty"},{id:"anti_armor",label:"Anti-Armor"},{id:"magtf",label:"MAGTF"}]},{name:"Aviation & Air Defense",types:[{id:"aviation",label:"Aviation"},{id:"fixed_wing",label:"Fixed Wing"},{id:"medevac_aviation",label:"MEDEVAC"},{id:"uav",label:"UAS"},{id:"sam",label:"SAM"}]},{name:"Engineer",types:[{id:"engineer",label:"Engineer"},{id:"combat_engineer",label:"Combat Engineer"},{id:"bridging",label:"Bridging"}]},{name:"Command, Signal & EW",types:[{id:"headquarters",label:"HQ"},{id:"signal",label:"Signal"},{id:"military_intelligence",label:"MI"},{id:"electronic_warfare",label:"EW"},{id:"cyber",label:"Cyber"}]},{name:"Logistics & Medical",types:[{id:"sustainment",label:"Sustainment"},{id:"combat_service_support",label:"Combat Svc Spt"},{id:"medical",label:"Medical"},{id:"maintenance",label:"Maintenance"},{id:"transportation",label:"Transport"},{id:"supply",label:"Supply"},{id:"ordnance",label:"Ordnance"}]},{name:"Special Forces",types:[{id:"special_forces",label:"SF"},{id:"ranger",label:"Ranger"},{id:"civil_affairs",label:"Civil Affairs"},{id:"psyop",label:"PSYOP"}]},{name:"Waypoints",types:[{id:"waypoint",label:"Waypoint"}]}];
 const TYPE_LABELS={};UNIT_CATEGORIES.forEach(c=>c.types.forEach(t=>{TYPE_LABELS[t.id]=t.label}));
 const ECHELONS=[{id:"team",label:"Team/Crew",mark:"slashO"},{id:"squad",label:"Squad",mark:"dot1"},{id:"section",label:"Section",mark:"dot2"},{id:"platoon",label:"Platoon",mark:"dot3"},{id:"company",label:"Company",mark:"bar1"},{id:"battalion",label:"Battalion",mark:"bar2"},{id:"regiment",label:"Regt/Group",mark:"bar3"},{id:"brigade",label:"Brigade",mark:"x1"},{id:"division",label:"Division",mark:"x2"},{id:"corps",label:"Corps",mark:"x3"},{id:"army",label:"Theater Army",mark:"x4"},{id:"army_group",label:"Army Group",mark:"x5"},{id:"theater",label:"Theater",mark:"x6"},{id:"command",label:"Command",mark:"cmd"}];
 const MODIFIERS=[{id:"reinforced",label:"+",symbol:"+"},{id:"reduced",label:"\u2212",symbol:"\u2212"},{id:"airborne",label:"Airborne",symbol:"\u2297"},{id:"air_assault",label:"Air Assault",symbol:"\u2298"},{id:"mountain",label:"Mountain",symbol:"\u25b2"},{id:"arctic",label:"Arctic",symbol:"\u2744"},{id:"amphibious",label:"Amphibious",symbol:"\u2248"},{id:"light",label:"Light",symbol:"L"},{id:"heavy",label:"Heavy",symbol:"H"},{id:"motorized",label:"Motorized",symbol:"\u2299"},{id:"mechanized",label:"Mechanized",symbol:"\u229b"},{id:"wheeled",label:"Wheeled",symbol:"W"}];
-const EQUIPMENT_DEFAULTS={infantry:{vehicle:"HMMWV",crew:9,weapon:"M4/M249",maxRange:3600},naval_infantry:{vehicle:"AAV-7A1",crew:21,weapon:"M4/M249/Mk19",maxRange:3600},mechanized_infantry:{vehicle:"M2 Bradley",crew:9,weapon:"25mm/TOW",maxRange:3750,sensorRange:4000},ifv:{vehicle:"M2A3 Bradley",crew:9,weapon:"25mm/TOW",maxRange:3750,sensorRange:4000,speed:61},armor:{vehicle:"M1A2 Abrams",crew:4,weapon:"120mm",maxRange:4000,sensorRange:5000,speed:67},armored_wheeled:{vehicle:"Stryker",crew:9,weapon:"M2/.50 cal",maxRange:1800,sensorRange:4000,speed:97},cavalry:{vehicle:"M3 Bradley",crew:5,weapon:"25mm/TOW",maxRange:3750,sensorRange:6000},artillery:{vehicle:"M777",crew:8,weapon:"155mm",maxRange:30000},mechanized_artillery:{vehicle:"M109A7",crew:4,weapon:"155mm",maxRange:30000,speed:56},rocket_artillery:{vehicle:"M270 MLRS",crew:3,weapon:"MLRS",maxRange:70000},mortar:{vehicle:"M1129",crew:4,weapon:"120mm Mortar",maxRange:7200},air_defense:{vehicle:"M-SHORAD",crew:3,weapon:"Stinger/30mm",maxRange:8000,sensorRange:15000},anti_armor:{vehicle:"HMMWV",crew:4,weapon:"Javelin/TOW",maxRange:4750},magtf:{vehicle:"Various",crew:0,weapon:"Combined Arms"},aviation:{vehicle:"UH-60",crew:4,speed:294},attack_aviation:{vehicle:"AH-64D",crew:2,weapon:"Hellfire/30mm",maxRange:8000,sensorRange:12000,speed:293},uav:{vehicle:"MQ-1C Gray Eagle",sensorRange:25000,speed:280},sam:{vehicle:"Patriot",crew:3,weapon:"MIM-104",maxRange:160000,sensorRange:180000},engineer:{vehicle:"M9 ACE",crew:1},special_forces:{crew:12,weapon:"Various"},ranger:{crew:12,weapon:"Various"}};
+const EQUIPMENT_DEFAULTS={infantry:{vehicle:"HMMWV",crew:9,weapon:"M4/M249",maxRange:3600},light_infantry:{vehicle:"Foot",crew:9,weapon:"M4/M249",maxRange:3600},motorized_infantry:{vehicle:"HMMWV/JLTV",crew:9,weapon:"M4/M249",maxRange:3600,speed:100},naval_infantry:{vehicle:"AAV-7A1",crew:21,weapon:"M4/M249/Mk19",maxRange:3600},mechanized_infantry:{vehicle:"M2 Bradley",crew:9,weapon:"25mm/TOW",maxRange:3750,sensorRange:4000},ifv:{vehicle:"M2A3 Bradley",crew:9,weapon:"25mm/TOW",maxRange:3750,sensorRange:4000,speed:61},armor:{vehicle:"M1A2 Abrams",crew:4,weapon:"120mm",maxRange:4000,sensorRange:5000,speed:67},amphibious_armor:{vehicle:"AAV-7A1/ACV",crew:3,weapon:"Mk19/M2",maxRange:2200,speed:13},armored_wheeled:{vehicle:"Stryker",crew:9,weapon:"M2/.50 cal",maxRange:1800,sensorRange:4000,speed:97},recon:{vehicle:"HMMWV/JLTV",crew:4,weapon:"M4/M249",maxRange:3600,sensorRange:6000},artillery:{vehicle:"M777",crew:8,weapon:"155mm",maxRange:30000},mechanized_artillery:{vehicle:"M109A7",crew:4,weapon:"155mm",maxRange:30000,speed:56},rocket_artillery:{vehicle:"M270 MLRS",crew:3,weapon:"MLRS",maxRange:70000},mortar:{vehicle:"M1129",crew:4,weapon:"120mm Mortar",maxRange:7200},mortar_wheeled:{vehicle:"M1064",crew:5,weapon:"120mm Mortar",maxRange:7200},air_defense:{vehicle:"M-SHORAD",crew:3,weapon:"Stinger/30mm",maxRange:8000,sensorRange:15000},anti_armor:{vehicle:"HMMWV",crew:4,weapon:"Javelin/TOW",maxRange:4750},magtf:{vehicle:"Various",crew:0,weapon:"Combined Arms"},aviation:{vehicle:"UH-60",crew:4,speed:294},fixed_wing:{vehicle:"C-130",crew:5,speed:592},uav:{vehicle:"MQ-1C Gray Eagle",sensorRange:25000,speed:280},sam:{vehicle:"Patriot",crew:3,weapon:"MIM-104",maxRange:160000,sensorRange:180000},engineer:{vehicle:"M9 ACE",crew:1},combat_engineer:{vehicle:"M9 ACE",crew:1,weapon:"M4/Demolitions"},special_forces:{crew:12,weapon:"Various"},ranger:{crew:12,weapon:"Various"}};
 const GRAPHIC_COLORS=["#ff4444","#4a9eff","#44cc44","#ffd700","#80E0FF","#FF8080","#80FF80","#FFFF80","#ff8800","#ffffff","#000000","#00ffff","#ff00ff","#8b4513"];
 const OVERLAY_TYPES=[{id:"none",label:"Basic"},{id:"pl",label:"Phase Line"},{id:"ld",label:"Line of Departure"},{id:"boundary",label:"Boundary"},{id:"aa",label:"Assembly Area"},{id:"axis",label:"Axis of Advance"},{id:"route",label:"Route"}];
 
@@ -309,7 +309,7 @@ function drawLLGrid(){const d=devicePixelRatio||1,W=canvas.width,H=canvas.height
 
 // === part_04_units.js ===
 
-function drawUnitIcon(c2,u,cx,cy,sz){const sc=sz/SVG_W;c2.save();c2.translate(cx,cy);if(u.rotation)c2.rotate(u.rotation*DEG);c2.translate(-sz/2,-sz/2);c2.scale(sc,sc);const a=AFFILIATIONS[u.affiliation||"friendly"],col=a.color,sw=4,hw=FRAME_W/2,hh=FRAME_H/2;/* UAV/drone uses house-shaped (pentagon) frame per MIL-STD-2525 equipment */const _isUAV=u.isEquipment&&u.type==="uav";const _cr=Math.max(hw,hh)+U*.1;const B=_isUAV?(CY+hh):a.shape==="circle"?CY+_cr:a.shape==="diamond"?CY+(hh+U*.6):CY+hh;if(u.isHQ){c2.beginPath();c2.moveTo(CX,B);c2.lineTo(CX,SVG_H-U*.5);c2.strokeStyle="#000";c2.lineWidth=sw;c2.stroke()}/* Frame */c2.fillStyle=a.fill;c2.strokeStyle="#000";c2.lineWidth=sw;if(_isUAV){/* House/pentagon frame for drones */const hx=hw*.85,hy=hh+U*.2;const peakY=CY-hy-U*1.0;c2.beginPath();c2.moveTo(CX,peakY);c2.lineTo(CX+hx,CY-hy*.3);c2.lineTo(CX+hx,CY+hy);c2.lineTo(CX-hx,CY+hy);c2.lineTo(CX-hx,CY-hy*.3);c2.closePath();c2.fill();c2.stroke()}else switch(a.shape){case"circle":{const cr=_cr;c2.beginPath();c2.arc(CX,CY,cr,0,Math.PI*2);c2.fill();c2.stroke();break}case"rect":c2.beginPath();c2.rect(CX-hw,CY-hh,FRAME_W,FRAME_H);c2.fill();c2.stroke();break;case"diamond":{const dx=hw+U*.6,dy=hh+U*.6;c2.beginPath();c2.moveTo(CX,CY-dy);c2.lineTo(CX+dx,CY);c2.lineTo(CX,CY+dy);c2.lineTo(CX-dx,CY);c2.closePath();c2.fill();c2.stroke();break}case"square":{const sq=Math.max(hw,hh)+U*.2;c2.beginPath();c2.rect(CX-sq,CY-sq,sq*2,sq*2);c2.fill();c2.stroke();break}case"quatrefoil":{const r=hh*.55;c2.beginPath();c2.moveTo(CX,CY-hh-U*.3);c2.bezierCurveTo(CX+r,CY-hh-U*.3,CX+hw+U*.3,CY-r,CX+hw+U*.3,CY);c2.bezierCurveTo(CX+hw+U*.3,CY+r,CX+r,CY+hh+U*.3,CX,CY+hh+U*.3);c2.bezierCurveTo(CX-r,CY+hh+U*.3,CX-hw-U*.3,CY+r,CX-hw-U*.3,CY);c2.bezierCurveTo(CX-hw-U*.3,CY-r,CX-r,CY-hh-U*.3,CX,CY-hh-U*.3);c2.closePath();c2.fill();c2.stroke();break}}/* Interior bounds */var ihw=hw,ihh=hh;if(_isUAV){ihw=hw*.65;ihh=hh*.65}else switch(a.shape){case"circle":{ihw=_cr*.68;ihh=_cr*.68;break}case"diamond":ihw=hw*.58;ihh=hh*.58;break;case"square":{const sq=Math.max(hw,hh)+U*.2;ihw=sq*.7;ihh=sq*.7;break}case"quatrefoil":ihw=hw*.6;ihh=hh*.6;break}/* Icon interior */c2.strokeStyle="#000";c2.fillStyle="#000";c2.lineWidth=3;drawTS(c2,u.type,CX,CY,ihw,ihh);if(u.echelon)drawEch(c2,u.echelon,u.affiliation,u.type,u.isEquipment);if(u.modifiers&&u.modifiers.length)drawMods(c2,u.modifiers);/* Text labels outside frame — hide when icon is small */var _dpr=devicePixelRatio||1;if(S.showLabels&&sz/_dpr>60){c2.fillStyle="#000";c2.font=`bold ${U*2.0}px serif`;const textX=_isUAV?(hw*.85):a.shape==="circle"?_cr*0.72:hw;if(u.designation){c2.textAlign="right";c2.textBaseline="alphabetic";c2.fillText(u.designation,CX-textX-U*.3,B)}if(u.parentUnit){c2.textAlign="left";c2.textBaseline="alphabetic";c2.fillText(u.parentUnit,CX+textX+U*.3,B)}}c2.restore()}
+function drawUnitIcon(c2,u,cx,cy,sz){const sc=sz/SVG_W;c2.save();c2.translate(cx,cy);if(u.rotation)c2.rotate(u.rotation*DEG);c2.translate(-sz/2,-sz/2);c2.scale(sc,sc);const a=AFFILIATIONS[u.affiliation||"friendly"],col=a.color,sw=4,hw=FRAME_W/2,hh=FRAME_H/2;/* UAV/drone uses house-shaped (pentagon) frame per MIL-STD-2525 equipment */const _isUAV=u.isEquipment&&u.type==="uav";const _cr=Math.max(hw,hh)+U*.1;const B=_isUAV?(CY+hh):a.shape==="circle"?CY+_cr:a.shape==="diamond"?CY+(hh+U*.6):CY+hh;if(u.isHQ){c2.beginPath();c2.moveTo(CX,B);c2.lineTo(CX,SVG_H-U*.5);c2.strokeStyle="#000";c2.lineWidth=sw;c2.stroke()}/* Frame */c2.fillStyle=a.fill;c2.strokeStyle="#000";c2.lineWidth=sw;if(_isUAV){/* House/pentagon frame for drones */const hx=hw*.85,hy=hh+U*.2;const peakY=CY-hy-U*1.0;c2.beginPath();c2.moveTo(CX,peakY);c2.lineTo(CX+hx,CY-hy*.3);c2.lineTo(CX+hx,CY+hy);c2.lineTo(CX-hx,CY+hy);c2.lineTo(CX-hx,CY-hy*.3);c2.closePath();c2.fill();c2.stroke()}else switch(a.shape){case"circle":{const cr=_cr;c2.beginPath();c2.arc(CX,CY,cr,0,Math.PI*2);c2.fill();c2.stroke();break}case"rect":c2.beginPath();c2.rect(CX-hw,CY-hh,FRAME_W,FRAME_H);c2.fill();c2.stroke();break;case"diamond":{const dx=hw+U*.6,dy=hh+U*.6;c2.beginPath();c2.moveTo(CX,CY-dy);c2.lineTo(CX+dx,CY);c2.lineTo(CX,CY+dy);c2.lineTo(CX-dx,CY);c2.closePath();c2.fill();c2.stroke();break}case"square":{const sq=Math.max(hw,hh)+U*.2;c2.beginPath();c2.rect(CX-sq,CY-sq,sq*2,sq*2);c2.fill();c2.stroke();break}case"quatrefoil":{const r=hh*.55;c2.beginPath();c2.moveTo(CX,CY-hh-U*.3);c2.bezierCurveTo(CX+r,CY-hh-U*.3,CX+hw+U*.3,CY-r,CX+hw+U*.3,CY);c2.bezierCurveTo(CX+hw+U*.3,CY+r,CX+r,CY+hh+U*.3,CX,CY+hh+U*.3);c2.bezierCurveTo(CX-r,CY+hh+U*.3,CX-hw-U*.3,CY+r,CX-hw-U*.3,CY);c2.bezierCurveTo(CX-hw-U*.3,CY-r,CX-r,CY-hh-U*.3,CX,CY-hh-U*.3);c2.closePath();c2.fill();c2.stroke();break}}/* Interior bounds */var ihw=hw,ihh=hh;if(_isUAV){ihw=hw*.65;ihh=hh*.65}else switch(a.shape){case"circle":{ihw=_cr*.68;ihh=_cr*.68;break}case"diamond":ihw=hw*.58;ihh=hh*.58;break;case"square":{const sq=Math.max(hw,hh)+U*.2;ihw=sq*.7;ihh=sq*.7;break}case"quatrefoil":ihw=hw*.6;ihh=hh*.6;break}/* Icon interior — clip to frame so custom icons don't bleed outside */c2.save();c2.beginPath();if(_isUAV){const _hx=hw*.85,_hy=hh+U*.2;const _peakY=CY-_hy-U*1.0;c2.moveTo(CX,_peakY);c2.lineTo(CX+_hx,CY-_hy*.3);c2.lineTo(CX+_hx,CY+_hy);c2.lineTo(CX-_hx,CY+_hy);c2.lineTo(CX-_hx,CY-_hy*.3);c2.closePath()}else switch(a.shape){case"circle":{c2.arc(CX,CY,_cr,0,Math.PI*2);break}case"rect":c2.rect(CX-hw,CY-hh,FRAME_W,FRAME_H);break;case"diamond":{const _dx=hw+U*.6,_dy=hh+U*.6;c2.moveTo(CX,CY-_dy);c2.lineTo(CX+_dx,CY);c2.lineTo(CX,CY+_dy);c2.lineTo(CX-_dx,CY);c2.closePath();break}case"square":{const _sq=Math.max(hw,hh)+U*.2;c2.rect(CX-_sq,CY-_sq,_sq*2,_sq*2);break}case"quatrefoil":{const _r=hh*.55;c2.moveTo(CX,CY-hh-U*.3);c2.bezierCurveTo(CX+_r,CY-hh-U*.3,CX+hw+U*.3,CY-_r,CX+hw+U*.3,CY);c2.bezierCurveTo(CX+hw+U*.3,CY+_r,CX+_r,CY+hh+U*.3,CX,CY+hh+U*.3);c2.bezierCurveTo(CX-_r,CY+hh+U*.3,CX-hw-U*.3,CY+_r,CX-hw-U*.3,CY);c2.bezierCurveTo(CX-hw-U*.3,CY-_r,CX-_r,CY-hh-U*.3,CX,CY-hh-U*.3);c2.closePath();break}}c2.clip();c2.strokeStyle="#000";c2.fillStyle="#000";c2.lineWidth=3;drawTS(c2,u.type,CX,CY,hw,hh);c2.restore();if(u.echelon)drawEch(c2,u.echelon,u.affiliation,u.type,u.isEquipment);if(u.modifiers&&u.modifiers.length)drawMods(c2,u.modifiers);/* Text labels outside frame — hide when icon is small */var _dpr=devicePixelRatio||1;if(S.showLabels&&sz/_dpr>60){c2.fillStyle="#000";c2.font=`bold ${U*2.0}px serif`;const textX=_isUAV?(hw*.85):a.shape==="circle"?_cr*0.72:hw;if(u.designation){c2.textAlign="right";c2.textBaseline="alphabetic";c2.fillText(u.designation,CX-textX-U*.3,B)}if(u.parentUnit){c2.textAlign="left";c2.textBaseline="alphabetic";c2.fillText(u.parentUnit,CX+textX+U*.3,B)}}c2.restore()}
 function _drawTrefoil(c2,cx,cy,r,hh){
 /* Aviation: two inverted triangles on vertical axis + horizontal lobes — compact */
 var hw=r/.7;
@@ -342,7 +342,63 @@ c2.lineTo(cx+d,cy-lr);
 c2.arc(cx+d,cy,lr,Math.PI*1.5,Math.PI*0.5,false);
 c2.closePath();c2.fill();
 }
-function drawTS(c2,t,cx,cy,hw,hh){var r=hw*.7;switch(t){case"infantry":c2.beginPath();c2.moveTo(cx-hw,cy-hh);c2.lineTo(cx+hw,cy+hh);c2.moveTo(cx+hw,cy-hh);c2.lineTo(cx-hw,cy+hh);c2.stroke();break;case"naval_infantry":c2.beginPath();c2.moveTo(cx-hw,cy-hh);c2.lineTo(cx+hw,cy+hh);c2.moveTo(cx+hw,cy-hh);c2.lineTo(cx-hw,cy+hh);c2.stroke();{/* Anchor overlay */const as=hw*1.4,lw=c2.lineWidth;c2.save();/* Ring at top */c2.beginPath();c2.arc(cx,cy-as*.64,as*.08,0,Math.PI*2);c2.stroke();/* Vertical shaft from below ring to bottom */c2.beginPath();c2.moveTo(cx,cy-as*.56);c2.lineTo(cx,cy+hh*.93);c2.stroke();/* Horizontal stock/crossbar */c2.beginPath();c2.moveTo(cx-as*.3,cy-as*.35);c2.lineTo(cx+as*.3,cy-as*.35);c2.stroke();/* Flukes: straight arms from X down, hook at tips near bottom of diamond */var ux=hw*.48,uy=hh*.48;/* Left arm */c2.beginPath();c2.moveTo(cx-ux,cy+uy);c2.lineTo(cx-hw*.2,cy+hh*.88);c2.quadraticCurveTo(cx-hw*.08,cy+hh*.97,cx,cy+hh*.93);c2.stroke();/* Right arm */c2.beginPath();c2.moveTo(cx+ux,cy+uy);c2.lineTo(cx+hw*.2,cy+hh*.88);c2.quadraticCurveTo(cx+hw*.08,cy+hh*.97,cx,cy+hh*.93);c2.stroke();/* Barbs - large filled triangles at X intersection */c2.fillStyle=c2.strokeStyle;c2.beginPath();c2.moveTo(cx-ux,cy+uy);c2.lineTo(cx-ux-hw*.35,cy+uy+hh*.35);c2.lineTo(cx-ux-hw*.35,cy+uy-hh*.12);c2.closePath();c2.fill();c2.beginPath();c2.moveTo(cx+ux,cy+uy);c2.lineTo(cx+ux+hw*.35,cy+uy+hh*.35);c2.lineTo(cx+ux+hw*.35,cy+uy-hh*.12);c2.closePath();c2.fill();c2.restore();c2.lineWidth=lw}break;case"mechanized_infantry":c2.beginPath();c2.moveTo(cx-hw,cy-hh);c2.lineTo(cx+hw,cy+hh);c2.moveTo(cx+hw,cy-hh);c2.lineTo(cx-hw,cy+hh);c2.stroke();{const aw=hw*.7,ah=hh*.5,ar=ah;c2.beginPath();c2.moveTo(cx-aw+ar,cy-ah);c2.lineTo(cx+aw-ar,cy-ah);c2.arc(cx+aw-ar,cy,ar,Math.PI*1.5,Math.PI*.5);c2.lineTo(cx-aw+ar,cy+ah);c2.arc(cx-aw+ar,cy,ar,Math.PI*.5,Math.PI*1.5);c2.closePath();c2.stroke()}break;case"ifv":c2.beginPath();c2.moveTo(cx-hw,cy-hh);c2.lineTo(cx+hw,cy+hh);c2.moveTo(cx+hw,cy-hh);c2.lineTo(cx-hw,cy+hh);c2.stroke();{const aw=hw*.7,ah=hh*.5,ar=ah;c2.beginPath();c2.moveTo(cx-aw+ar,cy-ah);c2.lineTo(cx+aw-ar,cy-ah);c2.arc(cx+aw-ar,cy,ar,Math.PI*1.5,Math.PI*.5);c2.lineTo(cx-aw+ar,cy+ah);c2.arc(cx-aw+ar,cy,ar,Math.PI*.5,Math.PI*1.5);c2.closePath();c2.stroke();/* Vertical line at left edge of racetrack */c2.beginPath();c2.moveTo(cx-aw,cy-hh);c2.lineTo(cx-aw,cy+hh);c2.stroke()}break;case"armor":{const aw=hw*.7,ah=hh*.5,ar=ah;c2.beginPath();c2.moveTo(cx-aw+ar,cy-ah);c2.lineTo(cx+aw-ar,cy-ah);c2.arc(cx+aw-ar,cy,ar,Math.PI*1.5,Math.PI*.5);c2.lineTo(cx-aw+ar,cy+ah);c2.arc(cx-aw+ar,cy,ar,Math.PI*.5,Math.PI*1.5);c2.closePath();c2.stroke();break}case"armored_wheeled":{/* Armor racetrack */const aw=hw*.7,ah=hh*.5,ar=ah;c2.beginPath();c2.moveTo(cx-aw+ar,cy-ah);c2.lineTo(cx+aw-ar,cy-ah);c2.arc(cx+aw-ar,cy,ar,Math.PI*1.5,Math.PI*.5);c2.lineTo(cx-aw+ar,cy+ah);c2.arc(cx-aw+ar,cy,ar,Math.PI*.5,Math.PI*1.5);c2.closePath();c2.stroke();/* 3 wheels below: smaller, thinner, with visible gaps */var wLeft=cx-aw+ar,wRight=cx+aw-ar;var wRadius=(wRight-wLeft)/8;var wY=cy+ah+(hh-ah)*.47;var olw=c2.lineWidth;c2.lineWidth=olw*.6;c2.beginPath();c2.arc(wLeft,wY,wRadius,0,Math.PI*2);c2.stroke();c2.beginPath();c2.arc(cx,wY,wRadius,0,Math.PI*2);c2.stroke();c2.beginPath();c2.arc(wRight,wY,wRadius,0,Math.PI*2);c2.stroke();c2.lineWidth=olw;break}case"cavalry":c2.beginPath();c2.moveTo(cx-hw,cy+hh);c2.lineTo(cx+hw,cy-hh);c2.stroke();break;case"armored_recon":c2.beginPath();c2.moveTo(cx-hw,cy+hh);c2.lineTo(cx+hw,cy-hh);c2.stroke();{const aw=hw*.7,ah=hh*.5,ar=ah;c2.beginPath();c2.moveTo(cx-aw+ar,cy-ah);c2.lineTo(cx+aw-ar,cy-ah);c2.arc(cx+aw-ar,cy,ar,Math.PI*1.5,Math.PI*.5);c2.lineTo(cx-aw+ar,cy+ah);c2.arc(cx-aw+ar,cy,ar,Math.PI*.5,Math.PI*1.5);c2.closePath();c2.stroke()}break;case"artillery":c2.beginPath();c2.arc(cx,cy,r*.22,0,Math.PI*2);c2.fill();break;case"mechanized_artillery":c2.beginPath();c2.arc(cx,cy,r*.22,0,Math.PI*2);c2.fill();{const aw=hw*.7,ah=hh*.5,ar=ah;c2.beginPath();c2.moveTo(cx-aw+ar,cy-ah);c2.lineTo(cx+aw-ar,cy-ah);c2.arc(cx+aw-ar,cy,ar,Math.PI*1.5,Math.PI*.5);c2.lineTo(cx-aw+ar,cy+ah);c2.arc(cx-aw+ar,cy,ar,Math.PI*.5,Math.PI*1.5);c2.closePath();c2.stroke()}break;case"rocket_artillery":{/* ADP 1-02: artillery dot centered + two chevrons above */
+/* ============================================================
+ * CUSTOM ICON DEFS — instruction-based icons from Icon Editor
+ * Paste Icon Editor JSON exports here. Each key = unit type,
+ * value = array of drawing instructions.
+ * Coordinates: -1..1 normalized, (0,0) = center of frame.
+ * ============================================================ */
+const CUSTOM_ICON_DEFS = {
+"artillery":[{"op":"arc","cx":0,"cy":0,"r":0.25,"fill":true,"lw":0}],
+"mortar":[{"op":"label","name":"Mortar"},{"op":"arc","cx":0,"cy":0.45,"r":0.18,"fill":false,"lw":0.1},{"op":"line","x1":0,"y1":0.27,"x2":0,"y2":-0.65,"lw":0.1},{"op":"moveTo","x":-0.18,"y":-0.35},{"op":"lineTo","x":0,"y":-0.65},{"op":"lineTo","x":0.18,"y":-0.35},{"op":"stroke","lw":0.1}],
+"signal":[{"op":"label","name":"lightning bolt"},{"op":"moveTo","x":-1.26,"y":-1.22},{"op":"lineTo","x":0,"y":0.28},{"op":"lineTo","x":-0.01,"y":-0.26},{"op":"lineTo","x":1.26,"y":1.07},{"op":"stroke","lw":0.1}],
+"electronic_warfare":[{"op":"text","str":"EW","x":0,"y":0.12,"size":0.7}],
+"armored_recon":[{"op":"line","x1":-1,"y1":1,"x2":1,"y2":-1,"lw":0.12},{"op":"racetrack","cx":0,"cy":0,"w":0.65,"h":0.5,"lw":0.1}],
+"armor":[{"op":"racetrack","cx":0,"cy":0,"w":0.65,"h":0.5,"lw":0.1}],
+"mechanized_artillery":[{"op":"arc","cx":0,"cy":0,"r":0.22,"fill":true,"lw":0,"startAngle":0,"endAngle":6.283},{"op":"racetrack","cx":0,"cy":0,"w":0.65,"h":0.5,"lw":0.1}],
+"naval_infantry":[{"op":"line","x1":-1,"y1":-1,"x2":1,"y2":1,"lw":0.12},{"op":"line","x1":1,"y1":-1,"x2":-1,"y2":1,"lw":0.12},{"op":"label","name":"anchor overlay"},{"op":"arc","cx":-0.01,"cy":-0.79,"r":0.12,"lw":0.08,"startAngle":0,"endAngle":6.283},{"op":"line","x1":-0.01,"y1":-0.61,"x2":0.01,"y2":0.83,"lw":0.08},{"op":"line","x1":-0.28,"y1":-0.5,"x2":0.28,"y2":-0.49,"lw":0.08},{"op":"quadratic","x1":-0.45,"y1":0.48,"cpx":-0.26,"cpy":0.82,"x2":0,"y2":0.83,"lw":0.08},{"op":"quadratic","x1":0.45,"y1":0.48,"cpx":0.26,"cpy":0.82,"x2":0,"y2":0.83,"lw":0.08},{"op":"moveTo","x":0.58,"y":0.23},{"op":"lineTo","x":0.57,"y":0.58},{"op":"lineTo","x":0.35,"y":0.35},{"op":"lineTo","x":0.58,"y":0.24},{"op":"fill","lw":0.06},{"op":"moveTo","x":-0.56,"y":0.24},{"op":"lineTo","x":-0.38,"y":0.33},{"op":"lineTo","x":-0.56,"y":0.52},{"op":"lineTo","x":-0.56,"y":0.25},{"op":"fill","lw":0.1}],
+"motorized_infantry":[{"op":"line","x1":-1,"y1":-1,"x2":1,"y2":1,"lw":0.12},{"op":"line","x1":1,"y1":-1,"x2":-1,"y2":1,"lw":0.12},{"op":"line","x1":0,"y1":-1.37,"x2":0,"y2":1.35,"lw":0.1}],
+"light_infantry":[{"op":"line","x1":-1,"y1":-1,"x2":1,"y2":1,"lw":0.12},{"op":"line","x1":1,"y1":-1,"x2":-1,"y2":1,"lw":0.12},{"op":"text","str":"L","x":0,"y":0.7,"size":0.4}],
+"mortar_wheeled":[{"op":"label","name":"Mortar Wheeled"},{"op":"line","x1":-0.01,"y1":-0.08,"x2":0,"y2":-0.65,"lw":0.1},{"op":"moveTo","x":-0.18,"y":-0.35},{"op":"lineTo","x":0,"y":-0.65},{"op":"lineTo","x":0.18,"y":-0.35},{"op":"stroke","lw":0.1},{"op":"line","x1":-0.58,"y1":0.26,"x2":0.57,"y2":0.27,"lw":0.1},{"op":"arc","cx":0.57,"cy":0.45,"r":0.14,"lw":0.1,"startAngle":-2.892,"endAngle":6.258},{"op":"arc","cx":-0.58,"cy":0.45,"r":0.14,"lw":0.1,"startAngle":-2.892,"endAngle":6.258},{"op":"arc","cx":-0.01,"cy":0.1,"r":0.14,"lw":0.1,"startAngle":-2.892,"endAngle":6.258}],
+"maintenance":[{"op":"line","x1":-0.39,"y1":0,"x2":0.39,"y2":0,"lw":0.1},{"op":"arc","cx":0.59,"cy":0,"r":0.27,"lw":0.08,"startAngle":1.458,"endAngle":4.758},{"op":"arc","cx":-0.61,"cy":-0.01,"r":0.27,"lw":0.08,"startAngle":-1.692,"endAngle":1.658}],
+"engineer":[{"op":"label","name":"castle/crenellation"},{"op":"moveTo","x":-0.5,"y":0.5},{"op":"lineTo","x":-0.5,"y":-0.2},{"op":"lineTo","x":0.5,"y":-0.2},{"op":"lineTo","x":0.5,"y":0.5},{"op":"stroke","lw":0.12},{"op":"line","x1":-0.01,"y1":-0.2,"x2":-0.01,"y2":0.35,"lw":0.1}],
+"combat_engineer":[{"op":"label","name":"castle/crenellation"},{"op":"moveTo","x":-0.5,"y":0.5},{"op":"lineTo","x":-0.5,"y":-0.2},{"op":"lineTo","x":0.5,"y":-0.2},{"op":"lineTo","x":0.5,"y":0.5},{"op":"stroke","lw":0.12},{"op":"line","x1":-0.01,"y1":-0.2,"x2":-0.01,"y2":0.35,"lw":0.1},{"op":"text","str":"CBT","x":-0.03,"y":-0.46,"size":0.3}],
+"combat_service_support":[{"op":"text","str":"CSS","x":0,"y":0.11,"size":0.7}],
+"medical":[{"op":"line","x1":0,"y1":-1.5,"x2":0,"y2":1.5,"lw":0.14},{"op":"line","x1":-1.5,"y1":0,"x2":1.41,"y2":0,"lw":0.14}],
+"amphibious_armor":[{"op":"label","name":"left propeller lobe"},{"op":"label","name":"right propeller lobe"},{"op":"label","name":"sine wave"},{"op":"moveTo","x":-1.05,"y":0.14},{"op":"lineTo","x":-0.9,"y":-0.06},{"op":"lineTo","x":-0.85,"y":-0.13},{"op":"lineTo","x":-0.81,"y":-0.15},{"op":"lineTo","x":-0.76,"y":-0.12},{"op":"lineTo","x":-0.71,"y":-0.04},{"op":"lineTo","x":-0.66,"y":0.06},{"op":"lineTo","x":-0.62,"y":0.15},{"op":"lineTo","x":-0.57,"y":0.2},{"op":"lineTo","x":-0.52,"y":0.21},{"op":"lineTo","x":-0.47,"y":0.16},{"op":"lineTo","x":-0.43,"y":0.07},{"op":"lineTo","x":-0.38,"y":-0.03},{"op":"lineTo","x":-0.33,"y":-0.11},{"op":"lineTo","x":-0.29,"y":-0.15},{"op":"lineTo","x":-0.24,"y":-0.14},{"op":"lineTo","x":-0.19,"y":-0.08},{"op":"lineTo","x":-0.14,"y":0.02},{"op":"lineTo","x":-0.09,"y":0.11},{"op":"lineTo","x":-0.05,"y":0.18},{"op":"lineTo","x":0,"y":0.21},{"op":"lineTo","x":0.05,"y":0.18},{"op":"lineTo","x":0.09,"y":0.11},{"op":"lineTo","x":0.14,"y":0.02},{"op":"lineTo","x":0.19,"y":-0.08},{"op":"lineTo","x":0.24,"y":-0.14},{"op":"lineTo","x":0.28,"y":-0.15},{"op":"lineTo","x":0.33,"y":-0.11},{"op":"lineTo","x":0.38,"y":-0.03},{"op":"lineTo","x":0.43,"y":0.07},{"op":"lineTo","x":0.47,"y":0.16},{"op":"lineTo","x":0.52,"y":0.21},{"op":"lineTo","x":0.57,"y":0.2},{"op":"lineTo","x":0.62,"y":0.15},{"op":"lineTo","x":0.67,"y":0.06},{"op":"lineTo","x":0.71,"y":-0.04},{"op":"lineTo","x":0.76,"y":-0.12},{"op":"lineTo","x":0.81,"y":-0.15},{"op":"lineTo","x":0.86,"y":-0.13},{"op":"lineTo","x":0.9,"y":-0.06},{"op":"lineTo","x":1.02,"y":0.15},{"op":"stroke","lw":0.1},{"op":"racetrack","cx":0,"cy":0,"w":0.65,"h":0.5,"lw":0.1}],
+"supply":[{"op":"line","x1":-0.99,"y1":0.4,"x2":1,"y2":0.4,"lw":0.1}],
+"aviation":[{"op":"label","name":"left propeller lobe"},{"op":"moveTo","x":0,"y":0.08},{"op":"lineTo","x":-0.42,"y":-0.2},{"op":"lineTo","x":-0.49,"y":-0.19},{"op":"lineTo","x":-0.55,"y":-0.18},{"op":"lineTo","x":-0.62,"y":-0.13},{"op":"lineTo","x":-0.66,"y":-0.06},{"op":"lineTo","x":-0.69,"y":0.01},{"op":"lineTo","x":-0.7,"y":0.08},{"op":"lineTo","x":-0.69,"y":0.15},{"op":"lineTo","x":-0.66,"y":0.22},{"op":"lineTo","x":-0.62,"y":0.28},{"op":"lineTo","x":-0.56,"y":0.32},{"op":"lineTo","x":-0.49,"y":0.35},{"op":"lineTo","x":-0.42,"y":0.36},{"op":"lineTo","x":0,"y":0.08},{"op":"fill","lw":0.1},{"op":"label","name":"right propeller lobe"},{"op":"moveTo","x":0,"y":0.08},{"op":"lineTo","x":0.42,"y":-0.2},{"op":"lineTo","x":0.49,"y":-0.19},{"op":"lineTo","x":0.56,"y":-0.16},{"op":"lineTo","x":0.62,"y":-0.12},{"op":"lineTo","x":0.66,"y":-0.06},{"op":"lineTo","x":0.69,"y":0},{"op":"lineTo","x":0.7,"y":0.08},{"op":"lineTo","x":0.69,"y":0.15},{"op":"lineTo","x":0.66,"y":0.22},{"op":"lineTo","x":0.62,"y":0.28},{"op":"lineTo","x":0.56,"y":0.32},{"op":"lineTo","x":0.49,"y":0.35},{"op":"lineTo","x":0.42,"y":0.36},{"op":"lineTo","x":0,"y":0.08},{"op":"fill","lw":0.1},{"op":"label","name":"sine wave"},{"op":"moveTo","x":0,"y":0.13},{"op":"lineTo","x":0.25,"y":0.77},{"op":"lineTo","x":-0.25,"y":0.77},{"op":"lineTo","x":0,"y":0.13},{"op":"fill","lw":0.02},{"op":"moveTo","x":0,"y":0.02},{"op":"lineTo","x":0.28,"y":-0.72},{"op":"lineTo","x":-0.25,"y":-0.72},{"op":"lineTo","x":0,"y":0.02},{"op":"fill","lw":0.02}],
+"fixed_wing":[{"op":"label","name":"left propeller lobe"},{"op":"moveTo","x":0,"y":0.08},{"op":"lineTo","x":-0.42,"y":-0.2},{"op":"lineTo","x":-0.49,"y":-0.19},{"op":"lineTo","x":-0.55,"y":-0.18},{"op":"lineTo","x":-0.62,"y":-0.13},{"op":"lineTo","x":-0.66,"y":-0.06},{"op":"lineTo","x":-0.69,"y":0.01},{"op":"lineTo","x":-0.7,"y":0.08},{"op":"lineTo","x":-0.69,"y":0.15},{"op":"lineTo","x":-0.66,"y":0.22},{"op":"lineTo","x":-0.62,"y":0.28},{"op":"lineTo","x":-0.56,"y":0.32},{"op":"lineTo","x":-0.49,"y":0.35},{"op":"lineTo","x":-0.42,"y":0.36},{"op":"lineTo","x":0,"y":0.08},{"op":"fill","lw":0.1},{"op":"label","name":"right propeller lobe"},{"op":"moveTo","x":0,"y":0.08},{"op":"lineTo","x":0.42,"y":-0.2},{"op":"lineTo","x":0.49,"y":-0.19},{"op":"lineTo","x":0.56,"y":-0.16},{"op":"lineTo","x":0.62,"y":-0.12},{"op":"lineTo","x":0.66,"y":-0.06},{"op":"lineTo","x":0.69,"y":0},{"op":"lineTo","x":0.7,"y":0.08},{"op":"lineTo","x":0.69,"y":0.15},{"op":"lineTo","x":0.66,"y":0.22},{"op":"lineTo","x":0.62,"y":0.28},{"op":"lineTo","x":0.56,"y":0.32},{"op":"lineTo","x":0.49,"y":0.35},{"op":"lineTo","x":0.42,"y":0.36},{"op":"lineTo","x":0,"y":0.08},{"op":"fill","lw":0.1}]
+};
+
+/* Instruction-based icon renderer — matches Icon Editor output exactly */
+function renderCustomIcon(ctx,instructions,cx,cy,hw,hh){
+ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
+ctx.strokeStyle='#000';ctx.fillStyle='#000';
+var pathOpen=false,pathLw=0.1;
+for(var i=0;i<instructions.length;i++){
+var instr=instructions[i];
+var lw=(instr.lw||0.1)*Math.min(hw,hh);
+if(instr.lw!==undefined&&(instr.op==='moveTo'||instr.op==='lineTo'||instr.op==='quadratic'||instr.op==='bezier'))pathLw=instr.lw;
+switch(instr.op){
+case'label':break;
+case'line':ctx.lineWidth=lw;ctx.beginPath();ctx.moveTo(cx+instr.x1*hw,cy+instr.y1*hh);ctx.lineTo(cx+instr.x2*hw,cy+instr.y2*hh);ctx.stroke();break;
+case'arc':{ctx.lineWidth=lw;var sa=instr.startAngle!=null?instr.startAngle:0;var ea=instr.endAngle!=null?instr.endAngle:Math.PI*2;var acx2=cx+(instr.cx||0)*hw,acy2=cy+(instr.cy||0)*hh;ctx.beginPath();if(instr.rx!==undefined||instr.ry!==undefined){var erx2=(instr.rx||instr.r||0.3)*hw,ery2=(instr.ry||instr.r||0.3)*hh;ctx.ellipse(acx2,acy2,erx2,ery2,0,sa,ea)}else{var r2=(instr.r||0.3)*Math.min(hw,hh);ctx.arc(acx2,acy2,r2,sa,ea)}if(instr.fill)ctx.fill();else ctx.stroke();break}
+case'ellipse':{ctx.lineWidth=lw;var erx=(instr.rx||0.5)*hw,ery=(instr.ry||0.35)*hh;ctx.beginPath();ctx.ellipse(cx+(instr.cx||0)*hw,cy+(instr.cy||0)*hh,erx,ery,0,0,Math.PI*2);if(instr.fill)ctx.fill();else ctx.stroke();break}
+case'racetrack':{ctx.lineWidth=lw;var rw=(instr.w||0.7)*hw,rh=(instr.h||0.5)*hh;var rcx=cx+(instr.cx||0)*hw,rcy=cy+(instr.cy||0)*hh;var capR=rh;ctx.beginPath();ctx.moveTo(rcx-rw+capR,rcy-rh);ctx.lineTo(rcx+rw-capR,rcy-rh);ctx.arc(rcx+rw-capR,rcy,capR,-Math.PI/2,Math.PI/2);ctx.lineTo(rcx-rw+capR,rcy+rh);ctx.arc(rcx-rw+capR,rcy,capR,Math.PI/2,-Math.PI/2);ctx.closePath();if(instr.fill)ctx.fill();else ctx.stroke();break}
+case'rect':{ctx.lineWidth=lw;var rx2=cx+(instr.x||0)*hw,ry2=cy+(instr.y||0)*hh;var rw2=(instr.w||0.2)*hw,rh2=(instr.h||0.2)*hh;if(instr.fill)ctx.fillRect(rx2,ry2,rw2,rh2);else{ctx.beginPath();ctx.rect(rx2,ry2,rw2,rh2);ctx.stroke()}break}
+case'moveTo':if(!pathOpen){ctx.beginPath();pathOpen=true}ctx.moveTo(cx+instr.x*hw,cy+instr.y*hh);break;
+case'lineTo':if(!pathOpen){ctx.beginPath();pathOpen=true}ctx.lineTo(cx+instr.x*hw,cy+instr.y*hh);break;
+case'quadratic':{var qlw=(instr.lw||0.1)*Math.min(hw,hh);ctx.lineWidth=qlw;ctx.beginPath();ctx.moveTo(cx+instr.x1*hw,cy+instr.y1*hh);ctx.quadraticCurveTo(cx+instr.cpx*hw,cy+instr.cpy*hh,cx+instr.x2*hw,cy+instr.y2*hh);ctx.stroke();break}
+case'bezier':{var blw=(instr.lw||0.1)*Math.min(hw,hh);ctx.lineWidth=blw;ctx.beginPath();ctx.moveTo(cx+instr.x1*hw,cy+instr.y1*hh);ctx.bezierCurveTo(cx+instr.cp1x*hw,cy+instr.cp1y*hh,cx+instr.cp2x*hw,cy+instr.cp2y*hh,cx+instr.x2*hw,cy+instr.y2*hh);ctx.stroke();break}
+case'stroke':if(pathOpen){var sLw=(instr.lw||pathLw||0.1)*Math.min(hw,hh);ctx.lineWidth=sLw;ctx.stroke();pathOpen=false;pathLw=0.1}break;
+case'fill':if(pathOpen){ctx.fill();pathOpen=false}break;
+case'text':{var sz=(instr.size||0.8)*Math.min(hw,hh)*1.4;ctx.font='bold '+sz+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(instr.str||'?',cx+(instr.x||0)*hw,cy+(instr.y||0)*hh);break}
+}}
+if(pathOpen){ctx.lineWidth=2;ctx.stroke()}
+ctx.restore()}
+
+function drawTS(c2,t,cx,cy,hw,hh){/* Check for custom instruction-based icon first */if(CUSTOM_ICON_DEFS[t]){renderCustomIcon(c2,CUSTOM_ICON_DEFS[t],cx,cy,hw,hh);return}var r=hw*.7;switch(t){case"infantry":c2.beginPath();c2.moveTo(cx-hw,cy-hh);c2.lineTo(cx+hw,cy+hh);c2.moveTo(cx+hw,cy-hh);c2.lineTo(cx-hw,cy+hh);c2.stroke();break;case"naval_infantry":c2.beginPath();c2.moveTo(cx-hw,cy-hh);c2.lineTo(cx+hw,cy+hh);c2.moveTo(cx+hw,cy-hh);c2.lineTo(cx-hw,cy+hh);c2.stroke();{/* Anchor overlay */const as=hw*1.4,lw=c2.lineWidth;c2.save();/* Ring at top */c2.beginPath();c2.arc(cx,cy-as*.64,as*.08,0,Math.PI*2);c2.stroke();/* Vertical shaft from below ring to bottom */c2.beginPath();c2.moveTo(cx,cy-as*.56);c2.lineTo(cx,cy+hh*.93);c2.stroke();/* Horizontal stock/crossbar */c2.beginPath();c2.moveTo(cx-as*.3,cy-as*.35);c2.lineTo(cx+as*.3,cy-as*.35);c2.stroke();/* Flukes: straight arms from X down, hook at tips near bottom of diamond */var ux=hw*.48,uy=hh*.48;/* Left arm */c2.beginPath();c2.moveTo(cx-ux,cy+uy);c2.lineTo(cx-hw*.2,cy+hh*.88);c2.quadraticCurveTo(cx-hw*.08,cy+hh*.97,cx,cy+hh*.93);c2.stroke();/* Right arm */c2.beginPath();c2.moveTo(cx+ux,cy+uy);c2.lineTo(cx+hw*.2,cy+hh*.88);c2.quadraticCurveTo(cx+hw*.08,cy+hh*.97,cx,cy+hh*.93);c2.stroke();/* Barbs - large filled triangles at X intersection */c2.fillStyle=c2.strokeStyle;c2.beginPath();c2.moveTo(cx-ux,cy+uy);c2.lineTo(cx-ux-hw*.35,cy+uy+hh*.35);c2.lineTo(cx-ux-hw*.35,cy+uy-hh*.12);c2.closePath();c2.fill();c2.beginPath();c2.moveTo(cx+ux,cy+uy);c2.lineTo(cx+ux+hw*.35,cy+uy+hh*.35);c2.lineTo(cx+ux+hw*.35,cy+uy-hh*.12);c2.closePath();c2.fill();c2.restore();c2.lineWidth=lw}break;case"mechanized_infantry":c2.beginPath();c2.moveTo(cx-hw,cy-hh);c2.lineTo(cx+hw,cy+hh);c2.moveTo(cx+hw,cy-hh);c2.lineTo(cx-hw,cy+hh);c2.stroke();{const aw=hw*.7,ah=hh*.5,ar=ah;c2.beginPath();c2.moveTo(cx-aw+ar,cy-ah);c2.lineTo(cx+aw-ar,cy-ah);c2.arc(cx+aw-ar,cy,ar,Math.PI*1.5,Math.PI*.5);c2.lineTo(cx-aw+ar,cy+ah);c2.arc(cx-aw+ar,cy,ar,Math.PI*.5,Math.PI*1.5);c2.closePath();c2.stroke()}break;case"ifv":c2.beginPath();c2.moveTo(cx-hw,cy-hh);c2.lineTo(cx+hw,cy+hh);c2.moveTo(cx+hw,cy-hh);c2.lineTo(cx-hw,cy+hh);c2.stroke();{const aw=hw*.7,ah=hh*.5,ar=ah;c2.beginPath();c2.moveTo(cx-aw+ar,cy-ah);c2.lineTo(cx+aw-ar,cy-ah);c2.arc(cx+aw-ar,cy,ar,Math.PI*1.5,Math.PI*.5);c2.lineTo(cx-aw+ar,cy+ah);c2.arc(cx-aw+ar,cy,ar,Math.PI*.5,Math.PI*1.5);c2.closePath();c2.stroke();/* Vertical line at left edge of racetrack */c2.beginPath();c2.moveTo(cx-aw,cy-hh);c2.lineTo(cx-aw,cy+hh);c2.stroke()}break;case"armor":{const aw=hw*.7,ah=hh*.5,ar=ah;c2.beginPath();c2.moveTo(cx-aw+ar,cy-ah);c2.lineTo(cx+aw-ar,cy-ah);c2.arc(cx+aw-ar,cy,ar,Math.PI*1.5,Math.PI*.5);c2.lineTo(cx-aw+ar,cy+ah);c2.arc(cx-aw+ar,cy,ar,Math.PI*.5,Math.PI*1.5);c2.closePath();c2.stroke();break}case"armored_wheeled":{/* Armor racetrack */const aw=hw*.7,ah=hh*.5,ar=ah;c2.beginPath();c2.moveTo(cx-aw+ar,cy-ah);c2.lineTo(cx+aw-ar,cy-ah);c2.arc(cx+aw-ar,cy,ar,Math.PI*1.5,Math.PI*.5);c2.lineTo(cx-aw+ar,cy+ah);c2.arc(cx-aw+ar,cy,ar,Math.PI*.5,Math.PI*1.5);c2.closePath();c2.stroke();/* 3 wheels below: smaller, thinner, with visible gaps */var wLeft=cx-aw+ar,wRight=cx+aw-ar;var wRadius=(wRight-wLeft)/8;var wY=cy+ah+(hh-ah)*.47;var olw=c2.lineWidth;c2.lineWidth=olw*.6;c2.beginPath();c2.arc(wLeft,wY,wRadius,0,Math.PI*2);c2.stroke();c2.beginPath();c2.arc(cx,wY,wRadius,0,Math.PI*2);c2.stroke();c2.beginPath();c2.arc(wRight,wY,wRadius,0,Math.PI*2);c2.stroke();c2.lineWidth=olw;break}case"recon":c2.beginPath();c2.moveTo(cx-hw,cy+hh);c2.lineTo(cx+hw,cy-hh);c2.stroke();break;case"armored_recon":c2.beginPath();c2.moveTo(cx-hw,cy+hh);c2.lineTo(cx+hw,cy-hh);c2.stroke();{const aw=hw*.7,ah=hh*.5,ar=ah;c2.beginPath();c2.moveTo(cx-aw+ar,cy-ah);c2.lineTo(cx+aw-ar,cy-ah);c2.arc(cx+aw-ar,cy,ar,Math.PI*1.5,Math.PI*.5);c2.lineTo(cx-aw+ar,cy+ah);c2.arc(cx-aw+ar,cy,ar,Math.PI*.5,Math.PI*1.5);c2.closePath();c2.stroke()}break;case"artillery":c2.beginPath();c2.arc(cx,cy,r*.22,0,Math.PI*2);c2.fill();break;case"mechanized_artillery":c2.beginPath();c2.arc(cx,cy,r*.22,0,Math.PI*2);c2.fill();{const aw=hw*.7,ah=hh*.5,ar=ah;c2.beginPath();c2.moveTo(cx-aw+ar,cy-ah);c2.lineTo(cx+aw-ar,cy-ah);c2.arc(cx+aw-ar,cy,ar,Math.PI*1.5,Math.PI*.5);c2.lineTo(cx-aw+ar,cy+ah);c2.arc(cx-aw+ar,cy,ar,Math.PI*.5,Math.PI*1.5);c2.closePath();c2.stroke()}break;case"rocket_artillery":{/* ADP 1-02: artillery dot centered + two chevrons above */
 c2.beginPath();c2.arc(cx,cy+r*.1,r*.22,0,Math.PI*2);c2.fill();
 const cw=r*.35,ch=r*.22,cg=r*.28;
 c2.beginPath();c2.moveTo(cx-cw,cy-r*.12);c2.lineTo(cx,cy-r*.12-ch);c2.lineTo(cx+cw,cy-r*.12);c2.stroke();
@@ -375,9 +431,7 @@ for(var wi=0;wi<=waveSteps;wi++){
   if(wi===0)c2.moveTo(wx,wy);else c2.lineTo(wx,wy);
 }
 c2.stroke();c2.lineWidth=slw2;
-break}case"aviation":{_drawTrefoil(c2,cx,cy,r,hh);break}case"attack_aviation":{_drawTrefoil(c2,cx,cy,r,hh);
-c2.beginPath();c2.moveTo(cx-hw*.7,cy-hh*.7);c2.lineTo(cx+hw*.7,cy+hh*.7);c2.moveTo(cx+hw*.7,cy-hh*.7);c2.lineTo(cx-hw*.7,cy+hh*.7);c2.stroke();break}case"recon_aviation":{_drawTrefoil(c2,cx,cy,r,hh);
-c2.beginPath();c2.moveTo(cx-hw*.6,cy+hh*.7);c2.lineTo(cx+hw*.6,cy-hh*.7);c2.stroke();break}case"medevac_aviation":{_drawTrefoil(c2,cx,cy,r,hh);
+break}case"aviation":{_drawTrefoil(c2,cx,cy,r,hh);break}case"medevac_aviation":{_drawTrefoil(c2,cx,cy,r,hh);
 /* Medical cross */
 c2.beginPath();c2.moveTo(cx,cy-hh*.5);c2.lineTo(cx,cy+hh*.5);c2.moveTo(cx-hw*.4,cy);c2.lineTo(cx+hw*.4,cy);c2.stroke();break}case"uav":{/* Drone: thick flat V/chevron */
 var vw=hw*.7,vh=hh*.45,vt=hh*.22;
@@ -402,7 +456,7 @@ c2.beginPath();c2.arc(cx,domeCY,domeR,angL,angR);c2.stroke();
 /* Missile/silo: sits on dome peak, tall with rounded top */
 var mw=r*.2,mBot=domePeakY,mTop=cy-hh*0.55;
 c2.beginPath();c2.moveTo(cx-mw,mBot);c2.lineTo(cx-mw,mTop+mw);c2.arc(cx,mTop+mw,mw,Math.PI,0);c2.lineTo(cx+mw,mBot);c2.stroke();
-break}case"engineer":c2.save();c2.lineWidth=3;c2.beginPath();c2.moveTo(cx-r*.5,cy+r*.6);c2.lineTo(cx-r*.5,cy-r*.2);c2.lineTo(cx+r*.5,cy-r*.2);c2.lineTo(cx+r*.5,cy+r*.6);c2.stroke();c2.restore();break;case"bridging":c2.beginPath();c2.moveTo(cx-r*.7,cy+r*.3);c2.lineTo(cx-r*.3,cy-r*.3);c2.lineTo(cx+r*.3,cy-r*.3);c2.lineTo(cx+r*.7,cy+r*.3);c2.stroke();break;case"headquarters":{/* ADP 1-02: HQ is shown via staff indicator (line below frame) + isHQ flag. Interior can show unit function or be blank */c2.font=`bold ${r*1.2}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("HQ",cx,cy);break}case"signal":{/* ADP 1-02: lightning flash */c2.beginPath();c2.moveTo(cx-r*.15,cy-r*.7);c2.lineTo(cx+r*.25,cy-r*.05);c2.lineTo(cx-r*.1,cy-r*.05);c2.lineTo(cx+r*.2,cy+r*.7);c2.stroke();break}case"military_intelligence":c2.font=`bold ${r*1.2}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("MI",cx,cy);break;case"electronic_warfare":{/* ADP 1-02: lightning zigzag — Z-shape */c2.beginPath();c2.moveTo(cx-r*.5,cy-r*.4);c2.lineTo(cx+r*.5,cy-r*.4);c2.lineTo(cx-r*.5,cy+r*.4);c2.lineTo(cx+r*.5,cy+r*.4);c2.stroke();break}case"cyber":c2.font=`bold ${r}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("CY",cx,cy);break;case"sustainment":{/* ADP 1-02: "SUST" abbreviation */c2.font=`bold ${r*.7}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("SUST",cx,cy);break}case"medical":{/* ADP 1-02: Geneva cross */c2.lineWidth=3;c2.beginPath();c2.moveTo(cx,cy-r*.5);c2.lineTo(cx,cy+r*.5);c2.stroke();c2.beginPath();c2.moveTo(cx-r*.5,cy);c2.lineTo(cx+r*.5,cy);c2.stroke();break}case"maintenance":{/* ADP 1-02: double-end wrench */c2.beginPath();c2.moveTo(cx-r*.6,cy+r*.4);c2.lineTo(cx+r*.6,cy-r*.4);c2.stroke();c2.beginPath();c2.arc(cx-r*.5,cy+r*.3,r*.2,0,Math.PI*2);c2.stroke();c2.beginPath();c2.arc(cx+r*.5,cy-r*.3,r*.2,0,Math.PI*2);c2.stroke();break}case"transportation":{/* ADP 1-02: wheel */c2.beginPath();c2.arc(cx,cy,r*.45,0,Math.PI*2);c2.stroke();/* Spokes */for(let i=0;i<4;i++){const a=Math.PI*i/4;c2.beginPath();c2.moveTo(cx+Math.cos(a)*r*.15,cy+Math.sin(a)*r*.15);c2.lineTo(cx+Math.cos(a)*r*.45,cy+Math.sin(a)*r*.45);c2.moveTo(cx-Math.cos(a)*r*.15,cy-Math.sin(a)*r*.15);c2.lineTo(cx-Math.cos(a)*r*.45,cy-Math.sin(a)*r*.45);c2.stroke()}c2.beginPath();c2.arc(cx,cy,r*.15,0,Math.PI*2);c2.fill();break}case"supply":{/* ADP 1-02: "S" abbreviation */c2.font=`bold ${r}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("S",cx,cy);break}case"ordnance":{/* ADP 1-02: bursting bomb — filled circle with flame/rays on top */c2.beginPath();c2.arc(cx,cy+r*.1,r*.3,0,Math.PI*2);c2.fill();/* Flame/fuse */c2.beginPath();c2.moveTo(cx+r*.15,cy-r*.15);c2.quadraticCurveTo(cx+r*.4,cy-r*.6,cx+r*.1,cy-r*.6);c2.stroke();break}case"special_forces":{/* ADP 1-02: "SF" abbreviation */c2.font=`bold ${r*1.1}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("SF",cx,cy);break}case"ranger":{c2.font=`bold ${r*.8}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("RGR",cx,cy);break}case"civil_affairs":c2.font=`bold ${r}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("CA",cx,cy);break;case"psyop":{/* ADP 1-02: psychological operations — lightning bolt with arrow */c2.beginPath();c2.moveTo(cx-r*.2,cy-r*.6);c2.lineTo(cx+r*.15,cy);c2.lineTo(cx-r*.1,cy);c2.lineTo(cx+r*.2,cy+r*.6);c2.stroke();/* Arrow head */c2.beginPath();c2.moveTo(cx+r*.2,cy+r*.6);c2.lineTo(cx+r*.05,cy+r*.35);c2.moveTo(cx+r*.2,cy+r*.6);c2.lineTo(cx+r*.35,cy+r*.4);c2.stroke();break}case"waypoint":{/* Crosshair/pin symbol */c2.beginPath();c2.moveTo(cx,cy-r*.6);c2.lineTo(cx,cy+r*.6);c2.stroke();c2.beginPath();c2.moveTo(cx-r*.6,cy);c2.lineTo(cx+r*.6,cy);c2.stroke();c2.beginPath();c2.arc(cx,cy,r*.35,0,Math.PI*2);c2.stroke();break}}}
+break}case"engineer":{/* Castle/crenellation per ADP 1-02 */var olw=c2.lineWidth;c2.lineWidth=hw*0.12;c2.beginPath();c2.moveTo(cx+hw*-0.5,cy+hh*0.6);c2.lineTo(cx+hw*-0.5,cy+hh*-0.2);c2.lineTo(cx+hw*0.5,cy+hh*-0.2);c2.lineTo(cx+hw*0.5,cy+hh*0.6);c2.stroke();c2.lineWidth=hw*0.1;c2.beginPath();c2.moveTo(cx+hw*-0.01,cy+hh*-0.18);c2.lineTo(cx+hw*-0.01,cy+hh*0.4);c2.stroke();c2.lineWidth=olw;break}case"bridging":c2.beginPath();c2.moveTo(cx-r*.7,cy+r*.3);c2.lineTo(cx-r*.3,cy-r*.3);c2.lineTo(cx+r*.3,cy-r*.3);c2.lineTo(cx+r*.7,cy+r*.3);c2.stroke();break;case"headquarters":{/* ADP 1-02: HQ is shown via staff indicator (line below frame) + isHQ flag. Interior can show unit function or be blank */c2.font=`bold ${r*1.2}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("HQ",cx,cy);break}case"signal":{/* ADP 1-02: lightning flash */c2.beginPath();c2.moveTo(cx-r*.15,cy-r*.7);c2.lineTo(cx+r*.25,cy-r*.05);c2.lineTo(cx-r*.1,cy-r*.05);c2.lineTo(cx+r*.2,cy+r*.7);c2.stroke();break}case"military_intelligence":c2.font=`bold ${r*1.2}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("MI",cx,cy);break;case"electronic_warfare":{/* ADP 1-02: lightning zigzag — Z-shape */c2.beginPath();c2.moveTo(cx-r*.5,cy-r*.4);c2.lineTo(cx+r*.5,cy-r*.4);c2.lineTo(cx-r*.5,cy+r*.4);c2.lineTo(cx+r*.5,cy+r*.4);c2.stroke();break}case"cyber":c2.font=`bold ${r}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("CY",cx,cy);break;case"sustainment":{/* ADP 1-02: "SUST" abbreviation */c2.font=`bold ${r*.7}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("SUST",cx,cy);break}case"medical":{/* ADP 1-02: Geneva cross */c2.lineWidth=3;c2.beginPath();c2.moveTo(cx,cy-r*.5);c2.lineTo(cx,cy+r*.5);c2.stroke();c2.beginPath();c2.moveTo(cx-r*.5,cy);c2.lineTo(cx+r*.5,cy);c2.stroke();break}case"maintenance":{/* ADP 1-02: double-end wrench */c2.beginPath();c2.moveTo(cx-r*.6,cy+r*.4);c2.lineTo(cx+r*.6,cy-r*.4);c2.stroke();c2.beginPath();c2.arc(cx-r*.5,cy+r*.3,r*.2,0,Math.PI*2);c2.stroke();c2.beginPath();c2.arc(cx+r*.5,cy-r*.3,r*.2,0,Math.PI*2);c2.stroke();break}case"transportation":{/* ADP 1-02: wheel */c2.beginPath();c2.arc(cx,cy,r*.45,0,Math.PI*2);c2.stroke();/* Spokes */for(let i=0;i<4;i++){const a=Math.PI*i/4;c2.beginPath();c2.moveTo(cx+Math.cos(a)*r*.15,cy+Math.sin(a)*r*.15);c2.lineTo(cx+Math.cos(a)*r*.45,cy+Math.sin(a)*r*.45);c2.moveTo(cx-Math.cos(a)*r*.15,cy-Math.sin(a)*r*.15);c2.lineTo(cx-Math.cos(a)*r*.45,cy-Math.sin(a)*r*.45);c2.stroke()}c2.beginPath();c2.arc(cx,cy,r*.15,0,Math.PI*2);c2.fill();break}case"supply":{/* ADP 1-02: "S" abbreviation */c2.font=`bold ${r}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("S",cx,cy);break}case"ordnance":{/* ADP 1-02: bursting bomb — filled circle with flame/rays on top */c2.beginPath();c2.arc(cx,cy+r*.1,r*.3,0,Math.PI*2);c2.fill();/* Flame/fuse */c2.beginPath();c2.moveTo(cx+r*.15,cy-r*.15);c2.quadraticCurveTo(cx+r*.4,cy-r*.6,cx+r*.1,cy-r*.6);c2.stroke();break}case"special_forces":{/* ADP 1-02: "SF" abbreviation */c2.font=`bold ${r*1.1}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("SF",cx,cy);break}case"ranger":{c2.font=`bold ${r*.8}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("RGR",cx,cy);break}case"civil_affairs":c2.font=`bold ${r}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("CA",cx,cy);break;case"psyop":{/* ADP 1-02: psychological operations — lightning bolt with arrow */c2.beginPath();c2.moveTo(cx-r*.2,cy-r*.6);c2.lineTo(cx+r*.15,cy);c2.lineTo(cx-r*.1,cy);c2.lineTo(cx+r*.2,cy+r*.6);c2.stroke();/* Arrow head */c2.beginPath();c2.moveTo(cx+r*.2,cy+r*.6);c2.lineTo(cx+r*.05,cy+r*.35);c2.moveTo(cx+r*.2,cy+r*.6);c2.lineTo(cx+r*.35,cy+r*.4);c2.stroke();break}case"waypoint":{/* Crosshair/pin symbol */c2.beginPath();c2.moveTo(cx,cy-r*.6);c2.lineTo(cx,cy+r*.6);c2.stroke();c2.beginPath();c2.moveTo(cx-r*.6,cy);c2.lineTo(cx+r*.6,cy);c2.stroke();c2.beginPath();c2.arc(cx,cy,r*.35,0,Math.PI*2);c2.stroke();break}}}
 function drawEch(c2,ech,aff,utype,isEquip){const shape=AFFILIATIONS[aff||"friendly"].shape;const isH=shape==="diamond";const isC=shape==="circle";const hh=FRAME_H/2;const cr=isC?(Math.max(FRAME_W/2,hh)+U*.1):0;const _uav=isEquip&&utype==="uav";const by=_uav?CY-(hh+U*.2)-U*1.0-U*1.6:CY-hh-U*1.6-(isH?U*.6:0)-(isC?cr-hh:0);c2.strokeStyle="#000";c2.fillStyle="#000";c2.lineWidth=2.5;const e=ECHELONS.find(x=>x.id===ech);if(!e)return;const m=e.mark;if(m==="slashO"){const r=4;c2.beginPath();c2.arc(CX,by,r,0,Math.PI*2);c2.stroke();c2.beginPath();c2.moveTo(CX-r*.7,by+r*.7);c2.lineTo(CX+r*.7,by-r*.7);c2.stroke()}else if(m==="cmd"){/* Command: star shape */const r=6;c2.beginPath();for(let i=0;i<5;i++){const a1=Math.PI*2*i/5-Math.PI/2,a2=Math.PI*2*(i+0.5)/5-Math.PI/2;c2.lineTo(CX+Math.cos(a1)*r,by+Math.sin(a1)*r);c2.lineTo(CX+Math.cos(a2)*r*0.4,by+Math.sin(a2)*r*0.4)}c2.closePath();c2.fill()}else if(m.startsWith("dot")){const n=parseInt(m[3]),g=7,tw=(n-1)*g;for(let i=0;i<n;i++){c2.beginPath();c2.arc(CX-tw/2+i*g,by,2.8,0,Math.PI*2);c2.fill()}}else if(m.startsWith("bar")){const n=parseInt(m[3]),g=6,tw=(n-1)*g;for(let i=0;i<n;i++){const px=CX-tw/2+i*g;c2.beginPath();c2.moveTo(px,by-7);c2.lineTo(px,by+7);c2.stroke()}}else if(m.startsWith("x")){const n=parseInt(m[1]),g=10,tw=(n-1)*g;for(let i=0;i<n;i++){const px=CX-tw/2+i*g;c2.beginPath();c2.moveTo(px-4,by-5);c2.lineTo(px+4,by+5);c2.moveTo(px+4,by-5);c2.lineTo(px-4,by+5);c2.stroke()}}}
 function drawMods(c2,mods){c2.fillStyle="#aaa";c2.font=`${U*.9}px sans-serif`;c2.textAlign="center";c2.textBaseline="top";c2.fillText(mods.map(m=>(MODIFIERS.find(x=>x.id===m)||{}).symbol||"").join(" "),CX,CY+FRAME_H/2+U*2)}
 function drawUnits(){const d=devicePixelRatio||1;const _W2=canvas.width/d,_H2=canvas.height/d;
@@ -433,7 +487,8 @@ if(u.rings&&u.rings.length)u.rings.forEach(ring=>{const rp=metersToPixels(ring.r
 if(u.customIcon&&u.useCustomIcon!==false){
 const isH=u.affiliation==="hostile";const cimg=isH?getTintedIcon(u.customIcon,"#ff4444"):getCustomIconImage(u.customIcon);
 const uScale=u.iconScale||1;
-if(cimg.complete&&cimg.naturalWidth>0){const uSz=sz*d*uScale;const _ar=cimg.naturalWidth/cimg.naturalHeight;if(_ar>2){/* Wide image (text label) — render at natural aspect ratio, height=uSz*0.4 */const _ih=uSz*0.4;const _iw=_ih*_ar;ctx.drawImage(cimg,sp.x*d-_iw/2,sp.y*d-_ih/2,_iw,_ih)}else{ctx.drawImage(cimg,sp.x*d-uSz/2,sp.y*d-uSz/2,uSz,uSz)}}
+if(cimg.complete&&cimg.naturalWidth>0){const uSz=sz*d*uScale;const _ar=cimg.naturalWidth/cimg.naturalHeight;if(_ar>2){const _ih=uSz*0.4;const _iw=_ih*_ar;ctx.drawImage(cimg,sp.x*d-_iw/2,sp.y*d-_ih/2,_iw,_ih)}else{ctx.drawImage(cimg,sp.x*d-uSz/2,sp.y*d-uSz/2,uSz,uSz)}
+if(S.showLabels&&(u.designation||u.parentUnit)){const _fam=getComputedStyle(document.body).fontFamily;const _by=sp.y*d+uSz/2+2*d;ctx.textAlign="center";ctx.textBaseline="top";if(u.designation){ctx.font=`bold ${Math.max(9,Math.round(sz*0.18))*d}px ${_fam}`;ctx.strokeStyle="rgba(0,0,0,.8)";ctx.lineWidth=3*d;ctx.strokeText(u.designation,sp.x*d,_by);ctx.fillStyle="#fff";ctx.fillText(u.designation,sp.x*d,_by)}if(u.parentUnit){const _py=_by+(u.designation?Math.round(sz*0.2)*d+1*d:0);ctx.font=`${Math.max(8,Math.round(sz*0.15))*d}px ${_fam}`;ctx.strokeStyle="rgba(0,0,0,.8)";ctx.lineWidth=3*d;ctx.strokeText(u.parentUnit,sp.x*d,_py);ctx.fillStyle="rgba(255,255,255,.7)";ctx.fillText(u.parentUnit,sp.x*d,_py)}}}
 else{drawUnitIcon(ctx,u,sp.x*d,sp.y*d,sz*d)}}else{const uScale=u.iconScale||1;drawUnitIcon(ctx,u,sp.x*d,sp.y*d,sz*d*uScale)}}
 ctx.restore();if(u.id===S.selectedUnitId){ctx.save();ctx.strokeStyle="#ffd700";ctx.lineWidth=2*d;ctx.setLineDash([4*d,4*d]);const h=sz*d/2+4*d;ctx.strokeRect(sp.x*d-h,sp.y*d-h,h*2,h*2);ctx.restore();/* Rotation handle — red dot around unit */const handleDist=(sz*d/2+20*d);const ang=(u.rotation||0)*DEG;const hx=sp.x*d+Math.sin(ang)*handleDist;const hy=sp.y*d-Math.cos(ang)*handleDist;/* Handle dot */ctx.save();ctx.fillStyle="#ff4444";ctx.strokeStyle="#fff";ctx.lineWidth=2*d;ctx.beginPath();ctx.arc(hx,hy,5*d,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();/* Angle text above icon */if(u.rotation){ctx.save();ctx.fillStyle="#fff";ctx.strokeStyle="rgba(0,0,0,.6)";ctx.lineWidth=3*d;ctx.font=`bold ${10*d}px ${getComputedStyle(document.body).fontFamily}`;ctx.textAlign="center";ctx.textBaseline="bottom";const txt=Math.round(u.rotation)+"\u00b0";ctx.strokeText(txt,sp.x*d,sp.y*d-h-4*d);ctx.fillText(txt,sp.x*d,sp.y*d-h-4*d);ctx.restore()}}})}
 /* Custom icon image cache for KMZ-embedded images */
@@ -819,7 +874,7 @@ var _mcooLayerId=null,_mcooAoId=null,_mcooOutside=false,_mcooLastOutsidePos=null
 /* Performance: max points per stroke, max strokes on MCOO layer */
 var MCOO_MAX_PTS_PER_STROKE=200,MCOO_MAX_STROKES=150;
 
-function onPointerDown(e){if(e.target!==canvas)return;S._lastPointerType=e.pointerType||"mouse";const pos=getPos(e);_ptrDownPos=pos;_ptrDownTime=Date.now();_selOnDown=false;_gfxSelOnDown=null;_dragUnit=null;_dragGV=null;_rotUnit=null;S._pendingGfxSelect=null;
+function onPointerDown(e){if(e.target!==canvas)return;S._lastPointerType=e.pointerType||"mouse";/* Treat Apple Pencil (pen) as mouse for all interactions */if(S._lastPointerType==="pen")S._lastPointerType="mouse";const pos=getPos(e);_ptrDownPos=pos;_ptrDownTime=Date.now();_selOnDown=false;_gfxSelOnDown=null;_dragUnit=null;_dragGV=null;_rotUnit=null;S._pendingGfxSelect=null;
 /* Freehand mode — start stroke */
 if(S._mapTool==="freehand"){
   /* If on MCOO layer, reject start outside AO */
@@ -830,7 +885,7 @@ if(S._mapTool==="freehand"){
   if(e.pointerId!==undefined)try{canvas.setPointerCapture(e.pointerId)}catch(ex){}
   e.preventDefault();return}
 const tt=document.getElementById("map-tooltip");if(tt)tt.style.display="none";
-if(e.pointerId!==undefined)S._activePointers.set(e.pointerId,pos);
+if(e.pointerId!==undefined&&e.pointerType==="touch")S._activePointers.set(e.pointerId,pos);
 if(S._activePointers.size===2){const pts=[...S._activePointers.values()];S._pinchStartDist=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y);S._pinchStartZoom=S.zoom;return}
 if(S._placementMode)return;
 /* Allow dragging vertices of selected graphic even without draw mode */
@@ -873,7 +928,7 @@ if(hit){if(isTouch){if(hit.id===S.selectedUnitId){_dragUnit=hit;_dragStartPos={l
 const hitG=hitTestGraphic(pos);if(hitG){_gfxSelOnDown=hitG.id;S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon};return}
 S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon}}
 
-function onPointerMove(e){const pos=getPos(e);if(e.pointerId!==undefined)S._activePointers.set(e.pointerId,pos);
+function onPointerMove(e){const pos=getPos(e);if(e.pointerId!==undefined&&e.pointerType==="touch")S._activePointers.set(e.pointerId,pos);
 /* Freehand stroke capture */
 if(_freehandActive&&S._mapTool==="freehand"){
   var isMcooClip=_mcooAoId&&S._ipb&&S._ipb.mcooLayerId&&S.activeLayerId===S._ipb.mcooLayerId;
@@ -945,9 +1000,9 @@ if(!onHandle){for(let i=0;i<g.points.length;i++){const sp=latlonToScreen(g.point
   const hit=hitTestUnit(pos);const tt=document.getElementById("map-tooltip");
   if(hit&&tt){
     let label;
-    if(hit.originalName&&!hit._useStructuredLabel){
+    if(hit.originalName&&!hit._useStructuredLabel&&!hit._rosterSource){
       label=hit.originalName;
-    }else if(hit.customIcon&&hit.useCustomIcon!==false&&hit.originalName){
+    }else if(hit.customIcon&&hit.useCustomIcon!==false&&hit.originalName&&!hit._rosterSource){
       /* KMZ custom icon — show original name instead of possibly wrong type */
       label=hit.originalName;
     }else{
@@ -964,7 +1019,7 @@ if(!onHandle){for(let i=0;i<g.points.length;i++){const sp=latlonToScreen(g.point
     canvas.style.cursor="pointer";
   }else{if(tt)tt.style.display="none";canvas.style.cursor=""}}}
 
-function onPointerUp(e){const pos=getPos(e);if(e.pointerId!==undefined)S._activePointers.delete(e.pointerId);
+function onPointerUp(e){const pos=getPos(e);if(e.pointerId!==undefined&&e.pointerType==="touch")S._activePointers.delete(e.pointerId);
 var _upOnCanvas=e.target===canvas;
 /* Clear rectangle draw rotation drag */
 if(S._drawMode&&S._drawMode._rotDrag){S._drawMode._rotDrag=false;_selOnDown=true;return}
@@ -1022,7 +1077,7 @@ if(dm.tool==="text"&&dm.points.length===0){dm.points.push({lat:ll.lat,lon:ll.lon
 dm.points.push({lat:ll.lat,lon:ll.lon});updateModeBar();requestRender();return}
 return}
 
-if(S._placementMode&&moved<10){const ll=screenToLatlon(pos.x,pos.y);const u={...S._placementMode,id:"u"+Date.now()+Math.random().toString(36).substr(2,4),lat:ll.lat,lon:ll.lon,layerId:S.activeLayerId,rings:[],equipment:{...(EQUIPMENT_DEFAULTS[S._placementMode.type]||{})},isEquipment:!!S._placementMode.isEquipment};S.units.push(u);var wasRoster=!!S._placementMode._rosterSource;S._placementMode=null;selectUnit(u.id);hideModeBar();netBroadcast({type:"unitAdd",unit:u});requestRender();if(wasRoster){renderFloatingPanel();_ipbPlacerOpen=true;renderIPBPlacerPanel()}return}
+if(S._placementMode&&moved<10){const ll=screenToLatlon(pos.x,pos.y);const u={...S._placementMode,id:"u"+Date.now()+Math.random().toString(36).substr(2,4),lat:ll.lat,lon:ll.lon,layerId:S.activeLayerId,rings:[],equipment:{...(EQUIPMENT_DEFAULTS[S._placementMode.type]||{})},isEquipment:!!S._placementMode.isEquipment};S.units.push(u);var wasRoster=!!S._placementMode._rosterSource;S._placementMode=null;S.selectedUnitId=u.id;S.selectedGraphicId=null;openEditor();hideModeBar();netBroadcast({type:"unitAdd",unit:u});requestRender();if(wasRoster){renderFloatingPanel();_ipbPlacerOpen=true;renderIPBPlacerPanel()}return}
 
 /* Wargame order destination tap */
 if(S._wargameOrderPending&&moved<10){
@@ -2270,6 +2325,7 @@ var _toSelectedId=null;
 var _toCollapsed={};/* unitId -> true if children collapsed */
 var _toExpandedStacks={};/* "parentId_type_echelon" -> true if stack expanded */
 var _toZoom=1;
+var _toZoomManual=false;
 var _toUndoStack=[];
 var _toMaxUndo=40;
 function _toPushUndo(){
@@ -2287,45 +2343,73 @@ function toUndo(){
 }
 
 function toZoom(delta){
-  _toZoom=Math.max(0.3,Math.min(2,_toZoom+delta));
+  _toZoomManual=true;
+  _toZoom=Math.max(0.1,_toZoom+delta);
   var wrap=document.getElementById('to-tree-wrap');
-  if(wrap){wrap.style.transform='scale('+_toZoom+')';wrap.style.transformOrigin='center top'}
-  var zl=document.getElementById('to-zoom-label');
-  if(zl)zl.textContent=Math.round(_toZoom*100)+'%';
+  if(wrap){
+    wrap.style.transform='scale('+_toZoom+')';wrap.style.transformOrigin='left top';
+    var natW=wrap.scrollWidth/_toZoom,natH=wrap.scrollHeight/_toZoom;
+    wrap.style.marginBottom=Math.max(0,(natH*_toZoom)-natH)+'px';
+    wrap.style.marginRight=Math.max(0,(natW*_toZoom)-natW)+'px';
+  }
 }
 function toWheelZoom(e){
-  e.preventDefault();toZoom(e.deltaY>0?-0.05:0.05);
+  e.preventDefault();_toZoomManual=true;
+  var body=document.getElementById('to-body');
+  var wrap=document.getElementById('to-tree-wrap');
+  if(!body||!wrap)return;
+  var rect=body.getBoundingClientRect();
+  /* Mouse position relative to scroll content */
+  var mx=e.clientX-rect.left+body.scrollLeft;
+  var my=e.clientY-rect.top+body.scrollTop;
+  var oldZoom=_toZoom;
+  var delta=e.deltaY>0?-0.05:0.05;
+  _toZoom=Math.max(0.1,_toZoom+delta);
+  wrap.style.transform='scale('+_toZoom+')';
+  wrap.style.transformOrigin='left top';
+  var wNat=wrap.scrollWidth/_toZoom,hNat=wrap.scrollHeight/_toZoom;
+  wrap.style.marginBottom=Math.max(0,(hNat*_toZoom)-hNat)+'px';
+  wrap.style.marginRight=Math.max(0,(wNat*_toZoom)-wNat)+'px';
+  /* Adjust scroll to keep point under mouse stable */
+  var ratio=_toZoom/oldZoom;
+  body.scrollLeft=mx*ratio-(e.clientX-rect.left);
+  body.scrollTop=my*ratio-(e.clientY-rect.top);
 }
 function toResetView(){
+  _toZoomManual=false;
   _toZoom=1;
-  var wrap=document.getElementById('to-tree-wrap');
-  if(wrap){wrap.style.transform='scale(1)'}
-  var zl=document.getElementById('to-zoom-label');
-  if(zl)zl.textContent='100%';
-  var body=document.getElementById('to-body');
-  if(body){body.scrollTop=0;body.scrollLeft=0}
+  toRender();
+  return;
 }
 function toPanStart(e){
   if(e.target.tagName==='CANVAS'||e.target.tagName==='INPUT'||e.target.tagName==='SELECT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='BUTTON'||e.target.tagName==='A')return;
   var body=document.getElementById('to-body');
   if(!body)return;
   body.style.cursor='grabbing';
-  var sx=e.clientX,sy=e.clientY,sl=body.scrollLeft,st=body.scrollTop;
-  function onMove(ev){body.scrollLeft=sl-(ev.clientX-sx);body.scrollTop=st-(ev.clientY-sy)}
-  function onUp(){body.style.cursor='grab';document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp)}
-  document.addEventListener('mousemove',onMove);
-  document.addEventListener('mouseup',onUp);
+  var isTouch=e.type==='touchstart';
+  var sx=isTouch?e.touches[0].clientX:e.clientX;
+  var sy=isTouch?e.touches[0].clientY:e.clientY;
+  var sl=body.scrollLeft,st=body.scrollTop;
+  function onMove(ev){
+    var cx=ev.touches?ev.touches[0].clientX:ev.clientX;
+    var cy=ev.touches?ev.touches[0].clientY:ev.clientY;
+    body.scrollLeft=sl-(cx-sx);body.scrollTop=st-(cy-sy);
+    if(ev.touches)ev.preventDefault();
+  }
+  function onUp(){body.style.cursor='grab';document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);document.removeEventListener('touchmove',onMove);document.removeEventListener('touchend',onUp)}
+  if(isTouch){document.addEventListener('touchmove',onMove,{passive:false});document.addEventListener('touchend',onUp)}
+  else{document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onUp)}
 }
 var TO_RELATIONSHIPS=['organic','attached','opcon','tacon','ds','gs','reinforcing','gsr'];
 var TO_REL_LABELS={organic:'Organic',attached:'Attached',opcon:'OPCON',tacon:'TACON',ds:'Direct Spt',gs:'General Spt',reinforcing:'Reinforcing',gsr:'GS-R'};
 var TO_REL_STYLES={organic:{color:'#ccc',dash:[]},attached:{color:'#ffaa00',dash:[]},opcon:{color:'#44aaff',dash:[6,3]},tacon:{color:'#44aaff',dash:[2,2]},ds:{color:'#44cc44',dash:[8,4]},gs:{color:'#44cc44',dash:[4,4]},reinforcing:{color:'#cc44cc',dash:[6,3]},gsr:{color:'#cc44cc',dash:[3,3]}};
 var TO_THREAT_TYPES=[
-  {id:"infantry",label:"Infantry"},{id:"mechanized_infantry",label:"Mech Inf"},{id:"armor",label:"Armor"},
-  {id:"artillery",label:"FA"},{id:"rocket_artillery",label:"Rocket Arty"},{id:"air_defense",label:"ADA"},
-  {id:"anti_armor",label:"AT"},{id:"cavalry",label:"Recon"},{id:"engineer",label:"Engr"},
+  {id:"infantry",label:"Infantry"},{id:"light_infantry",label:"Lt Inf"},{id:"motorized_infantry",label:"Mot Inf"},{id:"naval_infantry",label:"Naval Inf"},{id:"mechanized_infantry",label:"Mech Inf"},{id:"armor",label:"Armor"},{id:"amphibious_armor",label:"Amphib Armor"},
+  {id:"artillery",label:"FA"},{id:"rocket_artillery",label:"Rocket Arty"},{id:"mortar",label:"Mortar"},{id:"mortar_wheeled",label:"Mrt (Whl)"},{id:"air_defense",label:"ADA"},
+  {id:"anti_armor",label:"AT"},{id:"recon",label:"Recon"},{id:"armored_recon",label:"Arm Recon"},{id:"engineer",label:"Engr"},{id:"combat_engineer",label:"Cbt Engr"},
   {id:"headquarters",label:"HQ"},{id:"signal",label:"Sig"},{id:"sam",label:"SAM"},
-  {id:"attack_aviation",label:"Atk Avn"},{id:"uav",label:"UAS"},{id:"electronic_warfare",label:"EW"},
-  {id:"special_forces",label:"SOF"},{id:"sustainment",label:"Sust"},{id:"medical",label:"Med"}
+  {id:"aviation",label:"Avn"},{id:"fixed_wing",label:"Fixed Wg"},{id:"uav",label:"UAS"},{id:"electronic_warfare",label:"EW"},
+  {id:"special_forces",label:"SOF"},{id:"sustainment",label:"Sust"},{id:"combat_service_support",label:"CSS"},{id:"medical",label:"Med"}
 ];
 
 function _toEnsureRoster(){
@@ -2384,7 +2468,7 @@ function toAddChild(parentId){
   var childLinks=p.links?JSON.parse(JSON.stringify(p.links)):[];
   /* Strip _editing flags from copied links */
   childLinks.forEach(function(lk){delete lk._editing});
-  S._ipb.threatRoster.push({id:id,designation:'',type:p.type,echelon:childEch,parent:parentId,relationship:'organic',children:[],weapons:childWeapons,links:childLinks,notes:p.notes||'',imageUrl:p.imageUrl||''});
+  S._ipb.threatRoster.push({id:id,designation:'',type:p.type,echelon:childEch,parent:parentId,relationship:'organic',children:[],weapons:childWeapons,links:childLinks,notes:p.notes||'',imageUrl:'',images:[]});
   /* Copy HVT/HPT from parent */
   var parentHvt=(S._ipb.hvtl||{})[parentId];
   if(parentHvt&&(parentHvt.hvt||parentHvt.hpt)){
@@ -2428,6 +2512,28 @@ function toEditUnit(uid,prop,val){
   toRender();
 }
 
+function toReparentUnit(uid,newParentId){
+  var roster=S._ipb.threatRoster;
+  var u=roster.find(function(x){return x.id===uid});
+  if(!u)return;
+  _toPushUndo();
+  /* Remove from old parent's children */
+  if(u.parent){
+    var oldPar=roster.find(function(x){return x.id===u.parent});
+    if(oldPar&&oldPar.children){oldPar.children=oldPar.children.filter(function(c){return c!==uid})}
+  }
+  /* Set new parent */
+  if(newParentId){
+    var newPar=roster.find(function(x){return x.id===newParentId});
+    if(newPar){
+      if(!newPar.children)newPar.children=[];
+      if(newPar.children.indexOf(uid)===-1)newPar.children.push(uid);
+      u.parent=newParentId;
+    }else{u.parent=null}
+  }else{u.parent=null}
+  toRender();
+}
+
 function toToggleHVT(uid){
   _toPushUndo();
   if(!S._ipb.hvtl)S._ipb.hvtl={};
@@ -2461,6 +2567,7 @@ function _toEchMark(mark){
 
 function toRender(){
   _toEnsureRoster();
+  toSyncMapLabels();requestRender();
   var body=document.getElementById('to-body');
   if(!body)return;
   var roster=S._ipb.threatRoster;
@@ -2497,8 +2604,19 @@ function toRender(){
     if(editorHtml)beforeWrap=editorHtml;
     /* Set content: editor is sticky, tree scrolls */
     wrap.innerHTML=treeHtml;
+    /* Auto-fit: measure natural width, scale to fill 80% of viewport */
+    wrap.style.transform='scale(1)';
+    wrap.style.transformOrigin='left top';
+    var natW=wrap.scrollWidth;
+    var vpW=body.clientWidth||window.innerWidth;
+    if(natW>0&&!_toZoomManual){
+      _toZoom=Math.max(0.1,(vpW*0.8)/natW);
+    }
     wrap.style.transform='scale('+_toZoom+')';
-    wrap.style.transformOrigin='center top';
+    /* Extend scroll area to account for scaled content */
+    var natH=wrap.scrollHeight;
+    wrap.style.marginBottom=Math.max(0,(natH*_toZoom)-natH)+'px';
+    wrap.style.marginRight=Math.max(0,(natW*_toZoom)-natW)+'px';
     /* Insert editor before wrap */
     var existing=body.querySelector('.to-ed-wrap');
     if(existing)existing.remove();
@@ -2508,8 +2626,6 @@ function toRender(){
       ed.innerHTML=editorHtml;
       body.insertBefore(ed,wrap);
     }
-    var zl=document.getElementById('to-zoom-label');
-    if(zl)zl.textContent=Math.round(_toZoom*100)+'%';
   }else{
     body.innerHTML=editorHtml+treeHtml;
   }
@@ -2529,11 +2645,43 @@ function toRender(){
             var c=icv.getContext('2d');c.clearRect(0,0,icv.width,icv.height);
             var parentDesig2='';
             if(selUnit.parent){var par2=roster.find(function(x){return x.id===selUnit.parent});if(par2&&par2.designation)parentDesig2=par2.designation}
-            var _oldLabels=S.showLabels;S.showLabels=true;
-            drawUnitIcon(c,{type:selUnit.type,echelon:selUnit.echelon,affiliation:'hostile',designation:selUnit.designation||'',parentUnit:parentDesig2},icv.width/2,icv.height/2,icv.height*0.7);
-            S.showLabels=_oldLabels;
+            if(selUnit.customIcon&&selUnit.useCustomIcon!==false){
+              var _oldLabels=S.showLabels;S.showLabels=true;
+              drawUnitIcon(c,{type:'_custom',echelon:selUnit.echelon,affiliation:'hostile',designation:selUnit.designation||'',parentUnit:parentDesig2,isHQ:selUnit.type==='headquarters'},icv.width/2,icv.height/2,icv.height*0.7);
+              S.showLabels=_oldLabels;
+              /* Draw custom icon filling the diamond interior */
+              var _ci=getCustomIconImage(selUnit.customIcon);
+              if(_ci.complete&&_ci.naturalWidth>0){
+                var _sc2=icv.height*0.7/110;
+                var _hw2=35*_sc2+7.2*_sc2*0.6;
+                var _hh2=25*_sc2+7.2*_sc2*0.6;
+                var _icSz2=Math.min(_hw2,_hh2)*1.6;
+                var _ar3=_ci.naturalWidth/_ci.naturalHeight;
+                var _icW2=_icSz2,_icH2=_icSz2;
+                if(_ar3>1){_icH2=_icSz2/_ar3}else{_icW2=_icSz2*_ar3}
+                var _ti2=getTintedIcon(selUnit.customIcon,'#ff4444');
+                var _di2=_ti2.complete&&_ti2.naturalWidth>0?_ti2:_ci;
+                c.drawImage(_di2,icv.width/2-_icW2/2,icv.height/2-_icH2/2,_icW2,_icH2);
+              }
+            }else{
+              var _oldLabels=S.showLabels;S.showLabels=true;
+              drawUnitIcon(c,{type:selUnit.type,echelon:selUnit.echelon,affiliation:'hostile',designation:selUnit.designation||'',parentUnit:parentDesig2},icv.width/2,icv.height/2,icv.height*0.7);
+              S.showLabels=_oldLabels;
+            }
           }
         },20);
+        /* Render info card type/echelon canvases + wire toggle */
+        setTimeout(function(){
+          _toRenderInfoCanvases();
+          var custToggle=document.getElementById('to-use-custom');
+          if(custToggle){
+            custToggle.addEventListener('change',function(){
+              var uid=selUnit.id;
+              var u=roster.find(function(x){return x.id===uid});
+              if(u){u.useCustomIcon=this.checked;toRender()}
+            });
+          }
+        },25);
       }else{infoCard.style.display='none'}
     }else{infoCard.style.display='none'}
   }
@@ -2545,25 +2693,92 @@ function toRender(){
       if(!u)return;
       var c=cv.getContext('2d');
       c.clearRect(0,0,cv.width,cv.height);
-      /* Look up parent's designation for parentUnit label */
       var parentDesig='';
       if(u.parent){var par=roster.find(function(x){return x.id===u.parent});if(par&&par.designation)parentDesig=par.designation}
-      drawUnitIcon(c,{type:u.type,echelon:u.echelon,affiliation:'hostile',designation:u.designation||'',parentUnit:parentDesig}, cv.width/2,cv.height/2,cv.width*0.5);
+      if(u.customIcon&&u.useCustomIcon!==false){
+        var cimg=getCustomIconImage(u.customIcon);
+        if(cimg.complete&&cimg.naturalWidth>0){
+          /* Draw frame+echelon+labels with blank interior (type '_custom' matches nothing in drawTS) */
+          drawUnitIcon(c,{type:'_custom',echelon:u.echelon,affiliation:'hostile',designation:u.designation||'',parentUnit:parentDesig,isHQ:u.type==='headquarters'},cv.width/2,cv.height/2,cv.width*0.5);
+          /* Draw custom icon to fill the diamond frame interior */
+          var sc=cv.width*0.5/110;
+          var hw=35*sc+7.2*sc*0.6; /* diamond extends hw+U*.6 */
+          var hh=25*sc+7.2*sc*0.6;
+          var icSz=Math.min(hw,hh)*1.6;
+          var ar=cimg.naturalWidth/cimg.naturalHeight;
+          var icW=icSz,icH=icSz;
+          if(ar>1){icH=icSz/ar}else{icW=icSz*ar}
+          var timg=getTintedIcon(u.customIcon,'#ff4444');
+          var drawImg=timg.complete&&timg.naturalWidth>0?timg:cimg;
+          c.drawImage(drawImg,cv.width/2-icW/2,cv.height/2-icH/2,icW,icH);
+        }else{
+          drawUnitIcon(c,{type:u.type,echelon:u.echelon,affiliation:'hostile',designation:u.designation||'',parentUnit:parentDesig},cv.width/2,cv.height/2,cv.width*0.5);
+        }
+      }else{
+        drawUnitIcon(c,{type:u.type,echelon:u.echelon,affiliation:'hostile',designation:u.designation||'',parentUnit:parentDesig},cv.width/2,cv.height/2,cv.width*0.5);
+      }
     });
-    /* Render type selector icon grid canvases */
+    /* Render type selector icon canvases */
     document.querySelectorAll('#to-body canvas[data-to-type]').forEach(function(cv){
       var typeId=cv.dataset.toType;
       var c=cv.getContext('2d');
       c.clearRect(0,0,cv.width,cv.height);
-      drawUnitIcon(c,{type:typeId,echelon:null,affiliation:'hostile',designation:'',modifiers:[],isHQ:typeId==='headquarters'}, 50,50,88);
+      drawUnitIcon(c,{type:typeId,echelon:null,affiliation:'hostile',designation:'',modifiers:[],isHQ:typeId==='headquarters'}, cv.width/2,cv.height/2,cv.width*0.88);
+    });
+    /* Render echelon mark canvases */
+    document.querySelectorAll('#to-body canvas[data-to-ech-mark]').forEach(function(cv){
+      var mark=cv.dataset.toEchMark;
+      var isActive=cv.dataset.toEchActive==='1';
+      var c=cv.getContext('2d');
+      c.clearRect(0,0,cv.width,cv.height);
+      var cx=cv.width/2,cy=cv.height/2;
+      var fgColor=isActive?'#ffd700':getComputedStyle(document.documentElement).getPropertyValue('--fg').trim()||'#ccc';
+      c.strokeStyle=fgColor;
+      c.fillStyle=fgColor;
+      c.lineWidth=1.5;
+      if(mark==='slashO'){var r=3;c.beginPath();c.arc(cx,cy,r,0,Math.PI*2);c.stroke();c.beginPath();c.moveTo(cx-r*.7,cy+r*.7);c.lineTo(cx+r*.7,cy-r*.7);c.stroke()}
+      else if(mark==='cmd'){var r=5;c.beginPath();for(var i=0;i<5;i++){var a1=Math.PI*2*i/5-Math.PI/2,a2=Math.PI*2*(i+0.5)/5-Math.PI/2;c.lineTo(cx+Math.cos(a1)*r,cy+Math.sin(a1)*r);c.lineTo(cx+Math.cos(a2)*r*0.4,cy+Math.sin(a2)*r*0.4)}c.closePath();c.fill()}
+      else if(mark.startsWith('dot')){var n=parseInt(mark[3]),g=5,tw=(n-1)*g;for(var i=0;i<n;i++){c.beginPath();c.arc(cx-tw/2+i*g,cy,2,0,Math.PI*2);c.fill()}}
+      else if(mark.startsWith('bar')){var n=parseInt(mark[3]),g=4,tw=(n-1)*g;for(var i=0;i<n;i++){var px=cx-tw/2+i*g;c.beginPath();c.moveTo(px,cy-5);c.lineTo(px,cy+5);c.stroke()}}
+      else if(mark.startsWith('x')){var n=parseInt(mark[1]),g=8,tw=(n-1)*g;for(var i=0;i<n;i++){var px=cx-tw/2+i*g;c.beginPath();c.moveTo(px-3,cy-4);c.lineTo(px+3,cy+4);c.moveTo(px+3,cy-4);c.lineTo(px-3,cy+4);c.stroke()}}
     });
   },15);
+}
+
+function _toRenderInfoCanvases(){
+  var card=document.getElementById('to-infocard');
+  if(!card)return;
+  /* Type icon canvases */
+  card.querySelectorAll('canvas[data-to-type]').forEach(function(cv){
+    var typeId=cv.dataset.toType;
+    var c=cv.getContext('2d');
+    c.clearRect(0,0,cv.width,cv.height);
+    drawUnitIcon(c,{type:typeId,echelon:null,affiliation:'hostile',designation:'',modifiers:[],isHQ:typeId==='headquarters'}, cv.width/2,cv.height/2,cv.width*0.88);
+  });
+  /* Echelon mark canvases */
+  card.querySelectorAll('canvas[data-to-ech-mark]').forEach(function(cv){
+    var mark=cv.dataset.toEchMark;
+    if(!mark)return;
+    var isActive=cv.dataset.toEchActive==='1';
+    var c=cv.getContext('2d');
+    c.clearRect(0,0,cv.width,cv.height);
+    var cx=cv.width/2,cy=cv.height/2;
+    var fgColor=isActive?'#ffd700':getComputedStyle(document.documentElement).getPropertyValue('--fg').trim()||'#ccc';
+    c.strokeStyle=fgColor;c.fillStyle=fgColor;c.lineWidth=1.5;
+    if(mark==='slashO'){var r=3;c.beginPath();c.arc(cx,cy,r,0,Math.PI*2);c.stroke();c.beginPath();c.moveTo(cx-r*.7,cy+r*.7);c.lineTo(cx+r*.7,cy-r*.7);c.stroke()}
+    else if(mark==='cmd'){var r=5;c.beginPath();for(var i=0;i<5;i++){var a1=Math.PI*2*i/5-Math.PI/2,a2=Math.PI*2*(i+0.5)/5-Math.PI/2;c.lineTo(cx+Math.cos(a1)*r,cy+Math.sin(a1)*r);c.lineTo(cx+Math.cos(a2)*r*0.4,cy+Math.sin(a2)*r*0.4)}c.closePath();c.fill()}
+    else if(mark.startsWith('dot')){var n=parseInt(mark[3]),g=5,tw=(n-1)*g;for(var i=0;i<n;i++){c.beginPath();c.arc(cx-tw/2+i*g,cy,2,0,Math.PI*2);c.fill()}}
+    else if(mark.startsWith('bar')){var n=parseInt(mark[3]),g=4,tw=(n-1)*g;for(var i=0;i<n;i++){var px=cx-tw/2+i*g;c.beginPath();c.moveTo(px,cy-5);c.lineTo(px,cy+5);c.stroke()}}
+    else if(mark.startsWith('x')){var n=parseInt(mark[1]),g=8,tw=(n-1)*g;for(var i=0;i<n;i++){var px=cx-tw/2+i*g;c.beginPath();c.moveTo(px-3,cy-4);c.lineTo(px+3,cy+4);c.moveTo(px+3,cy-4);c.lineTo(px-3,cy+4);c.stroke()}}
+  });
 }
 
 function toRenderNode(unit,depth){
   var roster=S._ipb.threatRoster;
   var children=(unit.children||[]).map(function(cid){return roster.find(function(x){return x.id===cid})}).filter(Boolean);
-  children.sort(function(a,b){var da=(a.designation||'').toLowerCase(),db=(b.designation||'').toLowerCase();return da<db?-1:da>db?1:0});
+  /* Preserve manual ordering from parent.children array; fallback to designation alpha */
+  var childOrder={};if(unit.children){unit.children.forEach(function(cid,i){childOrder[cid]=i})}
+  children.sort(function(a,b){var oa=childOrder[a.id],ob=childOrder[b.id];if(oa!==undefined&&ob!==undefined)return oa-ob;var da=(a.designation||'').toLowerCase(),db=(b.designation||'').toLowerCase();return da<db?-1:da>db?1:0});
   var isSel=_toSelectedId===unit.id;
   var hvtInfo=(S._ipb.hvtl||{})[unit.id]||{};
   var tl=TYPE_LABELS[unit.type]||unit.type;
@@ -2571,7 +2786,7 @@ function toRenderNode(unit,depth){
   var relStyle=TO_REL_STYLES[unit.relationship||'organic']||TO_REL_STYLES.organic;
   var isCollapsed=!!_toCollapsed[unit.id];
 
-  var h='<div style="display:flex;flex-direction:column;align-items:center">';
+  var h='<div style="display:flex;flex-direction:column;align-items:center" draggable="true" data-to-drag-id="'+unit.id+'" ondragstart="toOnDragStart(event,\''+unit.id+'\')" ondragover="toOnDragOver(event,\''+unit.id+'\')" ondrop="toOnDrop(event,\''+unit.id+'\')" ondragend="toOnDragEnd(event)">';
 
   /* Connection line from parent */
   if(depth>0){
@@ -2600,18 +2815,13 @@ function toRenderNode(unit,depth){
 
   /* Children — only if not collapsed */
   if(children.length>0&&!isCollapsed){
-    /* Group children: leaf nodes of same type+echelon stack, others expand */
+    /* Each child gets its own node on the horizontal line (no stacking) */
     var groups=[];
     children.forEach(function(child){
       var cc=(child.children||[]).filter(function(cid){return roster.find(function(x){return x.id===cid})});
       var isLeaf=cc.length===0;
       if(isLeaf){
-        var prev=groups.length>0?groups[groups.length-1]:null;
-        if(prev&&prev.gtype==='stack'&&prev.units[0].type===child.type&&prev.units[0].echelon===child.echelon){
-          prev.units.push(child);
-        }else{
-          groups.push({gtype:'stack',units:[child]});
-        }
+        groups.push({gtype:'stack',units:[child]});
       }else{
         groups.push({gtype:'expanded',units:[child]});
       }
@@ -2733,6 +2943,65 @@ function toSelectUnit(uid){
   toRender();
 }
 
+/* Drag-to-reorder siblings in T/O tree */
+var _toDragId=null;
+function toOnDragStart(e,uid){
+  _toDragId=uid;
+  e.dataTransfer.effectAllowed='move';
+  e.dataTransfer.setData('text/plain',uid);
+  e.stopPropagation();
+  /* Add visual feedback */
+  setTimeout(function(){
+    var el=document.querySelector('[data-to-drag-id="'+uid+'"]');
+    if(el)el.style.opacity='0.4';
+  },0);
+}
+function toOnDragOver(e,uid){
+  if(!_toDragId||_toDragId===uid)return;
+  var roster=S._ipb.threatRoster;
+  var dragU=roster.find(function(x){return x.id===_toDragId});
+  var dropU=roster.find(function(x){return x.id===uid});
+  if(!dragU||!dropU)return;
+  /* Only allow reorder among siblings (same parent) */
+  if(dragU.parent!==dropU.parent)return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect='move';
+  /* Visual drop indicator */
+  var el=document.querySelector('[data-to-drag-id="'+uid+'"]');
+  if(el)el.style.outline='2px dashed #ffd700';
+}
+function toOnDrop(e,uid){
+  e.preventDefault();e.stopPropagation();
+  if(!_toDragId||_toDragId===uid)return;
+  var roster=S._ipb.threatRoster;
+  var dragU=roster.find(function(x){return x.id===_toDragId});
+  var dropU=roster.find(function(x){return x.id===uid});
+  if(!dragU||!dropU||dragU.parent!==dropU.parent)return;
+  _toPushUndo();
+  /* Reorder in parent's children array */
+  var parentId=dragU.parent;
+  if(parentId){
+    var par=roster.find(function(x){return x.id===parentId});
+    if(par&&par.children){
+      var fromIdx=par.children.indexOf(_toDragId);
+      var toIdx=par.children.indexOf(uid);
+      if(fromIdx>=0&&toIdx>=0){
+        par.children.splice(fromIdx,1);
+        par.children.splice(toIdx,0,_toDragId);
+      }
+    }
+  }
+  _toDragId=null;
+  toRender();
+}
+function toOnDragEnd(e){
+  _toDragId=null;
+  /* Clear all visual feedback */
+  document.querySelectorAll('[data-to-drag-id]').forEach(function(el){
+    el.style.opacity='';el.style.outline='';
+  });
+}
+
 function toRenderInfoCard(u){
   var tl=TYPE_LABELS[u.type]||u.type;
   var el=ECHELONS.find(function(e){return e.id===u.echelon});
@@ -2746,23 +3015,85 @@ function toRenderInfoCard(u){
 
   var h='<div style="padding:14px">';
 
-  /* Header with icon */
-  h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)">';
+  /* Header with icon + editable designation */
+  h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)">';
   h+='<canvas id="to-info-icon" width="240" height="120" style="width:120px;height:60px;background:rgba(255,255,255,.85);border-radius:4px;flex-shrink:0"></canvas>';
   h+='<div style="flex:1;min-width:0">';
-  h+='<div style="font-size:15px;font-weight:700;color:var(--fg);letter-spacing:.3px">'+(u.designation?escHtml(u.designation):'—')+'</div>';
-  h+='<div style="font-size:12px;opacity:.8;color:var(--fg)">'+escHtml(tl)+' '+escHtml(echLabel)+'</div>';
-  h+='<div style="font-size:11px;opacity:.6">'+escHtml(relLabel)+'</div>';
+  h+='<input type="text" value="'+escAttr(u.designation||'')+'" placeholder="Designation..." style="font-size:15px;font-weight:700;color:var(--fg);letter-spacing:.3px;width:100%;background:transparent;border:1px solid transparent;border-radius:4px;padding:2px 4px;margin:0 0 2px 0;box-sizing:border-box;outline:none" onfocus="this.style.borderColor=\'var(--accent)\';this.style.background=\'rgba(255,255,255,.06)\'" onblur="this.style.borderColor=\'transparent\';this.style.background=\'transparent\'" onchange="toEditUnit(\''+u.id+'\',\'designation\',this.value);toRender()">';
+  h+='<div style="font-size:12px;opacity:.8;color:var(--fg);padding-left:4px">'+escHtml(tl)+' '+escHtml(echLabel)+'</div>';
+  h+='<div style="font-size:11px;opacity:.6;padding-left:4px">'+escHtml(relLabel)+'</div>';
   h+='</div>';
   h+='</div>';
 
-  /* Image preview */
-  h+='<div style="margin-bottom:12px">';
-  h+='<div style="font-size:11px;font-weight:600;opacity:.5;margin-bottom:4px">REFERENCE IMAGE</div>';
-  h+='<input type="url" value="'+escAttr(u.imageUrl||'')+'" placeholder="Paste image URL (PNG/JPG)..." style="width:100%;font-size:11px;margin-bottom:6px;background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--border);border-radius:4px;padding:5px 8px;box-sizing:border-box" onchange="toEditUnit(\''+u.id+'\',\'imageUrl\',this.value);toRender()">';
-  if(u.imageUrl){
-    h+='<div style="border:1px solid var(--border);border-radius:6px;overflow:hidden;cursor:pointer" onclick="window.open(\''+escAttr(u.imageUrl)+'\',\'_blank\')"><img src="'+escAttr(u.imageUrl)+'" style="width:100%;height:auto;max-height:160px;object-fit:cover;display:block" onerror="this.parentNode.innerHTML=\'<div style=padding:12px;font-size:11px;opacity:.4;text-align:center>Image failed to load</div>\'"></div>';
+  /* Custom icon toggle */
+  if(u.customIcon){
+    h+='<div class="toggle-row" style="margin-bottom:8px;padding:4px 0"><label class="switch-sm"><input type="checkbox" id="to-use-custom"'+(u.useCustomIcon!==false?' checked':'')+'><span class="slider"></span></label><span style="font-size:10px">Use KMZ icon (vs standard symbol)</span></div>';
   }
+
+  /* Echelon — custom visual selector with marks */
+  h+='<div style="margin-bottom:8px">';
+  h+='<div style="font-size:10px;font-weight:600;opacity:.4;margin-bottom:3px">ECHELON</div>';
+  h+='<div style="position:relative">';
+  h+='<button id="to-ech-btn" style="width:100%;display:flex;align-items:center;gap:6px;padding:5px 8px;font-size:11px;background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--border);border-radius:4px;cursor:pointer;box-sizing:border-box;text-align:left" onclick="var dd=document.getElementById(\'to-ech-dd\');dd.style.display=dd.style.display===\'block\'?\'none\':\'block\';if(dd.style.display===\'block\')setTimeout(_toRenderInfoCanvases,10)">';
+  h+='<canvas width="28" height="18" data-to-ech-mark="'+(ECHELONS.find(function(e){return e.id===u.echelon})||{mark:''}).mark+'" data-to-ech-active="1" style="width:28px;height:18px;flex-shrink:0"></canvas>';
+  h+='<span>'+(ECHELONS.find(function(e){return e.id===u.echelon})||{label:'None'}).label+'</span>';
+  h+='<span style="margin-left:auto;opacity:.4">▾</span></button>';
+  h+='<div id="to-ech-dd" style="display:none;position:absolute;left:0;right:0;top:100%;z-index:100;background:var(--bg,#1e1e1e);border:1px solid var(--border);border-radius:4px;max-height:200px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,.5)">';
+  ECHELONS.forEach(function(e){
+    var isActive=u.echelon===e.id;
+    h+='<div style="display:flex;align-items:center;gap:6px;padding:5px 8px;cursor:pointer;font-size:11px;color:var(--fg);background:'+(isActive?'rgba(255,215,0,.15)':'transparent')+'" onmouseover="this.style.background=\'rgba(255,255,255,.1)\'" onmouseout="this.style.background=\''+(isActive?'rgba(255,215,0,.15)':'transparent')+'\'" onclick="toEditUnit(\''+u.id+'\',\'echelon\',\''+e.id+'\');toRender()">';
+    h+='<canvas width="28" height="18" data-to-ech-mark="'+e.mark+'" data-to-ech-active="'+(isActive?'1':'0')+'" style="width:28px;height:18px;flex-shrink:0"></canvas>';
+    h+='<span>'+escHtml(e.label)+'</span>';
+    if(isActive)h+='<span style="margin-left:auto;color:#ffd700">✓</span>';
+    h+='</div>';
+  });
+  h+='</div></div></div>';
+
+  /* Relationship — compact dropdown (text is fine here) */
+  h+='<div style="margin-bottom:8px">';
+  h+='<div style="font-size:10px;font-weight:600;opacity:.4;margin-bottom:3px">RELATIONSHIP</div>';
+  h+='<select style="width:100%;font-size:11px;background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--border);border-radius:4px;padding:5px 8px;box-sizing:border-box" onchange="toEditUnit(\''+u.id+'\',\'relationship\',this.value);toRender()">';
+  TO_RELATIONSHIPS.forEach(function(r){
+    h+='<option value="'+r+'"'+((u.relationship||'organic')===r?' selected':'')+' style="background:#333;color:#eee">'+escHtml(TO_REL_LABELS[r])+'</option>';
+  });
+  h+='</select></div>';
+
+  /* Unit Type — collapsible icon grid */
+  h+='<div style="margin-bottom:8px">';
+  h+='<div style="font-size:10px;font-weight:600;opacity:.4;margin-bottom:3px">UNIT TYPE</div>';
+  h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;padding:4px 8px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:4px;cursor:pointer" onclick="var g=document.getElementById(\'to-type-grid\');g.style.display=g.style.display===\'none\'?\'block\':\'none\';if(g.style.display===\'block\')setTimeout(_toRenderInfoCanvases,10)">';
+  h+='<canvas width="36" height="36" data-to-type="'+u.type+'" style="width:36px;height:36px;flex-shrink:0"></canvas>';
+  h+='<span style="font-size:11px;flex:1">'+escHtml(TYPE_LABELS[u.type]||u.type)+'</span>';
+  h+='<span style="opacity:.4;font-size:10px">▾ Change</span></div>';
+  h+='<div id="to-type-grid" style="display:none">';
+  var toTypeSet={};TO_THREAT_TYPES.forEach(function(t){toTypeSet[t.id]=true});
+  UNIT_CATEGORIES.forEach(function(cat){
+    var filtered=cat.types.filter(function(t){return toTypeSet[t.id]});
+    if(!filtered.length)return;
+    h+='<div class="cat-header open" onclick="this.classList.toggle(\'open\');this.nextElementSibling.style.display=this.classList.contains(\'open\')?\'\':\' none\'">'+cat.name+'</div><div class="icon-grid">';
+    filtered.forEach(function(t){
+      h+='<div class="icon-cell'+(u.type===t.id?' selected':'')+'" onclick="toEditUnit(\''+u.id+'\',\'type\',\''+t.id+'\');toRender()" title="'+t.label+'">';
+      h+='<canvas width="100" height="100" data-to-type="'+t.id+'"></canvas>';
+      h+='<div class="tooltip">'+t.label+'</div></div>';
+    });
+    h+='</div>';
+  });
+  h+='</div></div>';
+
+  /* Parent unit selector */
+  var roster=S._ipb.threatRoster;
+  var parentOptions=roster.filter(function(r){return r.id!==u.id});
+  h+='<div style="margin-bottom:12px">';
+  h+='<div style="font-size:10px;font-weight:600;opacity:.4;margin-bottom:3px">PARENT UNIT</div>';
+  h+='<select style="width:100%;font-size:11px;background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--border);border-radius:4px;padding:5px 8px;box-sizing:border-box" onchange="toReparentUnit(\''+u.id+'\',this.value)">';
+  h+='<option value=""'+(u.parent?'':' selected')+' style="background:#333;color:#eee">— None (Root Unit) —</option>';
+  parentOptions.forEach(function(r){
+    var pLabel=r.designation||(TYPE_LABELS[r.type]||r.type);
+    var pEch=ECHELONS.find(function(e){return e.id===r.echelon});
+    if(pEch)pLabel+=' ('+pEch.label+')';
+    h+='<option value="'+r.id+'"'+(u.parent===r.id?' selected':'')+' style="background:#333;color:#eee">'+escHtml(pLabel)+'</option>';
+  });
+  h+='</select>';
   h+='</div>';
 
   /* HVT/HPT */
@@ -2793,6 +3124,51 @@ function toRenderInfoCard(u){
     h+='<span style="font-size:10px;opacity:.4">km</span>';
     h+='<button class="btn danger" style="font-size:10px;padding:1px 5px;min-height:20px" onclick="toRemoveWeapon(\''+u.id+'\','+wi+')">✕</button>';
     h+='</div>';
+  });
+  h+='</div>';
+
+  /* Reference Images — collapsed display like references, with edit/delete */
+  if(!u.images)u.images=[];
+  if(u.imageUrl&&u.images.length===0){u.images.push({label:'',url:u.imageUrl});u.imageUrl=''}
+  h+='<div style="margin-bottom:12px">';
+  h+='<div style="display:flex;align-items:center;margin-bottom:6px"><span style="font-size:11px;font-weight:600;opacity:.5;flex:1">REFERENCE IMAGES</span>';
+  h+='<button class="btn" style="font-size:10px;padding:2px 8px" onclick="toAddImage(\''+u.id+'\')">+ Add</button></div>';
+  if(u.images.length===0){
+    h+='<div style="font-size:11px;opacity:.3;text-align:center;padding:8px">No reference images</div>';
+  }
+  u.images.forEach(function(img,ii){
+    if(img._editing){
+      /* Edit mode: label + URL inputs + confirm */
+      h+='<div style="display:flex;gap:4px;margin-bottom:3px;align-items:center">';
+      h+='<input type="text" id="to-img-label-'+ii+'" value="'+escAttr(img.label||'')+'" placeholder="Label" style="flex:1;font-size:11px;background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--border);border-radius:4px;padding:4px 6px;box-sizing:border-box">';
+      h+='<button class="btn" style="font-size:10px;padding:1px 6px;min-height:20px;color:#44cc44;border-color:#44cc44" onclick="toCommitImage(\''+u.id+'\','+ii+')">✓</button>';
+      h+='<button class="btn danger" style="font-size:10px;padding:1px 5px;min-height:20px" onclick="toRemoveImage(\''+u.id+'\','+ii+')">✕</button>';
+      h+='</div>';
+      h+='<input type="url" id="to-img-url-'+ii+'" value="'+escAttr(img.url||'')+'" placeholder="Paste image URL (PNG/JPG)..." style="width:100%;font-size:10px;margin-bottom:4px;background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--border);border-radius:4px;padding:4px 6px;box-sizing:border-box" onkeydown="if(event.key===\'Enter\')toCommitImage(\''+u.id+'\','+ii+')">';
+      if(img.url){
+        h+='<div style="margin-bottom:4px;border-radius:4px;overflow:hidden"><img src="'+escAttr(img.url)+'" style="width:100%;height:auto;max-height:120px;object-fit:cover;display:block" onerror="this.style.display=\'none\'"></div>';
+      }
+    }else if(img.url||img.label){
+      /* Display mode: large image + label bar with edit/delete */
+      h+='<div style="margin-bottom:6px;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:rgba(255,255,255,.03)">';
+      h+='<div style="display:flex;gap:6px;align-items:center;padding:4px 6px">';
+      h+='<span style="flex:1;font-size:12px;color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escHtml(img.label||'(no label)')+'</span>';
+      h+='<span style="font-size:12px;opacity:.4;cursor:pointer;flex-shrink:0" onclick="toStartEditImage(\''+u.id+'\','+ii+')" title="Edit">✎</span>';
+      h+='<span style="font-size:12px;opacity:.4;cursor:pointer;flex-shrink:0;color:var(--danger)" onclick="toRemoveImage(\''+u.id+'\','+ii+')" title="Delete">✕</span>';
+      h+='</div>';
+      if(img.url){
+        h+='<div style="cursor:pointer" onclick="window.open(\''+escAttr(img.url)+'\',\'_blank\')"><img src="'+escAttr(img.url)+'" style="width:100%;height:auto;max-height:160px;object-fit:cover;display:block" onerror="this.parentNode.innerHTML=\'<div style=padding:8px;font-size:10px;opacity:.4;text-align:center>Image failed to load</div>\'"></div>';
+      }
+      h+='</div>';
+    }else{
+      /* Empty entry — show edit inputs */
+      h+='<div style="display:flex;gap:4px;margin-bottom:3px;align-items:center">';
+      h+='<input type="text" id="to-img-label-'+ii+'" value="" placeholder="Label" style="flex:1;font-size:11px;background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--border);border-radius:4px;padding:4px 6px;box-sizing:border-box">';
+      h+='<button class="btn" style="font-size:10px;padding:1px 6px;min-height:20px;color:#44cc44;border-color:#44cc44" onclick="toCommitImage(\''+u.id+'\','+ii+')">✓</button>';
+      h+='<button class="btn danger" style="font-size:10px;padding:1px 5px;min-height:20px" onclick="toRemoveImage(\''+u.id+'\','+ii+')">✕</button>';
+      h+='</div>';
+      h+='<input type="url" id="to-img-url-'+ii+'" value="" placeholder="Paste image URL..." style="width:100%;font-size:10px;margin-bottom:4px;background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--border);border-radius:4px;padding:4px 6px;box-sizing:border-box" onkeydown="if(event.key===\'Enter\')toCommitImage(\''+u.id+'\','+ii+')">';
+    }
   });
   h+='</div>';
 
@@ -2856,6 +3232,42 @@ function toRemoveWeapon(uid,idx){
   var u=S._ipb.threatRoster.find(function(x){return x.id===uid});
   if(!u||!u.weapons)return;
   _toPushUndo();u.weapons.splice(idx,1);
+  toRender();
+}
+
+/* Reference image management */
+function toAddImage(uid){
+  var u=S._ipb.threatRoster.find(function(x){return x.id===uid});
+  if(!u)return;_toPushUndo();if(!u.images)u.images=[];
+  u.images.push({label:'',url:'',_editing:true});
+  toRender();
+}
+function toCommitImage(uid,idx){
+  var u=S._ipb.threatRoster.find(function(x){return x.id===uid});
+  if(!u||!u.images||!u.images[idx])return;
+  _toPushUndo();
+  var lbl=document.getElementById('to-img-label-'+idx);
+  var url=document.getElementById('to-img-url-'+idx);
+  if(lbl)u.images[idx].label=lbl.value;
+  if(url)u.images[idx].url=url.value;
+  delete u.images[idx]._editing;
+  toRender();
+}
+function toStartEditImage(uid,idx){
+  var u=S._ipb.threatRoster.find(function(x){return x.id===uid});
+  if(!u||!u.images||!u.images[idx])return;
+  u.images[idx]._editing=true;
+  toRender();
+}
+function toEditImage(uid,idx,prop,val){
+  var u=S._ipb.threatRoster.find(function(x){return x.id===uid});
+  if(!u||!u.images||!u.images[idx])return;
+  _toPushUndo();u.images[idx][prop]=val;
+}
+function toRemoveImage(uid,idx){
+  var u=S._ipb.threatRoster.find(function(x){return x.id===uid});
+  if(!u||!u.images)return;
+  _toPushUndo();u.images.splice(idx,1);
   toRender();
 }
 
@@ -3037,6 +3449,148 @@ function renderIPBPlacerPanel(){
   },50);
 }
 
+
+/* Import a single map unit into T/O roster */
+function toImportMapUnit(mapUnitId){
+  var mu=S.units.find(function(x){return x.id===mapUnitId});
+  if(!mu)return;
+  _toEnsureRoster();_toPushUndo();
+  var roster=S._ipb.threatRoster;
+  var rid='to'+Date.now()+Math.random().toString(36).substr(2,4);
+  roster.push({id:rid,type:mu.type==='waypoint'?'infantry':mu.type,echelon:mu.echelon||'company',
+    designation:mu.designation||mu.originalName||'',relationship:'organic',parent:null,children:[],
+    weapons:mu.weapons||[],links:mu.links||[],notes:mu.importNotes||'',imageUrl:'',images:[],
+    customIcon:mu.customIcon||null});
+  mu._rosterSource=rid;mu._useStructuredLabel=true;
+  ipbShowTaskOrg();_toSelectedId=rid;toRender();renderFloatingPanel();
+  IO.notify('Added to T/O: '+(mu.designation||mu.originalName||TYPE_LABELS[mu.type]||mu.type),'success');
+}
+
+/* Layer-based import UI */
+function toShowImportPanel(){
+  _toEnsureRoster();
+  var roster=S._ipb.threatRoster;
+  var layerMap={};
+  S.units.forEach(function(mu){
+    if(mu.affiliation!=='hostile')return;
+    var lid=mu.layerId||'_default';
+    if(!layerMap[lid])layerMap[lid]={layer:S.layers.find(function(l){return l.id===lid}),units:[]};
+    layerMap[lid].units.push(mu);
+  });
+  var layerIds=Object.keys(layerMap);
+  if(layerIds.length===0){IO.notify('No hostile units found on map','info');return}
+  var existing=document.getElementById('to-import-overlay');
+  if(existing)existing.remove();
+  var ov=document.createElement('div');
+  ov.id='to-import-overlay';
+  ov.style.cssText='position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:50;display:flex;align-items:center;justify-content:center';
+  var panel=document.createElement('div');
+  panel.style.cssText='background:var(--panel-bg);border:1px solid var(--border);border-radius:10px;padding:16px;width:420px;max-height:80%;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.5)';
+  var h='<div style="font-size:14px;font-weight:700;margin-bottom:12px">Import Map Units to T/O Roster</div>';
+  h+='<div style="font-size:11px;opacity:.6;margin-bottom:12px">Select a layer, then choose which units to import.</div>';
+  h+='<div style="font-size:10px;font-weight:600;opacity:.4;margin-bottom:4px">SELECT LAYER</div>';
+  layerIds.forEach(function(lid){
+    var info=layerMap[lid];
+    var lname=info.layer?info.layer.name:'Default Layer';
+    var alreadyLinked=info.units.filter(function(u){return u._rosterSource&&roster.find(function(r){return r.id===u._rosterSource})}).length;
+    h+='<div style="padding:8px 10px;margin-bottom:4px;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:rgba(255,255,255,.03)" onmouseover="this.style.background=\'rgba(255,255,255,.08)\'" onmouseout="this.style.background=\'rgba(255,255,255,.03)\'" onclick="toShowLayerUnits(\''+lid+'\')">';
+    h+='<div style="font-size:12px;font-weight:600">'+escHtml(lname)+'</div>';
+    h+='<div style="font-size:10px;opacity:.5">'+info.units.length+' hostile unit'+(info.units.length!==1?'s':'')+(alreadyLinked>0?' ('+alreadyLinked+' already linked)':'')+'</div>';
+    h+='</div>';
+  });
+  h+='<div style="display:flex;gap:6px;margin-top:12px;justify-content:flex-end">';
+  h+='<button class="btn" style="font-size:11px;padding:5px 14px" onclick="document.getElementById(\'to-import-overlay\').remove()">Cancel</button>';
+  h+='</div>';
+  panel.innerHTML=h;
+  ov.appendChild(panel);
+  ov.onclick=function(e){if(e.target===ov)ov.remove()};
+  document.getElementById('to-panel').appendChild(ov);
+}
+
+function toShowLayerUnits(layerId){
+  _toEnsureRoster();
+  var roster=S._ipb.threatRoster;
+  var units=S.units.filter(function(u){return u.affiliation==='hostile'&&(u.layerId||'_default')===layerId});
+  if(!units.length)return;
+  var ov=document.getElementById('to-import-overlay');
+  if(!ov)return;
+  var panel=ov.querySelector('div');
+  var lname=(S.layers.find(function(l){return l.id===layerId})||{}).name||'Default Layer';
+  var h='<div style="font-size:14px;font-weight:700;margin-bottom:8px">Select Units to Import</div>';
+  h+='<div style="font-size:11px;opacity:.6;margin-bottom:10px">Layer: <b>'+escHtml(lname)+'</b></div>';
+  h+='<div style="display:flex;gap:8px;margin-bottom:8px">';
+  h+='<button class="btn" style="font-size:10px;padding:3px 10px" onclick="document.querySelectorAll(\'.to-import-cb\').forEach(function(c){if(!c.disabled)c.checked=true})">Select All</button>';
+  h+='<button class="btn" style="font-size:10px;padding:3px 10px" onclick="document.querySelectorAll(\'.to-import-cb\').forEach(function(c){if(!c.disabled)c.checked=false})">Select None</button>';
+  h+='</div>';
+  h+='<div style="max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:6px;padding:4px">';
+  units.forEach(function(mu){
+    var linked=mu._rosterSource&&roster.find(function(r){return r.id===mu._rosterSource});
+    var label=mu.designation||mu.originalName||TYPE_LABELS[mu.type]||mu.type;
+    var ech=mu.echelon?ECHELONS.find(function(e){return e.id===mu.echelon}):null;
+    var detail=(ech?ech.label+' ':'')+(TYPE_LABELS[mu.type]||mu.type);
+    h+='<label style="display:flex;align-items:center;gap:8px;padding:5px 6px;cursor:'+(linked?'default':'pointer')+';opacity:'+(linked?'.4':'1')+';border-bottom:1px solid rgba(255,255,255,.05)">';
+    h+='<input type="checkbox" class="to-import-cb" data-uid="'+mu.id+'"'+(linked?' disabled':' checked')+'>';
+    if(mu.customIcon){
+      h+='<img src="'+escAttr(mu.customIcon)+'" style="width:28px;height:28px;object-fit:contain;border-radius:2px;background:rgba(255,255,255,.85);flex-shrink:0">';
+    }else{
+      h+='<canvas data-import-type="'+mu.type+'" data-import-aff="'+(mu.affiliation||'hostile')+'" width="48" height="48" style="width:24px;height:24px;background:rgba(255,255,255,.85);border-radius:2px;flex-shrink:0"></canvas>';
+    }
+    h+='<div style="flex:1;min-width:0">';
+    h+='<div style="font-size:11px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escHtml(label)+'</div>';
+    h+='<div style="font-size:9px;opacity:.5">'+escHtml(detail)+(linked?' — already in roster':'')+'</div>';
+    h+='</div>';
+    h+='</label>';
+  });
+  h+='</div>';
+  h+='<div style="display:flex;gap:6px;margin-top:12px;justify-content:flex-end">';
+  h+='<button class="btn" style="font-size:11px;padding:5px 14px" onclick="toShowImportPanel()">← Back</button>';
+  h+='<button class="btn primary" style="font-size:11px;padding:5px 14px" onclick="toDoLayerImport()">Import Selected</button>';
+  h+='</div>';
+  panel.innerHTML=h;
+  setTimeout(function(){
+    document.querySelectorAll('canvas[data-import-type]').forEach(function(cv){
+      var c=cv.getContext('2d');c.clearRect(0,0,48,48);
+      drawUnitIcon(c,{type:cv.dataset.importType,affiliation:cv.dataset.importAff||'hostile',echelon:null,designation:''},24,24,42);
+    });
+  },20);
+}
+
+function toDoLayerImport(){
+  _toEnsureRoster();_toPushUndo();
+  var roster=S._ipb.threatRoster;
+  var cbs=document.querySelectorAll('.to-import-cb:checked:not(:disabled)');
+  var count=0;
+  cbs.forEach(function(cb){
+    var mu=S.units.find(function(u){return u.id===cb.dataset.uid});
+    if(!mu)return;
+    var rid='to'+Date.now()+Math.random().toString(36).substr(2,4)+count;
+    roster.push({id:rid,type:mu.type==='waypoint'?'infantry':mu.type,echelon:mu.echelon||'company',
+      designation:mu.designation||mu.originalName||'',relationship:'organic',parent:null,children:[],
+      weapons:mu.weapons||[],links:mu.links||[],notes:mu.importNotes||'',imageUrl:'',images:[],
+      customIcon:mu.customIcon||null});
+    mu._rosterSource=rid;mu._useStructuredLabel=true;
+    count++;
+  });
+  var ov=document.getElementById('to-import-overlay');
+  if(ov)ov.remove();
+  if(count>0){toRender();IO.notify('Imported '+count+' unit'+(count!==1?'s':'')+' to T/O roster','success')}
+  else{IO.notify('No units selected','info')}
+}
+
+/* Sync T/O parent chain to linked map units */
+function toSyncMapLabels(){
+  if(!S._ipb||!S._ipb.threatRoster)return;
+  var roster=S._ipb.threatRoster;
+  S.units.forEach(function(mu){
+    if(!mu._rosterSource)return;
+    var ru=roster.find(function(r){return r.id===mu._rosterSource});
+    if(!ru)return;
+    if(ru.designation)mu.designation=ru.designation;
+    if(ru.parent){var par=roster.find(function(r){return r.id===ru.parent});if(par&&par.designation)mu.parentUnit=par.designation}
+    if(mu.type==='waypoint'||mu.type==='infantry')mu.type=ru.type;
+    mu.echelon=ru.echelon;
+  });
+}
 
 function ipbPlaceRosterUnit(rosterId){
   var roster=(S._ipb&&S._ipb.threatRoster)||[];
@@ -3736,9 +4290,14 @@ function renderEditor(){
         if(hvtInfo.hpt)h+='<span style="font-size:9px;font-weight:700;color:#ff4444;background:rgba(255,68,68,.12);padding:2px 8px;border-radius:3px;border:1px solid rgba(255,68,68,.3)">HPT</span>';
         h+='</div>';
       }
-      /* Image */
-      if(ru.imageUrl){
-        h+='<div style="margin-bottom:6px;text-align:center"><img src="'+escAttr(ru.imageUrl)+'" style="max-width:100%;max-height:120px;border-radius:4px;border:1px solid var(--border)" onerror="this.style.display=\'none\'"></div>';
+      /* Images */
+      var _imgs=ru.images&&ru.images.length?ru.images:(ru.imageUrl?[{label:'',url:ru.imageUrl}]:[]);
+      if(_imgs.length){
+        _imgs.forEach(function(img){
+          if(!img.url)return;
+          if(img.label)h+='<div style="font-size:9px;opacity:.6;margin-bottom:2px">'+escHtml(img.label)+'</div>';
+          h+='<div style="margin-bottom:6px;text-align:center"><img src="'+escAttr(img.url)+'" style="max-width:100%;max-height:120px;border-radius:4px;border:1px solid var(--border)" onerror="this.style.display=\'none\'"></div>';
+        });
       }
       /* Weapons/Equipment */
       if(ru.weapons&&ru.weapons.length){
@@ -3767,6 +4326,12 @@ function renderEditor(){
           h+='<div style="margin-bottom:3px"><a href="'+escAttr(lk.url)+'" target="_blank" rel="noopener" style="font-size:10px;color:var(--accent);text-decoration:underline">'+escHtml(lk.label||lk.url)+'</a></div>';
         });
       }
+      h+='<button class="btn" style="font-size:10px;padding:4px 10px;margin-top:6px;width:100%" onclick="ipbShowTaskOrg();_toSelectedId=\''+ru.id+'\';toRender()">View in T/O</button>';
+    }
+    if(!_rosterUnit&&u.affiliation==='hostile'){
+      h+='<div class="ed-section-title" style="margin-top:10px">THREAT ROSTER</div>';
+      h+='<button class="btn primary" style="font-size:10px;padding:6px 12px;width:100%" onclick="toImportMapUnit(\''+u.id+'\')">+ Add to T/O Roster</button>';
+      h+='<div style="font-size:9px;opacity:.4;margin-top:3px;text-align:center">Links this unit to the IPB Step 3 threat roster</div>';
     }
   } else if(tab==="equip"){
     var eq=u.equipment||{};
@@ -4109,10 +4674,10 @@ function renderFileMenuItems(){const m=document.getElementById("file-menu");if(!
   m.innerHTML=`<div class="fm-section">PROJECT</div>
 <div class="fm-item" onclick="var op=S._operation;var msg=op?\x27Delete Operation \x27+(op.name||\x27\x27)+\x27 and all its data?\x27:\x27Delete all units and graphics?\x27;if(S.units.length||S.graphics.length||op){if(!confirm(msg))return}IO.autosaveClear();S.units=[];S.graphics=[];S.packages=[];S.layers=[{id:\x27default\x27,name:\x27Default\x27,visible:true,hasErrors:false}];S.activeLayerId=\x27default\x27;S.selectedUnitId=null;S.selectedGraphicId=null;S._operation=null;S._ipb=null;closeEditor();renderFloatingPanel();requestRender();updateLayerIndicator();closeFileMenu()">New Project</div>
 <div class="fm-item danger" onclick="S.units=[];S.graphics=[];S.layers=[];S.packages=[];IO.autosaveClear();localStorage.clear();location.reload()">Clear All Data &amp; Reload</div>
-<div class="fm-item" onclick="IO.projectSave();closeFileMenu()">Save (.tacmap)</div>
+<div class="fm-item" onclick="IO.projectSave();closeFileMenu()">Save (.staffmap)</div>
 <div class="fm-item" onclick="closeFileMenu();IO.requestImport()">Open Project</div>
 <div class="fm-section">IMPORT</div>
-<div class="fm-item" onclick="closeFileMenu();IO.requestImport()">Import File (.tacmap .geojson .kml .kmz)</div>
+<div class="fm-item" onclick="closeFileMenu();IO.requestImport()">Import File (.staffmap .geojson .kml .kmz)</div>
 <div class="fm-section">EXPORT</div>
 <div class="fm-item${hasData?'':' disabled'}" onclick="IO.openExportPanel();closeFileMenu()">Export…</div>
 
@@ -4881,7 +5446,7 @@ const IO={
     const data={version:"4.0",app:"StaffMaps",timestamp:new Date().toISOString(),map:{lat:S.lat,lon:S.lon,zoom:S.zoom,tileSource:S.tileSource},units:S.units,graphics:S.graphics,layers:S.layers,packages:S.packages,operation:S._operation||null,ipb:S._ipb||null};
     var fname=S._operation?escHtml(S._operation.name).replace(/[^a-zA-Z0-9_\- ]/g,"").replace(/\s+/g,"-").toLowerCase():"staffmaps-"+new Date().toISOString().slice(0,10);
     const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
-    dlBlob(blob,fname+".tacmap");IO.notify("Project saved"+(S._operation?" — "+S._operation.name:""))},
+    dlBlob(blob,fname+".staffmap");IO.notify("Project saved"+(S._operation?" — "+S._operation.name:""))},
   projectLoad(text){
     try{const data=JSON.parse(text);
     /* If file contains an Operation, load it as the container */
@@ -4906,7 +5471,7 @@ const IO={
     }IO.autosave()}catch(e){IO.notify("Load error: "+e.message,"error")}},
   requestImport(){
     if(IO.isNative()){window.nativeBridge.requestImport();return}
-    const inp=document.createElement("input");inp.type="file";inp.accept=".tacmap,.geojson,.kml,.kmz,.milx,.milxly,.milxlyz,.json,application/vnd.google-earth.kmz,application/vnd.google-earth.kml+xml,application/geo+json,application/json,application/octet-stream";inp.style.cssText="position:fixed;top:-9999px;left:-9999px;opacity:0";inp.onchange=e=>{const f=e.target.files[0];if(inp.parentNode)inp.parentNode.removeChild(inp);if(!f)return;const ext=f.name.split(".").pop().toLowerCase();if(ext==="kmz"||ext==="milxlyz"){f.arrayBuffer().then(buf=>{if(ext==="milxlyz")IO.importMilXZ(buf);else IO.importKMZ(buf)}).catch(e=>IO.notify("Import error: "+e.message,"error"));return}const reader=new FileReader();reader.onload=ev=>{if(ext==="tacmap"||ext==="json")IO.projectLoad(ev.target.result);else if(ext==="geojson")IO.importGeoJSON(ev.target.result);else if(ext==="kml")IO.importKML(ev.target.result);else if(ext==="milx"||ext==="milxly")IO.importMilX(ev.target.result);else IO.notify("Unsupported file type","error")};reader.readAsText(f)};document.body.appendChild(inp);inp.click()},
+    const inp=document.createElement("input");inp.type="file";inp.accept=".staffmap,.tacmap,.geojson,.kml,.kmz,.milx,.milxly,.milxlyz,.json,application/vnd.google-earth.kmz,application/vnd.google-earth.kml+xml,application/geo+json,application/json,application/octet-stream";inp.style.cssText="position:fixed;top:-9999px;left:-9999px;opacity:0";inp.onchange=e=>{const f=e.target.files[0];if(inp.parentNode)inp.parentNode.removeChild(inp);if(!f)return;const ext=f.name.split(".").pop().toLowerCase();if(ext==="kmz"||ext==="milxlyz"){f.arrayBuffer().then(buf=>{if(ext==="milxlyz")IO.importMilXZ(buf);else IO.importKMZ(buf)}).catch(e=>IO.notify("Import error: "+e.message,"error"));return}const reader=new FileReader();reader.onload=ev=>{if(ext==="staffmap"||ext==="tacmap"||ext==="json")IO.projectLoad(ev.target.result);else if(ext==="geojson")IO.importGeoJSON(ev.target.result);else if(ext==="kml")IO.importKML(ev.target.result);else if(ext==="milx"||ext==="milxly")IO.importMilX(ev.target.result);else IO.notify("Unsupported file type","error")};reader.readAsText(f)};document.body.appendChild(inp);inp.click()},
   importGeoJSON(text){try{const fc=JSON.parse(text);let errors=0;const importLayerId="l"+Date.now();S.layers.push({id:importLayerId,name:"Import: GeoJSON",visible:true,hasErrors:false});S.activeLayerId=importLayerId;if(fc.features)fc.features.slice(0,2000).forEach(f=>{if(f.geometry&&f.geometry.type==="Point"){const[lon,lat]=f.geometry.coordinates;const p=f.properties||{};if(isNaN(lat)||isNaN(lon)){errors++;return}const nu={id:"u"+Date.now()+Math.random().toString(36).substr(2,4),lat,lon,type:p.type||"infantry",affiliation:p.affiliation||"friendly",echelon:p.echelon||null,designation:sanitizeStr(p.designation||p.name||"",INPUT_LIMITS.designation),modifiers:[],isHQ:false,layerId:importLayerId,rings:[],equipment:{}};if(sanitizeUnit(nu))S.units.push(nu)}else{errors++}});if(errors>0){const il=S.layers.find(x=>x.id===importLayerId);if(il)il.hasErrors=true}requestRender();updateLayerIndicator();renderFloatingPanel();IO.notify("Imported "+(fc.features?Math.min(fc.features.length,2000)-errors:0)+" features"+(errors?" ("+errors+" skipped)":""))}catch(e){IO.notify("GeoJSON error: "+e.message,"error")}},
   importMilX(text){
     /* MilX / map.army format (.milxly uncompressed, .milxlyz = ZIP of .milxly)
@@ -4961,15 +5526,15 @@ const IO={
           /* Mech / Motorized Infantry */
           UCIZ:"mechanized_infantry",UCIM:"mechanized_infantry",
           UCIS:"armored_wheeled",
-          UCIR:"armored_recon",UCIC:"cavalry",
+          UCIR:"armored_recon",UCIC:"recon",
           /* Naval Infantry / Marines */
           UCIZ:"mechanized_infantry",UCDM:"naval_infantry",
           /* Armor */
           UA:"armor",UAUL:"armor",UAC:"armor",UCD:"armor",
           UAUW:"armored_wheeled",UAUR:"armored_recon",UAR:"armored_recon",
           /* Aviation */
-          UDAF:"attack_aviation",UDA:"attack_aviation",
-          UDAR:"recon_aviation",UDM:"medevac_aviation",
+          UDAF:"aviation",UDA:"aviation",
+          UDAR:"aviation",UDM:"medevac_aviation",
           UD:"aviation",
           /* UAV / UAS */
           UCDMR:"uav",UCDR:"uav",MFQ:"uav",MFU:"uav",
@@ -5194,12 +5759,12 @@ const IO={
         "C-F-R":"rocket_artillery","C-F-R-S":"rocket_artillery","C-F-R-L":"rocket_artillery",
         "C-I":"infantry","C-I-A":"infantry","C-I-L":"infantry",
         "C-I-M":"mechanized_infantry","C-I-Z":"mechanized_infantry",
-        "C-I-d":"cavalry","C-I-r":"infantry",
-        "C-R":"cavalry","C-R-A":"cavalry","C-R-C":"cavalry","C-R-S":"armored_recon",
+        "C-I-d":"recon","C-I-r":"infantry",
+        "C-R":"recon","C-R-A":"recon","C-R-C":"recon","C-R-S":"armored_recon",
         "C-S":"special_forces","C-S-F":"special_forces","C-S-R":"ranger",
         "C-B":"chemical",
         /* Combat Support */
-        "C-A-T-W":"aviation","C-A-T-W-U":"uav","C-A-A":"attack_aviation","C-A-R":"recon_aviation",
+        "C-A-T-W":"aviation","C-A-T-W-U":"uav","C-A-A":"aviation","C-A-R":"aviation",
         /* Combat Service Support */
         "U-S":"signal","U-S-M":"maintenance","U-S-S":"supply",
         "U-M":"medical","U-M-R-W":"medevac_aviation",
@@ -5241,7 +5806,7 @@ const IO={
       ];
       /* Unit type patterns */
       const typeMap=[
-        [/\bRECON\b/,"cavalry"],[/\bCAV\b/,"cavalry"],[/\bSCOUT\b/,"cavalry"],
+        [/\bRECON\b/,"recon"],[/\bCAV\b/,"recon"],[/\bSCOUT\b/,"recon"],
         [/\bINF\b/,"infantry"],[/\bRIFLE\b/,"infantry"],
         [/\bMECH\s*INF\b/,"mechanized_infantry"],[/\bMECH\b/,"mechanized_infantry"],[/\bMECHANIZED\b/,"mechanized_infantry"],
         [/\bAR(?:MOR)?\b/,"armor"],[/\bTANK\b/,"armor"],
@@ -5249,7 +5814,7 @@ const IO={
         [/\bMORTAR\b/,"mortar"],[/\bMTR\b/,"mortar"],
         [/\bADA\b/,"air_defense"],[/\bAIR\s*DEF/,"air_defense"],
         [/\bSAM\b/,"sam"],[/\bSURFACE.{0,3}AIR.{0,3}MIS/i,"sam"],[/\bPATRIOT\b/i,"sam"],[/\bSTINGER\b/i,"sam"],[/\bAVENGER\b/i,"sam"],
-        [/\bAVN\b/,"aviation"],[/\bATK\s*AVN\b/,"attack_aviation"],
+        [/\bAVN\b/,"aviation"],[/\bATK\s*AVN\b/,"aviation"],
         [/\bENG\b/,"engineer"],[/\bENGINEER\b/,"engineer"],
         [/\bSIG\b/,"signal"],[/\bSIGNAL\b/,"signal"],
         [/\bMI\b/,"military_intelligence"],[/\bINTEL\b/,"military_intelligence"],
@@ -5450,17 +6015,50 @@ const IO={
     var pkgLayerIds=new Set();S.packages.forEach(p=>p.layerIds.forEach(id=>pkgLayerIds.add(id)));
     var standaloneLayers=S.layers.filter(l=>!pkgLayerIds.has(l.id));
     var selLayers=new Set(S.layers.map(l=>l.id));/* all selected by default */
-    var fmt="kmz";
+    var fmt="staffmap";
+    /* Smart default: use staffmap if project has rich data, otherwise kmz for interop */
+    var _hasRichData=!!(S._operation||S._ipb||(S.packages&&S.packages.length)||S.units.some(function(u){return u.rings&&u.rings.length||u.equipment&&Object.keys(u.equipment).length}));
+    if(!_hasRichData&&S.units.length>0)fmt="kmz";
     function countForLayer(lid){return S.units.filter(u=>u.layerId===lid).length+S.graphics.filter(g=>g.layerId===lid).length}
+    function _kmzOmissions(){
+      var omit=[];
+      if(S._operation)omit.push("Operations (phases, sync matrices, wargame journals)");
+      if(S._ipb){
+        if(S._ipb.threatRoster&&S._ipb.threatRoster.length)omit.push("Threat roster ("+S._ipb.threatRoster.length+" units)");
+        if(S._ipb.enemyCOAs&&S._ipb.enemyCOAs.length)omit.push("Enemy COA layer metadata");
+        if(S._ipb.mcooLayerId)omit.push("MCOO layer linkage & freehand metadata");
+      }
+      if(S.packages&&S.packages.length)omit.push("Packages ("+S.packages.length+" layer groupings)");
+      var ringsCount=S.units.filter(function(u){return u.rings&&u.rings.length}).length;
+      if(ringsCount)omit.push("Range rings ("+ringsCount+" units)");
+      var equipCount=S.units.filter(function(u){return u.equipment&&Object.keys(u.equipment).length}).length;
+      if(equipCount)omit.push("Equipment data ("+equipCount+" units)");
+      var toCount=S.units.filter(function(u){return u._toParent||u.relationship}).length;
+      if(toCount)omit.push("Task Org relationships (parent/child, relationships)");
+      var customIconCount=S.units.filter(function(u){return u.customIcon&&u.useCustomIcon!==false}).length;
+      /* Custom icons ARE included as PNGs in KMZ, so don't warn about those */
+      return omit;
+    }
     function render(){
       var h='<div class="export-modal"><div class="export-modal-header"><span>Export</span><button class="btn" onclick="this.closest(\'.export-modal-backdrop\').remove()" style="padding:2px 8px;font-size:16px">✕</button></div>';
       h+='<div class="export-modal-body">';
       h+='<div class="export-pkg-header">Format</div>';
-      h+='<div style="display:flex;gap:6px;margin-bottom:12px">';
-      ["kmz","kml","geojson","tacmap"].forEach(function(f){
-        h+='<button class="btn'+(fmt===f?" primary":"")+'" onclick="window._exportFmt=this.dataset.fmt;rerender()" data-fmt="'+f+'" style="flex:1;font-size:10px">'+f.toUpperCase()+'</button>';
+      h+='<div style="display:flex;gap:6px;margin-bottom:8px">';
+      [["staffmap","StaffMap"],["kmz","KMZ"],["kml","KML"],["geojson","GeoJSON"]].forEach(function(fp){
+        h+='<button class="btn'+(fmt===fp[0]?" primary":"")+'" onclick="window._exportFmt=this.dataset.fmt;rerender()" data-fmt="'+fp[0]+'" style="flex:1;font-size:10px">'+fp[1]+'</button>';
       });
       h+='</div>';
+      /* KMZ/KML omission warning */
+      if(fmt==="kmz"||fmt==="kml"){
+        var omissions=_kmzOmissions();
+        if(omissions.length>0){
+          h+='<div style="background:rgba(255,170,0,.08);border:1px solid rgba(255,170,0,.3);border-radius:6px;padding:8px 10px;margin-bottom:10px;font-size:10px;line-height:1.5">';
+          h+='<div style="font-weight:600;color:var(--warning);margin-bottom:4px">⚠ '+fmt.toUpperCase()+' will omit StaffMap-specific data:</div>';
+          omissions.forEach(function(o){h+='<div style="opacity:.8;padding-left:8px">• '+escHtml(o)+'</div>'});
+          h+='<div style="margin-top:6px;opacity:.6">Unit positions, symbols, and graphics will export normally. Use <b>StaffMap</b> format to preserve all data.</div>';
+          h+='</div>';
+        }
+      }
       h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">';
       h+='<div class="export-pkg-header" style="margin:0">Layers &amp; Packages</div>';
       h+='<div style="display:flex;gap:8px"><span style="font-size:10px;cursor:pointer;opacity:.6" onclick="allLayers(true)">All</span><span style="font-size:10px;cursor:pointer;opacity:.6" onclick="allLayers(false)">None</span></div></div>';
@@ -5497,7 +6095,7 @@ const IO={
       h+='<div class="export-modal-footer">';
       h+='<span style="font-size:10px;opacity:.5;align-self:center">'+selCount+' features</span>';
       h+='<button class="btn" onclick="this.closest(\'.export-modal-backdrop\').remove()">Cancel</button>';
-      h+='<button class="btn primary" onclick="doExport()">Export '+fmt.toUpperCase()+'</button>';
+      h+='<button class="btn primary" onclick="doExport()">Export '+(fmt==="staffmap"?"StaffMap":fmt.toUpperCase())+'</button>';
       h+='</div></div>';
       backdrop.innerHTML=h;
     }
@@ -5511,7 +6109,7 @@ const IO={
       if(fmt==="kmz")IO.exportKMZ(selectedLayerIds,S.packages,pkgLayerIds);
       else if(fmt==="kml")IO.exportKML(selectedLayerIds,S.packages,pkgLayerIds);
       else if(fmt==="geojson")IO.exportGeoJSON(selectedLayerIds);
-      else if(fmt==="tacmap")IO.exportTacmap(selectedLayerIds,S.packages,pkgLayerIds);
+      else if(fmt==="staffmap"||fmt==="tacmap")IO.exportTacmap(selectedLayerIds,S.packages,pkgLayerIds);
     }
     /* Expose helpers to onclick scope via backdrop */
     backdrop.toggleLayer=toggleLayer;backdrop.togglePkg=togglePkg;backdrop.allLayers=allLayers;backdrop.doExport=doExport;backdrop.rerender=rerender;
@@ -5547,7 +6145,7 @@ const IO={
     const data={version:"4.0",app:"StaffMaps",timestamp:new Date().toISOString(),map:{lat:S.lat,lon:S.lon,zoom:S.zoom,tileSource:S.tileSource},units:exportUnits,graphics:exportGraphics,layers:exportLayers,packages:exportPkgs,operation:exportOp,ipb:S._ipb||null};
     var fname=S._operation?escHtml(S._operation.name).replace(/[^a-zA-Z0-9_\- ]/g,"").replace(/\s+/g,"-").toLowerCase():"staffmaps-export-"+new Date().toISOString().slice(0,10);
     const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
-    dlBlob(blob,fname+".tacmap");IO.notify("Exported "+(exportUnits.length+exportGraphics.length)+" features as .tacmap")},
+    dlBlob(blob,fname+".staffmap");IO.notify("Exported "+(exportUnits.length+exportGraphics.length)+" features as .staffmap")},
   importKMZ(buf){
     try{
       const dv=new DataView(buf);let off=0;let kmlText=null;const embeddedFiles={};const pendingDeflates=[];
@@ -5598,14 +6196,14 @@ const IO={
     var AFF_COT={friendly:"f",hostile:"h",neutral:"n",unknown:"u"};
     var TYPE_COT={
       infantry:"G-U-C-I",mechanized_infantry:"G-U-C-I-Z",ifv:"G-U-C-I-Z",naval_infantry:"G-U-C-I",
-      armor:"G-U-C-A",armored_wheeled:"G-U-C-A-W",cavalry:"G-U-C-R",armored_recon:"G-U-C-R-S",
+      armor:"G-U-C-A",armored_wheeled:"G-U-C-A-W",recon:"G-U-C-R",armored_recon:"G-U-C-R-S",
       artillery:"G-U-C-F",mechanized_artillery:"G-U-C-F-M",rocket_artillery:"G-U-C-F-R",
       mortar:"G-U-C-F-M-S",air_defense:"G-U-C-D",short_range_air_defense:"G-U-C-D-S",anti_armor:"G-U-C-A-A-A-W",
       sam:"G-U-C-D-M",magtf:"G-U-C-I",
       engineer:"G-U-C-E",bridging:"G-U-C-E-C",
       headquarters:"G-U-C-A",signal:"G-U-U-S",military_intelligence:"G-U-U-I",electronic_warfare:"G-U-U-E",cyber:"G-U-U-E",
       sustainment:"G-U-U-L",medical:"G-U-U-M",maintenance:"G-U-U-S-M",transportation:"G-U-U-T",supply:"G-U-U-S-S",ordnance:"G-U-U-O",
-      aviation:"G-U-C-A-T-W",attack_aviation:"G-U-C-A-A",recon_aviation:"G-U-C-A-R",medevac_aviation:"G-U-U-M-R-W",uav:"G-U-C-A-T-W-U",
+      aviation:"G-U-C-A-T-W",fixed_wing:"G-U-C-A-T-W",medevac_aviation:"G-U-U-M-R-W",uav:"G-U-C-A-T-W-U",
       special_forces:"G-U-C-S",ranger:"G-U-C-S",civil_affairs:"G-U-U-C-A",psyop:"G-U-U-P-S",
       chemical:"G-U-C-B",military_police:"G-U-U-P-M",waypoint:"G-U-C-I"
     };
@@ -5678,14 +6276,14 @@ const IO={
     var AFF_COT={friendly:"f",hostile:"h",neutral:"n",unknown:"u"};
     var TYPE_COT={
       infantry:"G-U-C-I",mechanized_infantry:"G-U-C-I-Z",ifv:"G-U-C-I-Z",naval_infantry:"G-U-C-I",
-      armor:"G-U-C-A",armored_wheeled:"G-U-C-A-W",cavalry:"G-U-C-R",armored_recon:"G-U-C-R-S",
+      armor:"G-U-C-A",armored_wheeled:"G-U-C-A-W",recon:"G-U-C-R",armored_recon:"G-U-C-R-S",
       artillery:"G-U-C-F",mechanized_artillery:"G-U-C-F-M",rocket_artillery:"G-U-C-F-R",
       mortar:"G-U-C-F-M-S",air_defense:"G-U-C-D",short_range_air_defense:"G-U-C-D-S",anti_armor:"G-U-C-A-A-A-W",
       sam:"G-U-C-D-M",magtf:"G-U-C-I",
       engineer:"G-U-C-E",bridging:"G-U-C-E-C",
       headquarters:"G-U-C-A",signal:"G-U-U-S",military_intelligence:"G-U-U-I",electronic_warfare:"G-U-U-E",cyber:"G-U-U-E",
       sustainment:"G-U-U-L",medical:"G-U-U-M",maintenance:"G-U-U-S-M",transportation:"G-U-U-T",supply:"G-U-U-S-S",ordnance:"G-U-U-O",
-      aviation:"G-U-C-A-T-W",attack_aviation:"G-U-C-A-A",recon_aviation:"G-U-C-A-R",medevac_aviation:"G-U-U-M-R-W",uav:"G-U-C-A-T-W-U",
+      aviation:"G-U-C-A-T-W",fixed_wing:"G-U-C-A-T-W",medevac_aviation:"G-U-U-M-R-W",uav:"G-U-C-A-T-W-U",
       special_forces:"G-U-C-S",ranger:"G-U-C-S",civil_affairs:"G-U-U-C-A",psyop:"G-U-U-P-S",
       chemical:"G-U-C-B",military_police:"G-U-U-P-M",waypoint:"G-U-C-I"
     };
@@ -6431,18 +7029,18 @@ function init(){
           <div id="to-header" style="display:flex;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border);flex-shrink:0">
             <span style="font-size:16px;font-weight:700;flex:1">ENEMY TASK ORGANIZATION</span>
             <span id="to-unit-count" style="font-size:10px;opacity:.5;margin-right:12px"></span>
+            <button class="btn" style="font-size:10px;padding:4px 10px;margin-right:6px" onclick="toShowImportPanel()">⬆ Import from Map</button>
             <button class="btn" style="font-size:10px;padding:4px 10px;margin-right:6px" onclick="toAddRootUnit()">+ Add Unit</button>
             <button class="btn" style="font-size:16px;padding:2px 8px;opacity:.6" onclick="ipbCloseTaskOrg()">✕</button>
           </div>
           <div style="flex:1;display:flex;overflow:hidden">
-            <div id="to-body" style="flex:1;overflow:auto;padding:20px;position:relative;cursor:grab" onmousedown="toPanStart(event)" onwheel="toWheelZoom(event)">
-              <div id="to-tree-wrap" style="transform-origin:center top;display:flex;justify-content:center;min-width:100%"></div>
+            <div id="to-body" style="flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:20px;position:relative;cursor:grab" onmousedown="toPanStart(event)" ontouchstart="toPanStart(event)" onwheel="toWheelZoom(event)">
+              <div id="to-tree-wrap" style="transform-origin:left top;display:flex;justify-content:center;min-width:100%"></div>
             </div>
             <div id="to-infocard" style="display:none;width:320px;border-left:1px solid var(--border);overflow-y:auto;flex-shrink:0"></div>
           </div>
           <div style="position:absolute;bottom:12px;left:12px;display:flex;align-items:center;gap:4px;background:rgba(30,30,35,.9);border:1px solid var(--border);border-radius:6px;padding:4px 8px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:5">
             <button class="btn" style="font-size:16px;padding:2px 8px;min-width:28px" onclick="toZoom(-0.1)" title="Zoom out">−</button>
-            <span id="to-zoom-label" style="font-size:10px;opacity:.7;min-width:36px;text-align:center">100%</span>
             <button class="btn" style="font-size:16px;padding:2px 8px;min-width:28px" onclick="toZoom(0.1)" title="Zoom in">+</button>
             <div style="width:1px;height:16px;background:var(--border);margin:0 2px"></div>
             <button class="btn" style="font-size:9px;padding:3px 8px" onclick="toResetView()">Reset</button>
@@ -6511,34 +7109,78 @@ function init(){
 
   // Drag and drop import
   document.addEventListener("dragover",e=>e.preventDefault());
-  document.addEventListener("drop",e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(!f)return;const ext=f.name.split(".").pop().toLowerCase();if(ext==="kmz"){f.arrayBuffer().then(buf=>IO.importKMZ(buf)).catch(err=>IO.notify("KMZ read error","error"));return}const reader=new FileReader();reader.onload=ev=>{if(ext==="tacmap"||ext==="json")IO.projectLoad(ev.target.result);else if(ext==="geojson")IO.importGeoJSON(ev.target.result);else if(ext==="kml")IO.importKML(ev.target.result)};reader.readAsText(f)});
+  document.addEventListener("drop",e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(!f)return;const ext=f.name.split(".").pop().toLowerCase();if(ext==="kmz"){f.arrayBuffer().then(buf=>IO.importKMZ(buf)).catch(err=>IO.notify("KMZ read error","error"));return}const reader=new FileReader();reader.onload=ev=>{if(ext==="staffmap"||ext==="tacmap"||ext==="json")IO.projectLoad(ev.target.result);else if(ext==="geojson")IO.importGeoJSON(ev.target.result);else if(ext==="kml")IO.importKML(ev.target.result)};reader.readAsText(f)});
 
   // iOS viewport handling — keyboard, address bar, safe areas
+  var _kbOpen=false;
   function updateViewport(){
     const vv=window.visualViewport;
     const vh=vv?vv.height:window.innerHeight;
+    const fullH=window.innerHeight;
     const voffset=vv?vv.offsetTop:0;
     document.documentElement.style.setProperty("--app-h",vh+"px");
     document.documentElement.style.setProperty("--vp-offset",(voffset||0)+"px");
-    /* Do NOT set html/body height — let them fill the full screen including safe areas.
-       --app-h is only used for overlay max-height calculations. */
+    /* Detect iOS keyboard open/close */
+    var wasOpen=_kbOpen;
+    _kbOpen=vv&&(fullH-vh>100);
+    if(_kbOpen){
+      /* Keyboard is open — shrink editor/panels to fit above keyboard */
+      var ed=document.getElementById("editor-overlay");
+      if(ed&&ed.classList.contains("open")&&window.innerWidth<=700){
+        ed.style.maxHeight=Math.max(140,vh-60)+"px";
+      }
+      var fp=document.getElementById("float-panel");
+      if(fp&&fp.classList.contains("open")&&window.innerWidth<=700){
+        fp.style.maxHeight=Math.max(140,vh-60)+"px";
+      }
+    }else if(wasOpen&&!_kbOpen){
+      /* Keyboard closed — restore panel sizes */
+      var ed=document.getElementById("editor-overlay");
+      if(ed)ed.style.maxHeight="";
+      var fp=document.getElementById("float-panel");
+      if(fp)fp.style.maxHeight="";
+    }
+    /* Prevent iOS from scrolling the page behind the keyboard */
+    window.scrollTo(0,0);
+    document.body.scrollTop=0;
+    document.documentElement.scrollTop=0;
     resize();
   }
   _canvasRect=null;
   if(window.visualViewport){
     window.visualViewport.addEventListener("resize",updateViewport);
-    window.visualViewport.addEventListener("scroll",()=>{window.scrollTo(0,0)});
+    window.visualViewport.addEventListener("scroll",()=>{
+      /* iOS sometimes scrolls the viewport when keyboard opens — fight it */
+      window.scrollTo(0,0);
+      document.body.scrollTop=0;
+      document.documentElement.scrollTop=0;
+    });
   }
 
   
   // Scroll focused input into view when iOS keyboard opens
   document.addEventListener("focusin",function(e){
     var t=e.target;
-    if(!t||!t.closest||!t.closest(".float-panel,.editor-overlay"))return;
+    if(!t||!t.closest)return;
+    var panel=t.closest(".float-panel,.editor-overlay,.ipb-placer-panel,.export-modal");
+    if(!panel)return;
     if(t.tagName!=="INPUT"&&t.tagName!=="TEXTAREA"&&t.tagName!=="SELECT")return;
+    /* Prevent iOS page scroll/zoom — re-anchor after keyboard animation */
     setTimeout(function(){
-      t.scrollIntoView({block:"center",behavior:"smooth"});
-    },300);
+      window.scrollTo(0,0);
+      t.scrollIntoView({block:"nearest",behavior:"smooth"});
+    },350);
+    /* Second pass after keyboard fully settles */
+    setTimeout(function(){
+      window.scrollTo(0,0);
+      if(document.activeElement===t){
+        t.scrollIntoView({block:"nearest",behavior:"smooth"});
+      }
+    },600);
+  });
+  /* Prevent iOS from scrolling the whole page when keyboard closes */
+  document.addEventListener("focusout",function(){
+    setTimeout(function(){window.scrollTo(0,0);document.body.scrollTop=0;document.documentElement.scrollTop=0},100);
   });
 
   // Show chat button when connected
