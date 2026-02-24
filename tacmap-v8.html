@@ -145,7 +145,7 @@ const OVERLAY_TYPES=[{id:"none",label:"Basic"},{id:"pl",label:"Phase Line"},{id:
 // === part_02_state_coords.js ===
 
 let canvas,ctx;const tileCache=new Map();let _renderQueued=false,_fileMenuOpen=false;
-const S={lat:38.8977,lon:-77.0365,zoom:12,tileSource:"esri_topo",theme:"dark",showGrid:true,showLabels:true,gridOpacity:0.25,gridColor:"#000000",gridMode:"mgrs",gridSpacing:"auto",coordDisplay:"mgrs",autoCenter:true,units:[],graphics:[],layers:[{id:"default",name:"Default",color:"#4a9eff",visible:true}],packages:[],activeLayerId:"default",selectedUnitId:null,selectedGraphicId:null,editorTab:"icon",editorPinned:false,_activePanel:null,_drawMode:null,_placementMode:null,_isPanning:false,_panStart:null,_lastPointerType:"mouse",_activePointers:new Map(),_pinchStartDist:null,_pinchStartZoom:null,_layout:"desktop",_isLandscape:false,undoStack:[],_operation:null,_opActivePhase:null,_opShowSettings:false,_opShowPhaseMeta:false,_wjEntryType:'note',_net:{peer:null,conns:[],isHost:false,roomCode:null,hostConn:null,mode:"offline",persistentRoom:null,editMode:"observer",joinOrder:0,nextJoinOrder:1,peerName:localStorage.getItem("staffmaps_callsign")||"",peerNames:{},status:"",encEnabled:false,encKey:null,passphrase:"",chatMessages:[],unreadCount:0,chatTarget:"room",sharedLayers:{},sharedEditLayer:null,editScope:"local",defaultJoinMode:"view",peerPermissions:{},editRequests:[],editRequestStatus:null,roomRoster:[],
+const S={lat:38.8977,lon:-77.0365,zoom:12,tileSource:"esri_topo",theme:"dark",showGrid:true,showLabels:true,gridOpacity:0.25,gridColor:"#000000",gridMode:"mgrs",gridSpacing:"auto",coordDisplay:"mgrs",autoCenter:true,pencilMode:localStorage.getItem("sm_pencilMode")!=="false",units:[],graphics:[],layers:[{id:"default",name:"Default",color:"#4a9eff",visible:true}],packages:[],activeLayerId:"default",selectedUnitId:null,selectedGraphicId:null,editorTab:"icon",editorPinned:false,_activePanel:null,_drawMode:null,_placementMode:null,_isPanning:false,_panStart:null,_lastPointerType:"mouse",_activePointers:new Map(),_pinchStartDist:null,_pinchStartZoom:null,_layout:"desktop",_isLandscape:false,undoStack:[],_operation:null,_opActivePhase:null,_opShowSettings:false,_opShowPhaseMeta:false,_wjEntryType:'note',_net:{peer:null,conns:[],isHost:false,roomCode:null,hostConn:null,mode:"offline",persistentRoom:null,editMode:"observer",joinOrder:0,nextJoinOrder:1,peerName:localStorage.getItem("staffmaps_callsign")||"",peerNames:{},status:"",encEnabled:false,encKey:null,passphrase:"",chatMessages:[],unreadCount:0,chatTarget:"room",sharedLayers:{},sharedEditLayer:null,editScope:"local",defaultJoinMode:"view",peerPermissions:{},editRequests:[],editRequestStatus:null,roomRoster:[],
 /* Wargame */
 wargame:{active:false,phase:"planning",/* planning|execution */
 roles:{},/* peerId -> {role:"blufor"|"opfor"|"observer", name:""} */
@@ -761,15 +761,29 @@ function drawFreehandPreview(){
   var d=devicePixelRatio||1;
   ctx.save();
   ctx.strokeStyle=_freehandOpts.color;
-  ctx.lineWidth=_freehandOpts.lineWidth*d;
   ctx.lineCap="round";ctx.lineJoin="round";
   ctx.globalAlpha=_freehandOpts.opacity;
-  ctx.beginPath();
-  _freehandPoints.forEach(function(p,i){
-    if(i===0)ctx.moveTo(p.x*d,p.y*d);
-    else ctx.lineTo(p.x*d,p.y*d);
-  });
-  ctx.stroke();
+  /* Pressure-sensitive: draw segment-by-segment with varying width */
+  var hasPressure=_freehandPressures.length>=_freehandPoints.length&&_freehandPressures.some(function(p){return p>0&&p<0.99});
+  if(hasPressure){
+    var baseW=_freehandOpts.lineWidth*d;
+    for(var i=1;i<_freehandPoints.length;i++){
+      var p=_freehandPressures[i]||0.5;
+      ctx.lineWidth=baseW*(0.3+p*1.4);/* 30%-170% of base width based on pressure */
+      ctx.beginPath();
+      ctx.moveTo(_freehandPoints[i-1].x*d,_freehandPoints[i-1].y*d);
+      ctx.lineTo(_freehandPoints[i].x*d,_freehandPoints[i].y*d);
+      ctx.stroke();
+    }
+  }else{
+    ctx.lineWidth=_freehandOpts.lineWidth*d;
+    ctx.beginPath();
+    _freehandPoints.forEach(function(p,i){
+      if(i===0)ctx.moveTo(p.x*d,p.y*d);
+      else ctx.lineTo(p.x*d,p.y*d);
+    });
+    ctx.stroke();
+  }
   ctx.restore()}
 
 function clearMapToolData(type){if(type==="distance")S._measurePoints=[];if(type==="area")S._measureArea=[];requestRender();renderFloatingPanel()}
@@ -817,7 +831,7 @@ function smoothPanTo(lat,lon,dur){dur=dur||400;
   const sLat=S.lat,sLon=S.lon,sT=performance.now();function step(t){const p=Math.min(1,(t-sT)/dur),e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;S.lat=sLat+(tLat-sLat)*e;S.lon=sLon+(tLon-sLon)*e;requestRender();if(p<1)requestAnimationFrame(step)}requestAnimationFrame(step)}
 var _canvasRect=null;function _updateCanvasRect(){_canvasRect=canvas?canvas.getBoundingClientRect():null}
 function getPos(e){_updateCanvasRect();var r=_canvasRect;return e.clientX!==undefined?{x:e.clientX-r.left,y:e.clientY-r.top}:e.touches&&e.touches[0]?{x:e.touches[0].clientX-r.left,y:e.touches[0].clientY-r.top}:{x:0,y:0}}
-function hitTestUnit(pos){const sz=getUSS(),r=sz*0.4;const _hv={};S.layers.forEach(l=>{_hv[l.id]=l.visible});for(let i=S.units.length-1;i>=0;i--){const u=S.units[i];if(_hv[u.layerId]===false)continue;const sp=latlonToScreen(u.lat,u.lon);if(Math.abs(pos.x-sp.x)<r&&Math.abs(pos.y-sp.y)<r)return u;/* Check range rings — click near ring edge selects unit */if(u.rings&&u.rings.length){const dist=Math.hypot(pos.x-sp.x,pos.y-sp.y);for(const ring of u.rings){if(!ring.radius)continue;const rp=metersToPixels(ring.radius,u.lat,S.zoom);if(Math.abs(dist-rp)<10)return u}}}return null}
+function hitTestUnit(pos,penPrecision){const sz=getUSS(),r=penPrecision?sz*0.3:sz*0.4;const _hv={};S.layers.forEach(l=>{_hv[l.id]=l.visible});for(let i=S.units.length-1;i>=0;i--){const u=S.units[i];if(_hv[u.layerId]===false)continue;const sp=latlonToScreen(u.lat,u.lon);if(Math.abs(pos.x-sp.x)<r&&Math.abs(pos.y-sp.y)<r)return u;/* Check range rings — click near ring edge selects unit */if(u.rings&&u.rings.length){const dist=Math.hypot(pos.x-sp.x,pos.y-sp.y);for(const ring of u.rings){if(!ring.radius)continue;const rp=metersToPixels(ring.radius,u.lat,S.zoom);if(Math.abs(dist-rp)<(penPrecision?6:10))return u}}}return null}
 function pointInPoly(px,py,pts){/* Ray casting algorithm */let inside=false;for(let i=0,j=pts.length-1;i<pts.length;j=i++){const xi=pts[i].x,yi=pts[i].y,xj=pts[j].x,yj=pts[j].y;if(((yi>py)!==(yj>py))&&(px<(xj-xi)*(py-yi)/(yj-yi)+xi))inside=!inside}return inside}
 function hitTestGraphic(pos){
 function _gsa(g){if(!g.points||g.points.length<2)return 1e18;var n=Infinity,x=-Infinity,ny=Infinity,xy=-Infinity;var st=Math.max(1,Math.floor(g.points.length/100));for(var i=0;i<g.points.length;i+=st){var s=latlonToScreen(g.points[i].lat,g.points[i].lon);if(s.x<n)n=s.x;if(s.x>x)x=s.x;if(s.y<ny)ny=s.y;if(s.y>xy)xy=s.y}return(x-n)*(xy-ny)||1e18}
@@ -879,8 +893,17 @@ var _pinnedSwatches=JSON.parse(localStorage.getItem("tacmap-mcoo-swatches")||'["
 var _mcooLayerId=null,_mcooAoId=null,_mcooOutside=false,_mcooLastOutsidePos=null;
 /* Performance: max points per stroke, max strokes on MCOO layer */
 var MCOO_MAX_PTS_PER_STROKE=200,MCOO_MAX_STROKES=150;
+/* Apple Pencil precision editing */
+var _pencilLastSeen=0;/* timestamp of last pen event for palm rejection */
+var _PALM_REJECT_MS=500;/* ignore touch for this long after last pen event */
 
-function onPointerDown(e){if(e.target!==canvas)return;S._lastPointerType=e.pointerType||"mouse";/* Treat Apple Pencil (pen) as mouse for all interactions */if(S._lastPointerType==="pen")S._lastPointerType="mouse";const pos=getPos(e);_ptrDownPos=pos;_ptrDownTime=Date.now();_selOnDown=false;_gfxSelOnDown=null;_dragUnit=null;_dragGV=null;_rotUnit=null;S._pendingGfxSelect=null;S._isPanning=false;/* Reset panning on new interaction */
+function onPointerDown(e){if(e.target!==canvas)return;S._lastPointerType=e.pointerType||"mouse";var _isPen=S.pencilMode&&S._lastPointerType==="pen";const pos=getPos(e);_ptrDownPos=pos;_ptrDownTime=Date.now();_selOnDown=false;_gfxSelOnDown=null;_dragUnit=null;_dragGV=null;_rotUnit=null;S._pendingGfxSelect=null;S._isPanning=false;
+/* Apple Pencil: track last pen event for palm rejection */
+if(_isPen){_pencilLastSeen=Date.now()}
+/* Palm rejection: if pen was recently used, force touch to pan-only */
+if(S.pencilMode&&S._lastPointerType==="touch"&&(Date.now()-_pencilLastSeen)<_PALM_REJECT_MS){S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon};e.preventDefault();return}
+/* When pencil mode off, treat pen as mouse */
+if(!S.pencilMode&&S._lastPointerType==="pen")S._lastPointerType="mouse";
 /* Freehand mode — start stroke */
 if(S._mapTool==="freehand"){
   /* If on MCOO layer, reject start outside AO */
@@ -906,9 +929,10 @@ if((g.tool==="polygon"&&g.points.length>=3)||(g.tool==="circle"&&g.points.length
 if(g.label){if(g.labelOffset&&g._labelZoomRef==null)g._labelZoomRef=S.zoom;var _lhZs=g._labelZoomRef!=null?Math.pow(2,S.zoom-g._labelZoomRef):1;var _defLhY;if(g.tool==="rectangle"){const _sp0h=latlonToScreen(g.points[0].lat,g.points[0].lon),_sp1h=latlonToScreen(g.points[1].lat,g.points[1].lon);_defLhY=-(Math.abs(_sp1h.y-_sp0h.y)/2+8)}else if(g.tool==="circle"){const _spch=latlonToScreen(g.points[0].lat,g.points[0].lon),_speh=latlonToScreen(g.points[1].lat,g.points[1].lon);_defLhY=-(Math.hypot(_speh.x-_spch.x,_speh.y-_spch.y)+8)}else if(g.tool==="polygon"){var _htMinY=Infinity,_htMaxY=-Infinity;g.points.forEach(function(p){var _sp=latlonToScreen(p.lat,p.lon);if(_sp.y<_htMinY)_htMinY=_sp.y;if(_sp.y>_htMaxY)_htMaxY=_sp.y});_defLhY=-((_htMaxY-_htMinY)/2+8)}else{_defLhY=-20}var lcx=cx+(g.labelOffset?g.labelOffset.x*_lhZs:0),lcy=cy+(g.labelOffset?g.labelOffset.y*_lhZs:_defLhY);
 /* Approximate text half-width for handle placement */var _tmpC=document.createElement("canvas").getContext("2d");_tmpC.font="bold 13px sans-serif";var _tw=_tmpC.measureText(g.label).width/2+10;var hdx=lcx-_tw;
 if(Math.hypot(pos.x-hdx,pos.y-lcy)<15){_dragGV={gid:g.id,idx:-2,labelDrag:true,startPos:pos,startOffset:{x:g.labelOffset?g.labelOffset.x*_lhZs:0,y:g.labelOffset?g.labelOffset.y*_lhZs:_defLhY}};_selOnDown=true;return}}
-if(!_gLocked&&Math.hypot(pos.x-cx,pos.y-cy)<20){_dragGV={gid:g.id,idx:-1,moveAll:true,startPos:pos,startPts:g.points.map(p=>({lat:p.lat,lon:p.lon}))};_selOnDown=true;return}}
+var _vHitR=_isPen?12:20;/* Vertex hit radius: tighter for pen precision */
+if(!_gLocked&&Math.hypot(pos.x-cx,pos.y-cy)<_vHitR){_dragGV={gid:g.id,idx:-1,moveAll:true,startPos:pos,startPts:g.points.map(p=>({lat:p.lat,lon:p.lon}))};_selOnDown=true;return}}
 /* Then check individual vertices — skip if locked */
-if(!_gLocked){for(let i=0;i<g.points.length;i++){const sp=latlonToScreen(g.points[i].lat,g.points[i].lon);if(Math.hypot(pos.x-sp.x,pos.y-sp.y)<20){_dragGV={gid:g.id,idx:i};_selOnDown=true;return}}}
+if(!_gLocked){for(let i=0;i<g.points.length;i++){const sp=latlonToScreen(g.points[i].lat,g.points[i].lon);if(Math.hypot(pos.x-sp.x,pos.y-sp.y)<_vHitR){_dragGV={gid:g.id,idx:i};_selOnDown=true;return}}}
 /* No handle hit on selected graphic — check if clicking something else */
 var _nhUnit=hitTestUnit(pos);if(_nhUnit){selectUnit(_nhUnit.id);_dragUnit=_nhUnit;_dragStartPos={lat:_nhUnit.lat,lon:_nhUnit.lon};_selOnDown=true;return}
 var _nhGfx=hitTestGraphic(pos);if(_nhGfx&&_nhGfx.id!==g.id){_gfxSelOnDown=_nhGfx.id;S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon};return}
@@ -927,14 +951,27 @@ if(S._drawMode){S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.l
 if(S._panLockMode){S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon};return}
 /* Map tool active — allow panning but skip unit selection */
 if(S._mapTool){canvas.style.cursor="crosshair";S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon};return}
-/* Check rotation handle first */
-const rh=hitTestRotHandle(pos);if(rh){_rotUnit=rh;_selOnDown=true;return}
-const hit=hitTestUnit(pos),isTouch=S._lastPointerType==="touch",isCtrl=e.ctrlKey||e.metaKey,isShift=e.shiftKey;
-if(hit){if(isTouch){if(hit.id===S.selectedUnitId){_dragUnit=hit;_dragStartPos={lat:hit.lat,lon:hit.lon};_selOnDown=true;openEditor()}else{selectUnit(hit.id);_selOnDown=true}}else{selectUnit(hit.id);_dragUnit=hit;_dragStartPos={lat:hit.lat,lon:hit.lon};_selOnDown=true}return}
+/* Check rotation handle first — pen or mouse only */
+const _isFinger=S._lastPointerType==="touch"&&!_isPen;
+const isCtrl=e.ctrlKey||e.metaKey,isShift=e.shiftKey;
+const rh=!_isFinger?hitTestRotHandle(pos):null;if(rh){_rotUnit=rh;_selOnDown=true;return}
+/* Pencil mode ON + finger: pan-first — only drag already-selected items */
+if(S.pencilMode&&_isFinger){
+  if(S.selectedUnitId){var _tu=S.units.find(function(x){return x.id===S.selectedUnitId});if(_tu){var _tsp=latlonToScreen(_tu.lat,_tu.lon),_tSz=getUSS()*0.4;if(Math.abs(pos.x-_tsp.x)<_tSz&&Math.abs(pos.y-_tsp.y)<_tSz){_dragUnit=_tu;_dragStartPos={lat:_tu.lat,lon:_tu.lon};_selOnDown=true;return}}}
+  S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon};return}
+/* Legacy touch (pencilMode OFF): original two-tap behavior */
+if(_isFinger&&!S.pencilMode){
+  const hit=hitTestUnit(pos);
+  if(hit){if(hit.id===S.selectedUnitId){_dragUnit=hit;_dragStartPos={lat:hit.lat,lon:hit.lon};_selOnDown=true;openEditor()}else{selectUnit(hit.id);_selOnDown=true};return}
+  const hitG=hitTestGraphic(pos);if(hitG){_gfxSelOnDown=hitG.id;S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon};return}
+  S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon};return}
+/* Pen / mouse: precision select + immediate drag */
+const hit=hitTestUnit(pos,_isPen);
+if(hit){selectUnit(hit.id);_dragUnit=hit;_dragStartPos={lat:hit.lat,lon:hit.lon};_selOnDown=true;return}
 const hitG=hitTestGraphic(pos);if(hitG){_gfxSelOnDown=hitG.id;S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon};return}
 S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon}}
 
-function onPointerMove(e){const pos=getPos(e);if(e.pointerId!==undefined&&e.pointerType==="touch")S._activePointers.set(e.pointerId,pos);
+function onPointerMove(e){const pos=getPos(e);if(e.pointerType==="pen")_pencilLastSeen=Date.now();if(e.pointerId!==undefined&&e.pointerType==="touch")S._activePointers.set(e.pointerId,pos);
 /* Freehand stroke capture */
 if(_freehandActive&&S._mapTool==="freehand"){
   var isMcooClip=_mcooAoId&&S._ipb&&S._ipb.mcooLayerId&&S.activeLayerId===S._ipb.mcooLayerId;
@@ -985,8 +1022,10 @@ if(S._drawMode&&S._drawMode.tool==="rectangle"&&S._drawMode.points.length===1){
   S._drawMode._cursor=pos;requestRender();
 }
 updateCoords(pos);
-/* Unit hover tooltip — skip on touch (no hover on mobile) */
+/* Unit hover tooltip — works for mouse and pen (Apple Pencil hover), skip finger touch */
 if(S._lastPointerType!=="touch"&&!S._isPanning&&!_dragUnit&&!_dragGV&&!_rotUnit&&!S._placementMode){
+  /* Apple Pencil hover: show crosshair cursor for precision */
+  if(S.pencilMode&&e.pointerType==="pen"&&e.pressure===0)canvas.style.cursor="crosshair";
   /* Vertex hover for selected graphic */
   if(S.selectedGraphicId&&!S._drawMode){const g=S.graphics.find(x=>x.id===S.selectedGraphicId);if(g&&g.points){let onHandle=false;
 /* Center handle check */
@@ -1111,7 +1150,7 @@ if(S._mapTool==="distance"){S._measurePoints.push({lat:ll.lat,lon:ll.lon});reque
 if(S._mapTool==="area"){S._measureArea.push({lat:ll.lat,lon:ll.lon});requestRender();updateModeBar();return}}
 
 /* Graphic selection — use generous threshold for taps (touch has natural drift) */
-var _tapThresh=S._lastPointerType==="touch"?25:15;
+var _tapThresh=S._lastPointerType==="touch"?25:S._lastPointerType==="pen"?8:15;
 /* Graphic selection — re-test at original click position */
 var _tapTime=S._lastPointerType==="touch"?400:300;
 var _elapsed=Date.now()-_ptrDownTime;
@@ -1244,6 +1283,8 @@ function renderSettings(){
   h+='<div class="toggle-row"><span>Show Grid</span><label class="switch"><input type="checkbox" id="set-grid"'+(S.showGrid?" checked":"")+'><span class="slider"></span></label></div>';
   h+='<div class="toggle-row"><span>Show Labels</span><label class="switch"><input type="checkbox" id="set-labels"'+(S.showLabels?" checked":"")+'><span class="slider"></span></label></div>';
   h+='<div class="toggle-row"><span>Auto-Center on Select</span><label class="switch"><input type="checkbox" id="set-autocenter"'+(S.autoCenter?" checked":"")+'><span class="slider"></span></label></div>';
+  h+='<div class="toggle-row"><span>Apple Pencil Mode</span><label class="switch"><input type="checkbox" id="set-pencilmode"'+(S.pencilMode?" checked":"")+'><span class="slider"></span></label></div>';
+  h+='<div style="font-size:9px;opacity:.4;margin-bottom:8px">Pencil\u2009=\u2009edit, finger\u2009=\u2009pan, palm rejection</div>';
   h+='<label>Grid Mode</label><select id="set-gridmode"><option value="mgrs"'+(S.gridMode==="mgrs"?" selected":"")+'>MGRS</option><option value="latlon"'+(S.gridMode==="latlon"?" selected":"")+'>Lat/Lon</option></select>';
   h+='<label>Coord Display</label><select id="set-coorddisp"><option value="mgrs"'+(S.coordDisplay==="mgrs"?" selected":"")+'>MGRS</option><option value="latlon"'+(S.coordDisplay==="latlon"?" selected":"")+'>Lat/Lon</option></select>';
   h+='<label>Grid Color</label><div class="color-swatches" id="set-gridcolor">';
@@ -3977,6 +4018,7 @@ function bindPanelEvents(){
   if(el("set-grid"))el("set-grid").onchange=e=>{S.showGrid=e.target.checked;requestRender()};
   if(el("set-labels"))el("set-labels").onchange=e=>{S.showLabels=e.target.checked;requestRender()};
   if(el("set-autocenter"))el("set-autocenter").onchange=e=>{S.autoCenter=e.target.checked};
+  if(el("set-pencilmode"))el("set-pencilmode").onchange=e=>{S.pencilMode=e.target.checked;localStorage.setItem("sm_pencilMode",e.target.checked)};
   if(el("set-gridmode"))el("set-gridmode").onchange=e=>{S.gridMode=e.target.value;requestRender()};
   if(el("set-coorddisp"))el("set-coorddisp").onchange=e=>{S.coordDisplay=e.target.value};
   if(el("set-gridop")){trackFill(el("set-gridop"));el("set-gridop").oninput=e=>{S.gridOpacity=parseFloat(e.target.value);trackFill(e.target);requestRender()}};
