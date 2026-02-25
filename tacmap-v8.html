@@ -98,6 +98,22 @@ html{height:100%;height:-webkit-fill-available;background:var(--bg);overflow:hid
 .export-check-row{display:flex;align-items:center;gap:8px;padding:5px 4px;border-radius:4px;cursor:pointer;font-size:11px}.export-check-row:hover{background:var(--btn-hover)}
 .export-check-row input[type=checkbox]{width:14px;height:14px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
 .export-pkg-header{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;opacity:.5;margin:10px 0 4px;padding-left:4px}
+/* ── Connector Banner ── */
+#connector-banner{position:fixed;bottom:calc(var(--safe-bottom) + 60px);left:50%;transform:translateX(-50%);z-index:8000;background:#1a1a1a;border:1px solid rgba(74,158,255,.4);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,.5);font-family:var(--font);font-size:11px;color:#d0d0d0;max-width:calc(100vw - 32px);animation:bannerIn .4s ease-out;white-space:nowrap}
+#connector-banner.hidden{display:none!important}
+@keyframes bannerIn{from{opacity:0;transform:translateX(-50%) translateY(12px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+#connector-banner .cb-icon{font-size:16px;flex-shrink:0}
+#connector-banner .cb-text{flex:1;min-width:0}
+#connector-banner .cb-title{font-weight:700;color:#4a9eff;font-size:11px}
+#connector-banner .cb-sub{font-size:10px;opacity:.65;margin-top:1px;white-space:normal;line-height:1.3}
+#connector-banner .cb-btn{background:rgba(74,158,255,.15);border:1px solid rgba(74,158,255,.5);color:#4a9eff;border-radius:4px;padding:5px 10px;font-family:var(--font);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;letter-spacing:.5px;transition:background .15s}
+#connector-banner .cb-btn:hover{background:rgba(74,158,255,.28)}
+#connector-banner .cb-dismiss{background:transparent;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:14px;padding:2px 4px;line-height:1;flex-shrink:0;font-family:var(--font)}
+#connector-banner .cb-dismiss:hover{color:rgba(255,255,255,.6)}
+#connector-banner.connected{border-color:rgba(68,204,68,.5)}
+#connector-banner.connected .cb-title{color:#44cc44}
+#connector-banner.connected .cb-btn{background:rgba(68,204,68,.15);border-color:rgba(68,204,68,.5);color:#44cc44}
+#connector-banner.connected .cb-btn:hover{background:rgba(68,204,68,.25)}
 .map-tooltip{position:fixed;background:rgba(20,20,30,.9);color:#fff;padding:3px 8px;border-radius:4px;font-size:11px;font-family:var(--font);pointer-events:none;z-index:100;white-space:nowrap;display:none;border:1px solid rgba(255,255,255,.2)}
 .color-swatches{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px}.color-swatch{width:22px;height:22px;border-radius:3px;cursor:pointer;border:2px solid transparent;touch-action:manipulation}.color-swatch.selected{border-color:#fff;box-shadow:0 0 4px rgba(255,255,255,.5)}
 .switch{position:relative;display:inline-block;width:42px;height:24px;flex-shrink:0;overflow:visible}.switch input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}.switch .slider{display:block;width:42px;height:24px;background:rgba(255,255,255,.25);border-radius:12px;cursor:pointer;position:relative}.switch .slider::before{content:'';position:absolute;height:20px;width:20px;left:2px;top:2px;background:rgba(255,255,255,.7);border-radius:50%;transition:transform .3s}.switch input:checked+.slider{background:var(--accent)}.switch input:checked+.slider::before{transform:translateX(18px);background:#fff}
@@ -7339,6 +7355,190 @@ function init(){
 document.addEventListener("DOMContentLoaded",init);
 window.onerror=function(msg,url,line,col,err){document.title="ERR:"+line+":"+msg;console.error("STAFFMAPS ERROR at line",line,":",msg)};
 
+// ─── STAFFMAPS CONNECTOR (Bluetooth Bridge) ───────────────────────────────────
+(function(){
+  var DISMISS_KEY = 'sm_connector_banner_dismissed';
+  var SNOOZE_HOURS = 24;
+  var _extensionPresent = false;
+  var _connected = false;
+  var _deviceName = null;
+  var _banner = null;
+  var _bannerShown = false;
+
+  // Only show on desktop Chrome — mobile uses native app
+  var isDesktopChrome = /Chrome/.test(navigator.userAgent) && !/Mobile|Android|iPhone|iPad/.test(navigator.userAgent);
+  if(!isDesktopChrome) return;
+
+  function snoozeExpired(){
+    var t = parseInt(localStorage.getItem(DISMISS_KEY)||'0',10);
+    return Date.now() > t + (SNOOZE_HOURS * 3600 * 1000);
+  }
+
+  function buildBanner(state){
+    if(_banner) _banner.remove();
+    _banner = document.createElement('div');
+    _banner.id = 'connector-banner';
+
+    if(state === 'connected'){
+      _banner.classList.add('connected');
+      _banner.innerHTML =
+        '<span class="cb-icon">📡</span>'+
+        '<div class="cb-text">'+
+          '<div class="cb-title">CONNECTOR ONLINE</div>'+
+          '<div class="cb-sub">Bluetooth bridge active'+(  _deviceName?' — '+_deviceName:'')+'. No network required.</div>'+
+        '</div>'+
+        '<button class="cb-btn" onclick="window._smConnector&&window._smConnector.disconnect()">Disconnect</button>'+
+        '<button class="cb-dismiss" title="Dismiss" onclick="dismissBanner()">×</button>';
+    } else if(state === 'ready'){
+      _banner.innerHTML =
+        '<span class="cb-icon">🔵</span>'+
+        '<div class="cb-text">'+
+          '<div class="cb-title">BLUETOOTH AVAILABLE</div>'+
+          '<div class="cb-sub">Connect to an iPad running StaffMaps — no Wi-Fi needed.</div>'+
+        '</div>'+
+        '<button class="cb-btn" onclick="window._smConnector&&window._smConnector.connect()">Connect</button>'+
+        '<button class="cb-dismiss" title="Dismiss" onclick="dismissBanner()">×</button>';
+    } else {
+      // Not installed
+      _banner.innerHTML =
+        '<span class="cb-icon">⚡</span>'+
+        '<div class="cb-text">'+
+          '<div class="cb-title">OFFLINE BRIDGE AVAILABLE</div>'+
+          '<div class="cb-sub">Install the StaffMaps Connector for Bluetooth P2P — works without a router.</div>'+
+        '</div>'+
+        '<button class="cb-btn" onclick="openInstall()">Install (1 min)</button>'+
+        '<button class="cb-dismiss" title="Snooze 24h" onclick="snoozeBanner()">×</button>';
+    }
+
+    document.body.appendChild(_banner);
+    _bannerShown = true;
+
+    // Auto-hide connected banner after 6s
+    if(state === 'connected'){
+      setTimeout(function(){ if(_banner) _banner.classList.add('hidden'); }, 6000);
+    }
+  }
+
+  window.dismissBanner = function(){
+    if(_banner) _banner.classList.add('hidden');
+  };
+
+  window.snoozeBanner = function(){
+    localStorage.setItem(DISMISS_KEY, Date.now().toString());
+    if(_banner) _banner.classList.add('hidden');
+  };
+
+  window.openInstall = function(){
+    // Open install page relative to current location
+    var base = window.location.href.replace(/\/[^\/]*$/, '/');
+    window.open(base + 'install.html', '_blank');
+  };
+
+  // ── Extension event listeners ────────────────────────────────────────────
+
+  window.addEventListener('staffmaps:connector:ready', function(e){
+    _extensionPresent = true;
+    console.log('[StaffMaps] Connector extension v'+(e.detail&&e.detail.version||'?')+' present');
+    if(snoozeExpired()) buildBanner('ready');
+    initConnectorAPI();
+  });
+
+  window.addEventListener('staffmaps:bt:connected', function(e){
+    _connected = true;
+    _deviceName = e.detail && e.detail.deviceName;
+    buildBanner('connected');
+    notify('Bluetooth connected'+(  _deviceName?' — '+_deviceName:''), '');
+  });
+
+  window.addEventListener('staffmaps:bt:disconnected', function(){
+    _connected = false;
+    _deviceName = null;
+    if(_extensionPresent && snoozeExpired()) buildBanner('ready');
+    notify('Bluetooth disconnected');
+  });
+
+  window.addEventListener('staffmaps:bt:error', function(e){
+    notify('Bluetooth error: '+((e.detail&&e.detail.error)||'unknown'), 'error');
+  });
+
+  // Incoming BLE data handler — route into StaffMaps sync
+  window.addEventListener('staffmaps:bt:data', function(e){
+    var raw = e.detail && e.detail.payload;
+    if(!raw) return;
+    try {
+      var pkt = JSON.parse(raw);
+      _handleConnectorPacket(pkt);
+    } catch(_){ }
+  });
+
+  function _handleConnectorPacket(pkt){
+    if(!pkt||!pkt.t) return;
+    // Route packet types into existing StaffMaps handlers
+    switch(pkt.t){
+      case 'up': // unit position
+        // Future: update unit position silently
+        console.log('[Connector] Unit pos:', pkt.d);
+        break;
+      case 'us': // unit status
+        console.log('[Connector] Unit status:', pkt.d);
+        break;
+      case 'sr': // sync request — send full state
+        _pushFullSync();
+        break;
+      case 'pg': // ping
+        if(window._smConnector) window._smConnector.sendPacket('pg',{});
+        break;
+      default:
+        console.log('[Connector] Packet:', pkt.t, pkt.d);
+    }
+  }
+
+  function _pushFullSync(){
+    if(!window._smConnector || !_connected) return;
+    // Serialize minimal state for sync
+    var payload = {
+      units: (window.S && S.units ? S.units.map(function(u){
+        return {id:u.id,x:u.x,y:u.y,label:u.label,sidc:u.sidc,status:u.status};
+      }) : [])
+    };
+    window._smConnector.sendPacket('sa', payload);
+  }
+
+  // ── Public API ───────────────────────────────────────────────────────────
+
+  function initConnectorAPI(){
+    window._smConnector = {
+      connect: function(){
+        window.dispatchEvent(new CustomEvent('staffmaps:connector:connect'));
+      },
+      disconnect: function(){
+        window.dispatchEvent(new CustomEvent('staffmaps:connector:disconnect'));
+        _connected = false;
+        _deviceName = null;
+      },
+      send: function(payload){
+        window.dispatchEvent(new CustomEvent('staffmaps:connector:send',{detail:{payload:payload}}));
+      },
+      sendPacket: function(type, data){
+        var pkt = JSON.stringify({t:type,d:data,ts:Date.now()});
+        window.dispatchEvent(new CustomEvent('staffmaps:connector:send',{detail:{payload:pkt}}));
+      },
+      isConnected: function(){ return _connected; }
+    };
+  }
+
+  // ── Detection probe ──────────────────────────────────────────────────────
+  // Extension fires 'staffmaps:connector:ready' on page load.
+  // If we haven't heard it after 800ms, show install prompt (if not snoozed).
+
+  setTimeout(function(){
+    if(!_extensionPresent && snoozeExpired()){
+      buildBanner('not-installed');
+    }
+  }, 800);
+
+})();
+// ─── END CONNECTOR ────────────────────────────────────────────────────────────
 
 </script>
 </body>

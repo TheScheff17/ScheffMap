@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StaffMaps Connector — Install</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:          #080c0a;
+      --bg2:         #0d1410;
+      --bg3:         #111a14;
+      --border:      #1e2e22;
+      --border2:     #243328;
+      --green:       #3ddc7a;
+      --green-dim:   #2a9e57;
+      --green-glow:  #3ddc7a22;
+      --amber:       #e8a030;
+      --amber-dim:   #a06820;
+      --text:        #d4e8da;
+      --text-dim:    #7a9e84;
+      --text-muted:  #4a6650;
+      --mono:        'Share Tech Mono', monospace;
+      --sans:        'Barlow', sans-serif;
+      --cond:        'Barlow Condensed', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Grid texture ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Scanline overlay ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 48px 0 40px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 48px;
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+    }
+
+    .logo-mark {
+      width: 56px;
+      height: 56px;
+      border: 1.5px solid var(--green-dim);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+      box-shadow: 0 0 20px var(--green-glow), inset 0 0 20px var(--green-glow);
+    }
+
+    .logo-mark svg { width: 32px; height: 32px; }
+
+    .header-text { flex: 1; }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--green);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    h1 {
+      font-family: var(--cond);
+      font-size: 36px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.5px;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-dim);
+      line-height: 1.5;
+      max-width: 520px;
+    }
+
+    /* ── Status bar ── */
+    .status-bar {
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 48px;
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--amber);
+      box-shadow: 0 0 8px var(--amber);
+      flex-shrink: 0;
+      animation: blink 2s infinite;
+    }
+
+    .status-dot.ok {
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: none;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    #statusText { color: var(--text-dim); }
+    #statusText span { color: var(--green); }
+
+    /* ── Section label ── */
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Download block ── */
+    .download-block {
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .download-meta { flex: 1; }
+
+    .download-name {
+      font-family: var(--cond);
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .download-detail {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .btn-download {
+      background: var(--green);
+      color: #050a06;
+      border: none;
+      border-radius: 5px;
+      padding: 12px 24px;
+      font-family: var(--cond);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s, transform 0.1s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-download:hover { background: #52f090; transform: translateY(-1px); }
+    .btn-download:active { transform: translateY(0); }
+
+    /* ── Steps ── */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-bottom: 48px;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      left: 27px;
+      top: 28px;
+      bottom: 28px;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--green-dim), var(--border));
+    }
+
+    .step {
+      display: flex;
+      gap: 20px;
+      padding: 0 0 32px;
+      opacity: 0;
+      transform: translateX(-12px);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+
+    .step.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .step:last-child { padding-bottom: 0; }
+
+    .step-num {
+      width: 56px;
+      height: 56px;
+      border: 1.5px solid var(--green-dim);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 18px;
+      color: var(--green);
+      flex-shrink: 0;
+      background: var(--bg2);
+      position: relative;
+      z-index: 1;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .step.done .step-num {
+      border-color: var(--green);
+      box-shadow: 0 0 16px var(--green-glow);
+      background: #0d1f12;
+    }
+
+    .step-body { flex: 1; padding-top: 8px; }
+
+    .step-title {
+      font-family: var(--cond);
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
+    }
+
+    .step-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    /* ── Code / path display ── */
+    .code-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #0a1a0d;
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--green);
+      cursor: pointer;
+      transition: border-color 0.2s;
+      user-select: all;
+    }
+
+    .code-tag:hover { border-color: var(--green-dim); }
+
+    .copy-hint {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-left: 4px;
+      font-family: var(--mono);
+    }
+
+    /* ── Visual step illustration ── */
+    .step-visual {
+      margin-top: 14px;
+      background: #060e08;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 16px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .step-visual .hl { color: var(--green); }
+    .step-visual .hl2 { color: var(--amber); }
+
+    /* ── Toggle illustration ── */
+    .toggle-demo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #1a2e20;
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 10px;
+    }
+
+    .toggle-switch {
+      width: 32px;
+      height: 18px;
+      background: var(--green);
+      border-radius: 9px;
+      position: relative;
+      box-shadow: 0 0 8px var(--green-glow);
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      right: 2px;
+      top: 2px;
+      width: 14px;
+      height: 14px;
+      background: #fff;
+      border-radius: 50%;
+    }
+
+    /* ── Done state ── */
+    .done-block {
+      background: linear-gradient(135deg, #0a1f0e, #0d1a10);
+      border: 1px solid var(--green-dim);
+      border-radius: 8px;
+      padding: 28px;
+      text-align: center;
+      box-shadow: 0 0 40px var(--green-glow);
+      display: none;
+      margin-bottom: 32px;
+    }
+
+    .done-block.visible { display: block; }
+
+    .done-title {
+      font-family: var(--cond);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    .done-sub {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+    }
+
+    .btn-launch {
+      background: var(--green);
+      color: #050a06;
+      border: none;
+      border-radius: 5px;
+      padding: 12px 32px;
+      font-family: var(--cond);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.15s;
+    }
+
+    .btn-launch:hover { background: #52f090; }
+
+    /* ── Warning note ── */
+    .note {
+      background: #1a1400;
+      border: 1px solid var(--amber-dim);
+      border-radius: 6px;
+      padding: 14px 16px;
+      font-size: 12px;
+      color: #c8922a;
+      line-height: 1.6;
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .note-icon { flex-shrink: 0; font-size: 14px; margin-top: 1px; }
+
+    /* ── Step check buttons ── */
+    .step-check {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-check {
+      background: transparent;
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 7px 16px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-check:hover { border-color: var(--green-dim); color: var(--green); }
+
+    .step.done .btn-check {
+      border-color: var(--green-dim);
+      color: var(--green);
+    }
+
+    .check-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      margin-bottom: 40px;
+    }
+
+    .progress-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .progress-track {
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: 2px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 8px var(--green);
+      width: 0%;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 26px; }
+      .download-block { flex-direction: column; align-items: flex-start; }
+      header { flex-direction: column; gap: 16px; }
+      footer { flex-direction: column; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Header -->
+  <header>
+    <div class="logo-mark">
+      <svg viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="13" stroke="#3ddc7a" stroke-width="1.5"/>
+        <circle cx="16" cy="16" r="4" fill="#3ddc7a"/>
+        <line x1="16" y1="3" x2="16" y2="9" stroke="#3ddc7a" stroke-width="1.5"/>
+        <line x1="16" y1="23" x2="16" y2="29" stroke="#3ddc7a" stroke-width="1.5"/>
+        <line x1="3" y1="16" x2="9" y2="16" stroke="#3ddc7a" stroke-width="1.5"/>
+        <line x1="23" y1="16" x2="29" y2="16" stroke="#3ddc7a" stroke-width="1.5"/>
+        <line x1="8" y1="8" x2="12" y2="12" stroke="#3ddc7a" stroke-width="1" opacity="0.5"/>
+        <line x1="20" y1="20" x2="24" y2="24" stroke="#3ddc7a" stroke-width="1" opacity="0.5"/>
+      </svg>
+    </div>
+    <div class="header-text">
+      <div class="eyebrow">// StaffMaps · Offline Bridge</div>
+      <h1>Connector Install</h1>
+      <p class="subtitle">One-time setup. Enables Bluetooth peer-to-peer connectivity between this laptop and StaffMaps on iOS — no router, no internet required.</p>
+    </div>
+  </header>
+
+  <!-- Extension detection status -->
+  <div class="status-bar">
+    <div class="status-dot" id="statusDot"></div>
+    <div id="statusText">Checking for extension… <span id="statusDetail">scanning</span></div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>INSTALL PROGRESS</span>
+      <span id="progressPct">0 / 4</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <!-- Step 1: Download -->
+  <div class="section-label">Step 01 — Download</div>
+  <div class="download-block">
+    <div class="download-meta">
+      <div class="download-name">staffmaps-connector.zip</div>
+      <div class="download-detail">Chrome Extension · ~15KB · No installer required</div>
+    </div>
+    <a href="https://github.com/YOUR_USERNAME/staffmaps/releases/latest/download/staffmaps-connector.zip"
+       class="btn-download" id="btnDownload" download>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M8 12l-4-4h2.5V3h3v5H12L8 12z"/>
+        <rect x="2" y="13" width="12" height="1.5" rx="0.75"/>
+      </svg>
+      Download
+    </a>
+  </div>
+
+  <!-- Steps -->
+  <div class="section-label">Steps 02–04 — Chrome Setup</div>
+
+  <div class="steps" id="steps">
+
+    <!-- Step 2: Unzip -->
+    <div class="step" id="step1">
+      <div class="step-num">02</div>
+      <div class="step-body">
+        <div class="step-title">Unzip to a permanent location</div>
+        <div class="step-desc">Extract the zip somewhere it won't be deleted — your Documents folder works well. Chrome needs the folder to stay put after install.</div>
+        <div class="step-visual">
+          📁 Documents/<br>
+          &nbsp;&nbsp;└─ <span class="hl">staffmaps-connector/</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ manifest.json<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ src/
+        </div>
+        <div class="step-check">
+          <button class="btn-check" onclick="markStep(0)">✓ Done</button>
+          <span class="check-label">confirm when unzipped</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Open extensions -->
+    <div class="step" id="step2">
+      <div class="step-num">03</div>
+      <div class="step-body">
+        <div class="step-title">Open Chrome Extensions</div>
+        <div class="step-desc">Copy this address into your Chrome address bar and press Enter.</div>
+        <div class="code-tag" onclick="copyChromePath(this)">
+          chrome://extensions
+          <span class="copy-hint">[click to copy]</span>
+        </div>
+        <div class="note" style="margin-top:12px;">
+          <span class="note-icon">⚠</span>
+          <span>On the Extensions page, find the <strong>Developer mode</strong> toggle in the top-right corner and switch it <strong>ON</strong>. This is required for extensions not distributed through the Web Store.</span>
+        </div>
+        <div class="toggle-demo">
+          <div class="toggle-switch"></div>
+          Developer mode
+        </div>
+        <div class="step-check">
+          <button class="btn-check" onclick="markStep(1)">✓ Done</button>
+          <span class="check-label">confirm when developer mode is on</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Load unpacked -->
+    <div class="step" id="step3">
+      <div class="step-num">04</div>
+      <div class="step-body">
+        <div class="step-title">Load the extension</div>
+        <div class="step-desc">Click <strong style="color:#fff">Load unpacked</strong> — a button that appears after enabling Developer mode — then navigate to and select the <code style="font-family:var(--mono);font-size:12px;color:var(--green)">staffmaps-connector</code> folder you unzipped.</div>
+        <div class="step-visual">
+          Chrome Extensions page<br><br>
+          <span class="hl2">[ Load unpacked ]</span> &nbsp;Pack extension &nbsp;Update<br><br>
+          → Select folder: <span class="hl">staffmaps-connector/</span><br>
+          → Click <span class="hl">Select Folder</span>
+        </div>
+        <div class="step-check">
+          <button class="btn-check" onclick="markStep(2)">✓ Done</button>
+          <span class="check-label">confirm when extension card appears</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 5: Verify -->
+    <div class="step" id="step4">
+      <div class="step-num">05</div>
+      <div class="step-body">
+        <div class="step-title">Verify installation</div>
+        <div class="step-desc">Return to this page or the main StaffMaps app. The status indicator above should turn green. You only need to do this once — the extension persists across Chrome restarts.</div>
+        <div class="step-visual">
+          Extensions toolbar (top-right Chrome) →<br>
+          <span class="hl">⊕ StaffMaps Connector</span> &nbsp;<span style="color:var(--text-muted)">v1.0.0</span><br><br>
+          Status: <span class="hl">● Connected</span>
+        </div>
+        <div class="step-check">
+          <button class="btn-check" onclick="markStep(3)">✓ Done</button>
+          <span class="check-label">confirm when status turns green above</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /steps -->
+
+  <!-- Done -->
+  <div class="done-block" id="doneBlock">
+    <div class="done-title">// CONNECTOR ONLINE</div>
+    <div class="done-sub">Bluetooth bridge active. This laptop can now join StaffMaps sessions without network infrastructure.</div>
+    <a href="index.html" class="btn-launch">← Return to StaffMaps</a>
+  </div>
+
+  <footer>
+    <span>STAFFMAPS · OFFLINE BRIDGE · v1.0</span>
+    <span>Chrome 85+ required · BLE hardware required</span>
+  </footer>
+
+</div><!-- /wrap -->
+
+<script>
+  // ── Extension Detection ───────────────────────────────────────────────────
+
+  const statusDot    = document.getElementById('statusDot');
+  const statusDetail = document.getElementById('statusDetail');
+  const statusText   = document.getElementById('statusText');
+
+  let extensionDetected = false;
+
+  function setExtensionDetected() {
+    extensionDetected = true;
+    statusDot.classList.add('ok');
+    statusText.innerHTML = 'Extension detected — <span>CONNECTOR ONLINE</span>';
+    document.getElementById('doneBlock').classList.add('visible');
+    // Mark all steps done
+    stepsComplete = [true, true, true, true];
+    updateProgress();
+    document.querySelectorAll('.step').forEach(s => s.classList.add('done', 'visible'));
+  }
+
+  window.addEventListener('staffmaps:connector:ready', setExtensionDetected);
+  window.addEventListener('staffmaps:connector:status:response', (e) => {
+    if (e.detail?.extensionPresent) setExtensionDetected();
+  });
+
+  // Probe after short delay
+  setTimeout(() => {
+    window.dispatchEvent(new CustomEvent('staffmaps:connector:status'));
+    setTimeout(() => {
+      if (!extensionDetected) {
+        statusDetail.textContent = 'not found';
+        statusText.innerHTML = 'Extension not detected — <span style="color:var(--amber)">follow steps below</span>';
+      }
+    }, 600);
+  }, 400);
+
+  // ── Step reveal on scroll ─────────────────────────────────────────────────
+
+  const stepEls = document.querySelectorAll('.step');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  stepEls.forEach((s, i) => {
+    s.style.transitionDelay = `${i * 0.08}s`;
+    observer.observe(s);
+  });
+
+  // ── Progress ──────────────────────────────────────────────────────────────
+
+  let stepsComplete = [false, false, false, false];
+
+  function updateProgress() {
+    const done = stepsComplete.filter(Boolean).length;
+    const pct  = (done / 4) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = `${done} / 4`;
+    if (done === 4) {
+      document.getElementById('doneBlock').classList.add('visible');
+    }
+  }
+
+  window.markStep = function(idx) {
+    stepsComplete[idx] = true;
+    document.getElementById(`step${idx + 1}`).classList.add('done');
+    updateProgress();
+  };
+
+  // ── Copy chrome path ──────────────────────────────────────────────────────
+
+  window.copyChromePath = function(el) {
+    navigator.clipboard.writeText('chrome://extensions').then(() => {
+      const hint = el.querySelector('.copy-hint');
+      hint.textContent = '[copied!]';
+      setTimeout(() => hint.textContent = '[click to copy]', 2000);
+    });
+  };
+
+  // ── Download tracking ─────────────────────────────────────────────────────
+
+  document.getElementById('btnDownload').addEventListener('click', () => {
+    // Auto-mark step 1 as in progress after download
+    setTimeout(() => {
+      document.getElementById('step1').classList.add('visible');
+    }, 500);
+  });
+</script>
+</body>
+</html>
