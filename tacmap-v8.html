@@ -102,6 +102,9 @@ html{height:100%;height:-webkit-fill-available;background:var(--bg);overflow:hid
 .export-pkg-header{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;opacity:.5;margin:10px 0 4px;padding-left:4px}
 /* ── VC Sync Dot ── */
 #vc-sync-dot{position:fixed;top:calc(var(--safe-top) + 8px);left:50%;transform:translateX(-50%);width:6px;height:6px;border-radius:50%;background:var(--warning);box-shadow:0 0 6px var(--warning);display:none;z-index:9000;animation:pulse 1s infinite}
+/* ── EMCON Indicator ── */
+#emcon-topbar{transition:opacity .3s ease}
+#emcon-gps-grid{transition:opacity .3s ease}
 /* ── Connector Banner ── */
 #connector-banner{position:fixed;bottom:calc(var(--safe-bottom) + 60px);left:50%;transform:translateX(-50%);z-index:8000;background:#1a1a1a;border:1px solid rgba(74,158,255,.4);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,.5);font-family:var(--font);font-size:11px;color:#d0d0d0;max-width:calc(100vw - 32px);animation:bannerIn .4s ease-out;white-space:nowrap}
 #connector-banner.hidden{display:none!important}
@@ -118,7 +121,7 @@ html{height:100%;height:-webkit-fill-available;background:var(--bg);overflow:hid
 #connector-banner.connected .cb-title{color:#44cc44}
 #connector-banner.connected .cb-btn{background:rgba(68,204,68,.15);border-color:rgba(68,204,68,.5);color:#44cc44}
 #connector-banner.connected .cb-btn:hover{background:rgba(68,204,68,.25)}
-.map-tooltip{position:fixed;background:rgba(20,20,30,.9);color:#fff;padding:3px 8px;border-radius:4px;font-size:11px;font-family:var(--font);pointer-events:none;z-index:100;white-space:nowrap;display:none;border:1px solid rgba(255,255,255,.2)}
+.map-tooltip{position:fixed;background:rgba(20,20,30,.9);color:#fff;padding:3px 8px;border-radius:4px;font-size:11px;font-family:var(--font);pointer-events:none;z-index:100;max-width:400px;white-space:normal;display:none;border:1px solid rgba(255,255,255,.2)}
 .color-swatches{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px}.color-swatch{width:22px;height:22px;border-radius:3px;cursor:pointer;border:2px solid transparent;touch-action:manipulation}.color-swatch.selected{border-color:#fff;box-shadow:0 0 4px rgba(255,255,255,.5)}
 .switch{position:relative;display:inline-block;width:42px;height:24px;flex-shrink:0;overflow:visible}.switch input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}.switch .slider{display:block;width:42px;height:24px;background:rgba(255,255,255,.25);border-radius:12px;cursor:pointer;position:relative}.switch .slider::before{content:'';position:absolute;height:20px;width:20px;left:2px;top:2px;background:rgba(255,255,255,.7);border-radius:50%;transition:transform .3s}.switch input:checked+.slider{background:var(--accent)}.switch input:checked+.slider::before{transform:translateX(18px);background:#fff}
 input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent;outline:none;touch-action:none;margin:0}input[type="range"]::-webkit-slider-runnable-track{height:4px;background:linear-gradient(to right,var(--accent) 0%,var(--accent) var(--val,50%),rgba(255,255,255,.15) var(--val,50%),rgba(255,255,255,.15) 100%);border-radius:2px}input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4);margin-top:-7px}input[type="range"]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.3)}input[type="range"]::-moz-range-progress{background:var(--accent);border-radius:2px;height:4px}input[type="range"]::-moz-range-track{background:rgba(255,255,255,.15);border-radius:2px;height:4px}
@@ -146,10 +149,45 @@ input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:20
 
 
 /* iOS safe area coverage handled in JS resize */
+/* === Symbol Visual Editor (map.army style) === */
+.sve-aff-row{display:flex;gap:0;border-bottom:1px solid var(--border);margin:-2px -10px 6px;padding:0}
+.sve-aff-btn{flex:1;padding:5px 3px;font-size:9px;font-weight:600;font-family:var(--font);background:transparent;border:none;cursor:pointer;text-align:center;border-bottom:2px solid transparent;transition:all .12s;touch-action:manipulation}
+.sve-aff-btn:not(:last-child){border-right:1px solid var(--border)}
+.sve-aff-btn.active{border-bottom-color:currentColor}
+.sym-layout{display:grid;grid-template-columns:86px 1fr 86px;grid-template-rows:auto auto auto;padding:4px 0;gap:0}
+.sym-layout .tl{grid-column:1;grid-row:1;display:flex;align-items:flex-end;justify-content:flex-end;padding:0 3px 2px 0}
+.sym-layout .tc{grid-column:2;grid-row:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:2px;gap:1px}
+.sym-layout .tr{grid-column:3;grid-row:1;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:0 0 2px 3px;gap:2px}
+.sym-layout .ml{grid-column:1;grid-row:2;display:flex;flex-direction:column;gap:3px;justify-content:center;align-items:flex-end;padding-right:3px}
+.sym-layout .mc{grid-column:2;grid-row:2;display:flex;align-items:center;justify-content:center}
+.sym-layout .mr{grid-column:3;grid-row:2;display:flex;flex-direction:column;gap:3px;justify-content:center;padding-left:3px}
+.sym-layout .bl{grid-column:1;grid-row:3;display:flex;flex-direction:column;align-items:flex-end;padding:2px 3px 0 0;gap:2px}
+.sym-layout .bc{grid-column:2;grid-row:3;display:flex;justify-content:center;align-items:flex-start;padding-top:3px}
+.sym-layout .br{grid-column:3;grid-row:3;display:flex;flex-direction:column;align-items:flex-start;padding:2px 0 0 3px;gap:2px}
+.sve-f{display:flex;flex-direction:column;gap:0}
+.sve-f label{font-size:6.5px;color:var(--fg);opacity:.45;text-transform:uppercase;letter-spacing:.3px;line-height:1.2}
+.sve-f input,.sve-f select{background:var(--btn-bg);border:1px solid var(--border);border-radius:3px;color:var(--fg);font-size:9px;font-family:var(--font);padding:3px 4px;outline:none;width:78px}
+.sve-f input:focus,.sve-f select:focus{border-color:var(--accent)}
+.sve-f input::placeholder{color:var(--fg);opacity:.25}
+.sve-f select{appearance:none;-webkit-appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4'%3E%3Cpath d='M0 0l3.5 4 3.5-4z' fill='%23666'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 3px center;padding-right:14px}
+.sve-f.right input{text-align:right}
+.sve-f.narrow select{width:50px}
+.sve-ech{background:var(--btn-bg);border:1px solid var(--border);border-radius:3px;color:var(--fg);font-size:9px;font-family:var(--font);padding:3px 16px 3px 6px;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4'%3E%3Cpath d='M0 0l3.5 4 3.5-4z' fill='%23666'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 4px center;text-align:center}
+.sve-ech option,.sve-f select option,.sve-type-sel option,.layer-move-select option{background:#222;color:#e0e0e0}
+[data-theme="light"] .sve-ech option,[data-theme="light"] .sve-f select option,[data-theme="light"] .sve-type-sel option,[data-theme="light"] .layer-move-select option{background:#f5f5f5;color:#222}
+.sve-ech:focus{border-color:var(--accent)}
+.sym-layout .mc img{max-width:150px;max-height:130px}
+.sve-hier{font-size:8px;color:var(--fg);opacity:.35;text-align:center;padding:2px 0 4px;border-top:1px solid var(--border);margin-top:4px}
+.sve-type-row{display:flex;align-items:center;gap:6px;margin-top:6px}
+.sve-type-label{font-size:8px;font-weight:600;color:var(--fg);opacity:.5;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.sve-type-sel{flex:1;background:var(--btn-bg);border:1px solid var(--border);border-radius:4px;color:var(--fg);font-size:10px;font-family:var(--font);padding:5px 8px;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+.sve-type-sel:focus{border-color:var(--accent)}
 </style>
 </head>
 <body>
 <div id="app"><div id="vc-sync-dot"></div></div><div class="map-tooltip" id="map-tooltip"></div>
+<script id="milsymbol-lib">/*! milsymbol.js - MIT License - spatialillusions.com */</script>
+<script src="milsymbol.js" onerror="console.warn('milsymbol.js external load failed - symbols will use legacy renderer')"></script>
 <script>
 "use strict";
 
@@ -164,6 +202,65 @@ const ECHELONS=[{id:"team",label:"Team/Crew",mark:"slashO"},{id:"squad",label:"S
 const MODIFIERS=[{id:"reinforced",label:"+",symbol:"+"},{id:"reduced",label:"\u2212",symbol:"\u2212"},{id:"airborne",label:"Airborne",symbol:"\u2297"},{id:"air_assault",label:"Air Assault",symbol:"\u2298"},{id:"mountain",label:"Mountain",symbol:"\u25b2"},{id:"arctic",label:"Arctic",symbol:"\u2744"},{id:"amphibious",label:"Amphibious",symbol:"\u2248"},{id:"light",label:"Light",symbol:"L"},{id:"heavy",label:"Heavy",symbol:"H"},{id:"motorized",label:"Motorized",symbol:"\u2299"},{id:"mechanized",label:"Mechanized",symbol:"\u229b"},{id:"wheeled",label:"Wheeled",symbol:"W"}];
 const EQUIPMENT_DEFAULTS={infantry:{vehicle:"HMMWV",crew:9,weapon:"M4/M249",maxRange:3600},light_infantry:{vehicle:"Foot",crew:9,weapon:"M4/M249",maxRange:3600},motorized_infantry:{vehicle:"HMMWV/JLTV",crew:9,weapon:"M4/M249",maxRange:3600,speed:100},naval_infantry:{vehicle:"AAV-7A1",crew:21,weapon:"M4/M249/Mk19",maxRange:3600},mechanized_infantry:{vehicle:"M2 Bradley",crew:9,weapon:"25mm/TOW",maxRange:3750,sensorRange:4000},mechanized_infantry_wheeled:{vehicle:"Stryker ICV",crew:9,weapon:"M2/.50 cal",maxRange:1800,sensorRange:4000,speed:97},lav_infantry:{vehicle:"LAV-25",crew:6,weapon:"25mm/M240",maxRange:2500,sensorRange:4000,speed:100},ifv:{vehicle:"M2A3 Bradley",crew:9,weapon:"25mm/TOW",maxRange:3750,sensorRange:4000,speed:61},armor:{vehicle:"M1A2 Abrams",crew:4,weapon:"120mm",maxRange:4000,sensorRange:5000,speed:67},amphibious_armor:{vehicle:"AAV-7A1/ACV",crew:3,weapon:"Mk19/M2",maxRange:2200,speed:13},armored_wheeled:{vehicle:"Stryker",crew:9,weapon:"M2/.50 cal",maxRange:1800,sensorRange:4000,speed:97},recon:{vehicle:"HMMWV/JLTV",crew:4,weapon:"M4/M249",maxRange:3600,sensorRange:6000},armored_recon_wheeled:{vehicle:"Stryker RV",crew:4,weapon:"M2/.50 cal",maxRange:1800,sensorRange:8000,speed:97},artillery:{vehicle:"M777",crew:8,weapon:"155mm",maxRange:30000},mechanized_artillery:{vehicle:"M109A7",crew:4,weapon:"155mm",maxRange:30000,speed:56},rocket_artillery:{vehicle:"M270 MLRS",crew:3,weapon:"MLRS",maxRange:70000},mortar:{vehicle:"M1129",crew:4,weapon:"120mm Mortar",maxRange:7200},mortar_wheeled:{vehicle:"M1064",crew:5,weapon:"120mm Mortar",maxRange:7200},air_defense:{vehicle:"M-SHORAD",crew:3,weapon:"Stinger/30mm",maxRange:8000,sensorRange:15000},anti_armor:{vehicle:"HMMWV",crew:4,weapon:"Javelin/TOW",maxRange:4750},magtf:{vehicle:"Various",crew:0,weapon:"Combined Arms"},aviation:{vehicle:"UH-60",crew:4,speed:294},fixed_wing:{vehicle:"C-130",crew:5,speed:592},uav:{vehicle:"MQ-1C Gray Eagle",sensorRange:25000,speed:280},sam:{vehicle:"Patriot",crew:3,weapon:"MIM-104",maxRange:160000,sensorRange:180000},engineer:{vehicle:"M9 ACE",crew:1},combat_engineer:{vehicle:"M9 ACE",crew:1,weapon:"M4/Demolitions"},special_forces:{crew:12,weapon:"Various"},ranger:{crew:12,weapon:"Various"}};
 const GRAPHIC_COLORS=["#ff4444","#4a9eff","#44cc44","#ffd700","#80E0FF","#FF8080","#80FF80","#FFFF80","#ff8800","#ffffff","#000000","#00ffff","#ff00ff","#8b4513"];
+
+/* === milsymbol integration === */
+const _MS=typeof ms!=="undefined"?ms:null;
+const SIDC_MAP={
+infantry:"SFG-UCI----",light_infantry:"SFG-UCIL---",motorized_infantry:"SFG-UCIZ---",
+naval_infantry:"SFG-UCIN---",mechanized_infantry:"SFG-UCIM---",mechanized_infantry_wheeled:"SFG-UCIZ---",
+ifv:"SFG-UCIC---",lav_infantry:"SFG-UCIC---",armor:"SFG-UCA----",amphibious_armor:"SFG-UCATW--",
+armored_wheeled:"SFG-UCA----",recon:"SFG-UCR----",armored_recon:"SFG-UCRA---",
+armored_recon_wheeled:"SFG-UCRA---",anti_armor:"SFG-UCAA---",magtf:"SFG-UCI----",
+artillery:"SFG-UCF----",mechanized_artillery:"SFG-UCFM---",rocket_artillery:"SFG-UCFR---",
+mortar:"SFG-UCFM---",mortar_wheeled:"SFG-UCFM---",
+aviation:"SFG-UCVR---",fixed_wing:"SFG-UCVF---",medevac_aviation:"SFG-UCVR---",
+uav:"SFG-UCVR---",air_defense:"SFG-UCD----",sam:"SFG-UCDS---",
+engineer:"SFG-UCE----",combat_engineer:"SFG-UCE----",bridging:"SFG-UCEC---",
+headquarters:"SFG-UCI----",signal:"SFGPUUS----",military_intelligence:"SFGPUUM----",
+electronic_warfare:"SFG-UUMSE--",cyber:"SFG-UUMSE--",
+sustainment:"SFG-US-----",combat_service_support:"SFG-US-----",medical:"SFG-USM----",
+maintenance:"SFG-USX----",transportation:"SFG-UST----",supply:"SFG-USS----",ordnance:"SFG-USSL---",
+special_forces:"SFG-UCFS---",ranger:"SFG-UCFS---",civil_affairs:"SFF-GCA----",psyop:"SFG-USMP---",
+chemical:"SFG-UUA----"
+};
+const AFF_CHAR={friendly:"F",hostile:"H",neutral:"N",unknown:"U"};
+const ECH_CHAR={team:"A",squad:"B",section:"C",platoon:"D",company:"E",battalion:"F",regiment:"G",brigade:"H",division:"I",corps:"J",army:"K",army_group:"L",theater:"M",command:"N"};
+const _msCache={};
+function buildSIDC(type,aff,ech,isHQ){
+var base=SIDC_MAP[type];if(!base)return null;
+var ac=AFF_CHAR[aff||"friendly"]||"F";
+/* Set affiliation char at position 1 */
+var sidc=base[0]+ac+base.substring(2);
+/* Set echelon at position 11 (pad to 15 chars) */
+while(sidc.length<15)sidc+="-";
+var ec=ech?ECH_CHAR[ech]||"-":"-";
+sidc=sidc.substring(0,11)+ec+sidc.substring(12);
+/* HQ: set position 10 to A */
+if(isHQ)sidc=sidc.substring(0,10)+"A"+sidc.substring(11);
+return sidc;
+}
+function getMSImage(sidc,sz,opts){
+if(!_MS)return null;
+var key=sidc+"|"+sz+(opts?"|"+JSON.stringify(opts):"");
+if(_msCache[key])return _msCache[key];
+try{
+var symOpts=Object.assign({size:sz},opts||{});
+var sym=new _MS.Symbol(sidc,symOpts);
+var url=sym.toDataURL();
+var img=new Image();
+var anchor=sym.getAnchor();var size=sym.getSize();
+var entry={img:img,anchor:anchor,size:size,ready:false};
+_msCache[key]=entry;
+img.onload=function(){entry.ready=true};
+img.src=url;
+/* data: URLs decode synchronously in most browsers */
+if(img.complete)entry.ready=true;
+return entry;
+}catch(e){return null}
+}
+function clearMSCache(){for(var k in _msCache)delete _msCache[k]}
+
+
 const OVERLAY_TYPES=[{id:"none",label:"Basic"},{id:"pl",label:"Phase Line"},{id:"ld",label:"Line of Departure"},{id:"boundary",label:"Boundary"},{id:"aa",label:"Assembly Area"},{id:"axis",label:"Axis of Advance"},{id:"route",label:"Route"}];
 
 
@@ -177,7 +274,22 @@ roles:{},/* peerId -> {role:"blufor"|"opfor"|"observer", name:""} */
 myRole:null,/* for peers: assigned role */
 layerRoles:{},/* layerId -> "blufor"|"opfor"|"gm"|"all" */
 orders:[],/* {id,peerId,role,type:"move"|"fire"|"draw",data:{},status:"pending"|"approved"|"denied"} */
-turnNumber:1,turnLog:[]}},uiScale:parseFloat(localStorage.getItem("tacmap-uiscale")||"1.0"),iconSize:localStorage.getItem("tacmap-iconsize")||"medium",_overrides:JSON.parse(localStorage.getItem("tacmap-overrides")||'{}'),_mapTool:null,_measurePoints:[],_measureArea:[],_hoveredPtIdx:null,_hoveredPtGid:null};
+turnNumber:1,turnLog:[]},
+/* ── EMCON / Field Mode ── */
+_emcon:{enabled:false,tier:0,/* 0=inactive,1=silent,2=BLE,3=localWiFi,4=full */
+tierLabels:["Off","Tier 1 — Silent","Tier 2 — BLE Only","Tier 3 — Local WiFi","Tier 4 — Full"],
+tierColors:["#888","#ff4444","#4a9eff","#ffd700","#44cc44"],
+hostPolicy:null,/* {tier:N, geofences:[...], syncWindow:{duration,interval}} — pushed from host */
+geofences:[],/* [{id,name,lat,lon,radiusM,tier,active}] */
+currentGeofence:null,/* id of geofence device is inside */
+manualOverride:null,/* user can go MORE restrictive: tier number or null */
+deviceInfo:{platform:"unknown",cellularCapable:false,userAgent:""},
+gpsPos:null,/* {lat,lon,accuracy,timestamp} */
+gpsWatchId:null,
+complianceStatus:"unknown",/* "compliant"|"non-compliant"|"unknown"|"checking" */
+complianceDetail:"",
+auditLog:[],/* [{ts,event,tier,detail,deviceInfo}] */
+syncWindows:{enabled:false,durationSec:30,intervalSec:900,nextWindowTs:null,windowActive:false}}},uiScale:parseFloat(localStorage.getItem("tacmap-uiscale")||"1.0"),iconSize:localStorage.getItem("tacmap-iconsize")||"medium",_overrides:JSON.parse(localStorage.getItem("tacmap-overrides")||'{}'),_mapTool:null,_measurePoints:[],_measureArea:[],_hoveredPtIdx:null,_hoveredPtGid:null};
 
 function latlonToPixel(lat,lon,zoom){const s=Math.pow(2,zoom)*TILE_SIZE;return{x:((lon+180)/360)*s,y:(0.5-Math.log((1+Math.sin(lat*DEG))/(1-Math.sin(lat*DEG)))/(4*Math.PI))*s}}
 function pixelToLatlon(px,py,zoom){const s=Math.pow(2,zoom)*TILE_SIZE,n=Math.PI-2*Math.PI*py/s;return{lat:(180/Math.PI)*Math.atan(.5*(Math.exp(n)-Math.exp(-n))),lon:(px/s)*360-180}}
@@ -208,6 +320,8 @@ if(S._isPanning){_gridFade=0}
 if(S.showGrid){if(_gridFade<1){ctx.save();ctx.globalAlpha=_gridFade*S.gridOpacity/Math.max(0.01,S.gridOpacity);drawGrid();ctx.restore();_gridFade=Math.min(1,_gridFade+0.2);requestRender()}else{drawGrid()}}}
 var _renderT0=performance.now();
 drawGraphics();capturePreviewBg();drawUnits();drawWargameOrders();drawMapTools();drawDrawPreview();drawFreehandPreview();
+/* EMCON geofences + GPS position */
+if(typeof emconRenderGeofences==="function")emconRenderGeofences(ctx,S.zoom);
 var _renderDt=performance.now()-_renderT0;if(_renderDt>40)S._perfDecimate=true;else if(_renderDt<15)S._perfDecimate=false}
 /* Capture map background behind selected unit for live preview (before units drawn) */
 let _previewBgData=null;
@@ -349,7 +463,36 @@ function drawLLGrid(){const d=devicePixelRatio||1,W=canvas.width,H=canvas.height
 
 // === part_04_units.js ===
 
-function drawUnitIcon(c2,u,cx,cy,sz){const sc=sz/SVG_W;c2.save();c2.translate(cx,cy);if(u.rotation)c2.rotate(u.rotation*DEG);c2.translate(-sz/2,-sz/2);c2.scale(sc,sc);const a=AFFILIATIONS[u.affiliation||"friendly"],col=a.color,sw=4,hw=FRAME_W/2,hh=FRAME_H/2;/* UAV/drone uses house-shaped (pentagon) frame per MIL-STD-2525 equipment */const _isUAV=u.isEquipment&&u.type==="uav";const _cr=Math.max(hw,hh)+U*.1;const B=_isUAV?(CY+hh):a.shape==="circle"?CY+_cr:a.shape==="diamond"?CY+(hh+U*.6):CY+hh;if(u.isHQ){c2.beginPath();c2.moveTo(CX,B);c2.lineTo(CX,SVG_H-U*.5);c2.strokeStyle="#000";c2.lineWidth=sw;c2.stroke()}/* Frame */c2.fillStyle=a.fill;c2.strokeStyle="#000";c2.lineWidth=sw;if(_isUAV){/* House/pentagon frame for drones */const hx=hw*.85,hy=hh+U*.2;const peakY=CY-hy-U*1.0;c2.beginPath();c2.moveTo(CX,peakY);c2.lineTo(CX+hx,CY-hy*.3);c2.lineTo(CX+hx,CY+hy);c2.lineTo(CX-hx,CY+hy);c2.lineTo(CX-hx,CY-hy*.3);c2.closePath();c2.fill();c2.stroke()}else switch(a.shape){case"circle":{const cr=_cr;c2.beginPath();c2.arc(CX,CY,cr,0,Math.PI*2);c2.fill();c2.stroke();break}case"rect":c2.beginPath();c2.rect(CX-hw,CY-hh,FRAME_W,FRAME_H);c2.fill();c2.stroke();break;case"diamond":{const dx=hw+U*.6,dy=hh+U*.6;c2.beginPath();c2.moveTo(CX,CY-dy);c2.lineTo(CX+dx,CY);c2.lineTo(CX,CY+dy);c2.lineTo(CX-dx,CY);c2.closePath();c2.fill();c2.stroke();break}case"square":{const sq=Math.max(hw,hh)+U*.2;c2.beginPath();c2.rect(CX-sq,CY-sq,sq*2,sq*2);c2.fill();c2.stroke();break}case"quatrefoil":{const r=hh*.55;c2.beginPath();c2.moveTo(CX,CY-hh-U*.3);c2.bezierCurveTo(CX+r,CY-hh-U*.3,CX+hw+U*.3,CY-r,CX+hw+U*.3,CY);c2.bezierCurveTo(CX+hw+U*.3,CY+r,CX+r,CY+hh+U*.3,CX,CY+hh+U*.3);c2.bezierCurveTo(CX-r,CY+hh+U*.3,CX-hw-U*.3,CY+r,CX-hw-U*.3,CY);c2.bezierCurveTo(CX-hw-U*.3,CY-r,CX-r,CY-hh-U*.3,CX,CY-hh-U*.3);c2.closePath();c2.fill();c2.stroke();break}}/* Interior bounds */var ihw=hw,ihh=hh;if(_isUAV){ihw=hw*.65;ihh=hh*.65}else switch(a.shape){case"circle":{ihw=_cr*.68;ihh=_cr*.68;break}case"diamond":ihw=hw*.58;ihh=hh*.58;break;case"square":{const sq=Math.max(hw,hh)+U*.2;ihw=sq*.7;ihh=sq*.7;break}case"quatrefoil":ihw=hw*.6;ihh=hh*.6;break}/* Icon interior — clip to frame so custom icons don't bleed outside */c2.save();c2.beginPath();if(_isUAV){const _hx=hw*.85,_hy=hh+U*.2;const _peakY=CY-_hy-U*1.0;c2.moveTo(CX,_peakY);c2.lineTo(CX+_hx,CY-_hy*.3);c2.lineTo(CX+_hx,CY+_hy);c2.lineTo(CX-_hx,CY+_hy);c2.lineTo(CX-_hx,CY-_hy*.3);c2.closePath()}else switch(a.shape){case"circle":{c2.arc(CX,CY,_cr,0,Math.PI*2);break}case"rect":c2.rect(CX-hw,CY-hh,FRAME_W,FRAME_H);break;case"diamond":{const _dx=hw+U*.6,_dy=hh+U*.6;c2.moveTo(CX,CY-_dy);c2.lineTo(CX+_dx,CY);c2.lineTo(CX,CY+_dy);c2.lineTo(CX-_dx,CY);c2.closePath();break}case"square":{const _sq=Math.max(hw,hh)+U*.2;c2.rect(CX-_sq,CY-_sq,_sq*2,_sq*2);break}case"quatrefoil":{const _r=hh*.55;c2.moveTo(CX,CY-hh-U*.3);c2.bezierCurveTo(CX+_r,CY-hh-U*.3,CX+hw+U*.3,CY-_r,CX+hw+U*.3,CY);c2.bezierCurveTo(CX+hw+U*.3,CY+_r,CX+_r,CY+hh+U*.3,CX,CY+hh+U*.3);c2.bezierCurveTo(CX-_r,CY+hh+U*.3,CX-hw-U*.3,CY+_r,CX-hw-U*.3,CY);c2.bezierCurveTo(CX-hw-U*.3,CY-_r,CX-_r,CY-hh-U*.3,CX,CY-hh-U*.3);c2.closePath();break}}c2.clip();c2.strokeStyle="#000";c2.fillStyle="#000";c2.lineWidth=3;drawTS(c2,u.type,CX,CY,hw,hh);c2.restore();if(u.echelon)drawEch(c2,u.echelon,u.affiliation,u.type,u.isEquipment);if(u.modifiers&&u.modifiers.length)drawMods(c2,u.modifiers);/* Text labels outside frame — hide when icon is small */var _dpr=devicePixelRatio||1;if(S.showLabels&&sz/_dpr>60){c2.fillStyle="#000";c2.font=`bold ${U*2.0}px serif`;const textX=_isUAV?(hw*.85):a.shape==="circle"?_cr*0.72:hw;if(u.designation){c2.textAlign="right";c2.textBaseline="alphabetic";c2.fillText(u.designation,CX-textX-U*.3,B)}if(u.parentUnit){c2.textAlign="left";c2.textBaseline="alphabetic";c2.fillText(u.parentUnit,CX+textX+U*.3,B)}}c2.restore()}
+function drawUnitIcon(c2,u,cx,cy,sz){
+/* milsymbol path: build SIDC, render cached image, draw centered */
+if(_MS&&!u.customIcon&&!u.displayMode&&u.type!=="waypoint"&&u.type!=="blank"&&u.type!=="_custom"){
+var sidc=buildSIDC(u.type,u.affiliation,u.echelon,u.isHQ||u.type==="headquarters");
+if(sidc){
+var _dpr=devicePixelRatio||1;
+var msOpts={};
+var _showLbl=typeof S!=="undefined"&&S.showLabels&&(sz/_dpr)>60;
+if(_showLbl&&u.designation)msOpts.uniqueDesignation=u.designation;
+if(_showLbl&&u.parentUnit)msOpts.higherFormation=u.parentUnit;
+if(_showLbl&&u.dtg)msOpts.dtg=u.dtg;
+if(_showLbl&&u.typeEquip)msOpts.type=u.typeEquip;
+if(_showLbl&&u.speed)msOpts.speed=u.speed;
+if(_showLbl&&u.staffComments)msOpts.staffComments=u.staffComments;
+if(_showLbl&&u.additionalInfo)msOpts.additionalInformation=u.additionalInfo;
+if(_showLbl){var _rr="";if((u.modifiers||[]).includes("reinforced"))_rr+="+";if((u.modifiers||[]).includes("reduced"))_rr+="-";if(_rr)msOpts.reinforcedReduced=_rr}
+var cached=getMSImage(sidc,Math.round(sz*0.8),msOpts);
+if(cached&&cached.ready&&cached.img.complete){
+c2.save();
+if(u.rotation){c2.translate(cx,cy);c2.rotate(u.rotation*DEG);c2.translate(-cx,-cy)}
+c2.drawImage(cached.img,cx-cached.anchor.x,cy-cached.anchor.y);
+c2.restore();
+return;
+}
+}
+}
+/* Fallback to legacy renderer */
+_drawUnitIcon_legacy(c2,u,cx,cy,sz);
+}
+function _drawUnitIcon_legacy(c2,u,cx,cy,sz){const sc=sz/SVG_W;c2.save();c2.translate(cx,cy);if(u.rotation)c2.rotate(u.rotation*DEG);c2.translate(-sz/2,-sz/2);c2.scale(sc,sc);const a=AFFILIATIONS[u.affiliation||"friendly"],col=a.color,sw=4,hw=FRAME_W/2,hh=FRAME_H/2;/* UAV/drone uses house-shaped (pentagon) frame per MIL-STD-2525 equipment */const _isUAV=u.isEquipment&&u.type==="uav";const _cr=Math.max(hw,hh)+U*.1;const B=_isUAV?(CY+hh):a.shape==="circle"?CY+_cr:a.shape==="diamond"?CY+(hh+U*.6):CY+hh;if(u.isHQ){c2.beginPath();c2.moveTo(CX,B);c2.lineTo(CX,SVG_H-U*.5);c2.strokeStyle="#000";c2.lineWidth=sw;c2.stroke()}/* Frame */c2.fillStyle=a.fill;c2.strokeStyle="#000";c2.lineWidth=sw;if(_isUAV){/* House/pentagon frame for drones */const hx=hw*.85,hy=hh+U*.2;const peakY=CY-hy-U*1.0;c2.beginPath();c2.moveTo(CX,peakY);c2.lineTo(CX+hx,CY-hy*.3);c2.lineTo(CX+hx,CY+hy);c2.lineTo(CX-hx,CY+hy);c2.lineTo(CX-hx,CY-hy*.3);c2.closePath();c2.fill();c2.stroke()}else switch(a.shape){case"circle":{const cr=_cr;c2.beginPath();c2.arc(CX,CY,cr,0,Math.PI*2);c2.fill();c2.stroke();break}case"rect":c2.beginPath();c2.rect(CX-hw,CY-hh,FRAME_W,FRAME_H);c2.fill();c2.stroke();break;case"diamond":{const dx=hw+U*.6,dy=hh+U*.6;c2.beginPath();c2.moveTo(CX,CY-dy);c2.lineTo(CX+dx,CY);c2.lineTo(CX,CY+dy);c2.lineTo(CX-dx,CY);c2.closePath();c2.fill();c2.stroke();break}case"square":{const sq=Math.max(hw,hh)+U*.2;c2.beginPath();c2.rect(CX-sq,CY-sq,sq*2,sq*2);c2.fill();c2.stroke();break}case"quatrefoil":{const r=hh*.55;c2.beginPath();c2.moveTo(CX,CY-hh-U*.3);c2.bezierCurveTo(CX+r,CY-hh-U*.3,CX+hw+U*.3,CY-r,CX+hw+U*.3,CY);c2.bezierCurveTo(CX+hw+U*.3,CY+r,CX+r,CY+hh+U*.3,CX,CY+hh+U*.3);c2.bezierCurveTo(CX-r,CY+hh+U*.3,CX-hw-U*.3,CY+r,CX-hw-U*.3,CY);c2.bezierCurveTo(CX-hw-U*.3,CY-r,CX-r,CY-hh-U*.3,CX,CY-hh-U*.3);c2.closePath();c2.fill();c2.stroke();break}}/* Interior bounds */var ihw=hw,ihh=hh;if(_isUAV){ihw=hw*.65;ihh=hh*.65}else switch(a.shape){case"circle":{ihw=_cr*.68;ihh=_cr*.68;break}case"diamond":ihw=hw*.58;ihh=hh*.58;break;case"square":{const sq=Math.max(hw,hh)+U*.2;ihw=sq*.7;ihh=sq*.7;break}case"quatrefoil":ihw=hw*.6;ihh=hh*.6;break}/* Icon interior — clip to frame so custom icons don't bleed outside */c2.save();c2.beginPath();if(_isUAV){const _hx=hw*.85,_hy=hh+U*.2;const _peakY=CY-_hy-U*1.0;c2.moveTo(CX,_peakY);c2.lineTo(CX+_hx,CY-_hy*.3);c2.lineTo(CX+_hx,CY+_hy);c2.lineTo(CX-_hx,CY+_hy);c2.lineTo(CX-_hx,CY-_hy*.3);c2.closePath()}else switch(a.shape){case"circle":{c2.arc(CX,CY,_cr,0,Math.PI*2);break}case"rect":c2.rect(CX-hw,CY-hh,FRAME_W,FRAME_H);break;case"diamond":{const _dx=hw+U*.6,_dy=hh+U*.6;c2.moveTo(CX,CY-_dy);c2.lineTo(CX+_dx,CY);c2.lineTo(CX,CY+_dy);c2.lineTo(CX-_dx,CY);c2.closePath();break}case"square":{const _sq=Math.max(hw,hh)+U*.2;c2.rect(CX-_sq,CY-_sq,_sq*2,_sq*2);break}case"quatrefoil":{const _r=hh*.55;c2.moveTo(CX,CY-hh-U*.3);c2.bezierCurveTo(CX+_r,CY-hh-U*.3,CX+hw+U*.3,CY-_r,CX+hw+U*.3,CY);c2.bezierCurveTo(CX+hw+U*.3,CY+_r,CX+_r,CY+hh+U*.3,CX,CY+hh+U*.3);c2.bezierCurveTo(CX-_r,CY+hh+U*.3,CX-hw-U*.3,CY+_r,CX-hw-U*.3,CY);c2.bezierCurveTo(CX-hw-U*.3,CY-_r,CX-_r,CY-hh-U*.3,CX,CY-hh-U*.3);c2.closePath();break}}c2.clip();c2.strokeStyle="#000";c2.fillStyle="#000";c2.lineWidth=3;drawTS(c2,u.type,CX,CY,hw,hh);c2.restore();if(u.echelon)drawEch(c2,u.echelon,u.affiliation,u.type,u.isEquipment);if(u.modifiers&&u.modifiers.length)drawMods(c2,u.modifiers);/* Text labels outside frame — hide when icon is small */var _dpr=devicePixelRatio||1;if(S.showLabels&&sz/_dpr>60){c2.fillStyle="#000";c2.font=`bold ${U*2.0}px serif`;const textX=_isUAV?(hw*.85):a.shape==="circle"?_cr*0.72:hw;if(u.designation){c2.textAlign="right";c2.textBaseline="alphabetic";c2.fillText(u.designation,CX-textX-U*.3,B)}if(u.parentUnit){c2.textAlign="left";c2.textBaseline="alphabetic";c2.fillText(u.parentUnit,CX+textX+U*.3,B)}}c2.restore()}
 function _drawTrefoil(c2,cx,cy,r,hh){
 /* Aviation: two inverted triangles on vertical axis + horizontal lobes — compact */
 var hw=r/.7;
@@ -1124,6 +1267,14 @@ if(!onHandle){for(let i=0;i<g.points.length;i++){const sp=latlonToScreen(g.point
       label=parts.join(" \u2022 ");
     }
     tt.textContent=label;
+    /* Wargame: append current phase tasks */
+    if(S._operation&&S._operation.wargameActive){
+      var wt=getUnitWargameTasks(hit.id);
+      if(wt&&wt.tasks.length){
+        var taskTxt=wt.tasks.map(function(t){return t.label+': '+((t.text||'').substring(0,60)+(t.text.length>60?'...':''))}).join(' | ');
+        tt.textContent=label+' \u2014 '+wt.phase+': '+taskTxt;
+      }
+    }
     tt.style.display="block";tt.style.left=(e.clientX+12)+"px";tt.style.top=(e.clientY-28)+"px";
     canvas.style.cursor="pointer";
   }else{if(tt)tt.style.display="none";canvas.style.cursor=""}}}
@@ -1216,6 +1367,12 @@ if(S._wargameOrderPending&&moved<10){
     if(mb2){var cBtn2=mb2.querySelector(".done");if(cBtn2)cBtn2.classList.add("ready")}
   }
   requestRender();return}
+
+/* GPS dot tap — center map on GPS position */
+if(S._net._emcon._gpsScreenPos&&S._net._emcon.gpsPos&&!S._mapTool&&!S._drawMode&&!S._placementMode&&moved<15){
+  var _gp=S._net._emcon._gpsScreenPos;
+  if(Math.hypot(pos.x-_gp.x,pos.y-_gp.y)<Math.max(_gp.r,25)){
+    smoothPanTo(S._net._emcon.gpsPos.lat,S._net._emcon.gpsPos.lon,600);return}}
 
 /* Map tools */
 if(S._mapTool&&moved<10){const ll=screenToLatlon(pos.x,pos.y);
@@ -1331,6 +1488,10 @@ function renderFloatingPanel(){
         if(_e("net-turn-user"))_e("net-turn-user").onchange=function(){if(!S._turnServer)S._turnServer={};S._turnServer.user=this.value;localStorage.setItem("sm_turnServer",JSON.stringify(S._turnServer))};
         if(_e("net-turn-pass"))_e("net-turn-pass").onchange=function(){if(!S._turnServer)S._turnServer={};S._turnServer.pass=this.value;localStorage.setItem("sm_turnServer",JSON.stringify(S._turnServer))};
         var _pr=_e("net-persist-room");if(_pr)_pr.onclick=function(){if(this.checked){S._net.persistentRoom=S._net.roomCode;IO.autosave();IO.notify("Room "+S._net.roomCode+" will auto-host on next load","success")}else{S._net.persistentRoom=null;IO.autosave();IO.notify("Persistent room cleared")}renderFloatingPanel()};
+        /* EMCON event bindings */
+        var _swToggle=_e("emcon-syncwin");if(_swToggle)_swToggle.onchange=function(){S._net._emcon.syncWindows.enabled=this.checked;if(typeof emconBroadcastPolicy==="function")emconBroadcastPolicy();renderFloatingPanel()};
+        var _swDur=_e("emcon-sw-dur");if(_swDur)_swDur.onchange=function(){S._net._emcon.syncWindows.durationSec=parseInt(this.value)||30;if(typeof emconBroadcastPolicy==="function")emconBroadcastPolicy()};
+        var _swInt=_e("emcon-sw-int");if(_swInt)_swInt.onchange=function(){S._net._emcon.syncWindows.intervalSec=parseInt(this.value)||900;if(typeof emconBroadcastPolicy==="function")emconBroadcastPolicy()};
       })();
       break;
     case"chat":title.textContent="Chat";body.innerHTML=renderChat();break;
@@ -1338,8 +1499,7 @@ function renderFloatingPanel(){
     case"graphics":title.textContent="Add / Draw";body.innerHTML=renderGraphicsPanel();break;
     case"addunit":title.textContent="Add / Draw";body.innerHTML=renderAddUnitPanel();break;
     case"maptools":title.textContent="Map Tools";body.innerHTML=renderMapToolsPanel();break;
-    case"ipb":title.textContent="IPB Wizard";body.innerHTML=renderIPBPanel();break;
-    case"syncmat":title.textContent="SyncMat";body.innerHTML=renderSyncMatPanel();
+    case"ops":title.textContent="Operations";body.innerHTML=renderOpsPanel();
       (function(){
         var _wgToggle=document.getElementById('op-wargame');
         if(_wgToggle)_wgToggle.onchange=function(){if(S._operation){S._operation.wargameActive=this.checked;IO.autosave();renderFloatingPanel()}};
@@ -1415,118 +1575,135 @@ function renderComms(){
     h+='</div>';
   }
   if(n.mode==="offline"){
-    var _step=S._commsStep||"role";
-    var _ss=S._signalServer||{};var _ssOn=!!S._signalServer;
-    var _ts=S._turnServer||{};
-    var _bk='<div style="margin-top:8px"><button class="btn" onclick="S._commsStep=null;renderFloatingPanel()" style="font-size:10px;padding:3px 8px">\u2190 Back</button></div>';
+    /* ── SIMPLIFIED HOST / JOIN ── */
+    var _joinErr=S._commsJoinError||null;
+    var _showFallback=!!_joinErr;
+    var _showAdvanced=!!S._commsShowAdvanced;
 
-    if(_step==="role"){
-      /* Choose role */
-      h+='<div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">';
-      h+='<button class="btn primary" style="padding:14px;font-size:13px;font-weight:600" onclick="S._commsStep=\'server\';S._commsRole=\'host\';renderFloatingPanel()">\u25B6 Host a Room</button>';
-      h+='<button class="btn" style="padding:14px;font-size:13px;font-weight:600" onclick="S._commsStep=\'server\';S._commsRole=\'join\';renderFloatingPanel()">\u2192 Join a Room</button>';
+    if(!_showFallback){
+      /* Main two-button entry */
+      h+='<div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">';
+      h+='<button class="btn primary" style="padding:14px;font-size:13px;font-weight:600" onclick="netCreateRoom()">\u25B6 Host a Room</button>';
+      h+='<div style="position:relative">';
+      h+='<div style="display:flex;gap:4px;align-items:stretch">';
+      h+='<input type="text" id="net-code" placeholder="Room code" maxlength="6" value="'+escAttr(n.roomCode||"")+'" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" style="flex:1;margin:0;font-size:13px;padding:12px 10px;text-align:center;letter-spacing:3px;text-transform:uppercase">';
+      h+='<button class="btn" style="padding:12px 18px;font-size:13px;font-weight:600;flex-shrink:0" onclick="netJoinRoom()">Join</button>';
+      h+='</div>';
+      h+='</div>';
       h+='</div>';
 
-    } else if(_step==="server"){
-      h+=_bk;
-      h+='<div class="ed-section-title" style="margin-top:8px">SERVER TYPE</div>';
-      h+='<div style="font-size:11px;opacity:.7;margin-bottom:10px">How should devices find each other?</div>';
-      h+='<div style="display:flex;flex-direction:column;gap:8px">';
-      h+='<button class="btn'+(! _ssOn?' primary':'')+'" style="padding:12px;text-align:left" onclick="S._signalServer=null;localStorage.setItem(\'sm_signalServer\',null);S._commsStep=\'go\';renderFloatingPanel()"><strong>Default Cloud</strong><br><span style=\"font-size:10px;opacity:.7\">Works anywhere with internet. No setup needed.</span></button>';
-      h+='<button class="btn'+(_ssOn?' primary':'')+'" style="padding:12px;text-align:left" onclick="if(!S._signalServer)S._signalServer={host:\'\',port:9000,secure:false};localStorage.setItem(\'sm_signalServer\',JSON.stringify(S._signalServer));S._commsStep=\'host\';renderFloatingPanel()"><strong>Custom Server</strong><br><span style=\"font-size:10px;opacity:.7\">Use your own signal server on a local network.</span></button>';
-      h+='</div>';
-
-    } else if(_step==="host"){
-      h+=_bk;
-      h+='<div class="ed-section-title" style="margin-top:8px">SERVER ADDRESS</div>';
-      h+='<div style="font-size:11px;opacity:.7;margin-bottom:6px">Enter the IP address or hostname of your signal server. Get this from whoever set up the server.</div>';
-      h+='<label>Host</label><input type="text" id="net-sig-host" value="'+escAttr(_ss.host||'')+'" placeholder="e.g. 192.168.1.100">';
-      h+='<div style="display:flex;justify-content:flex-end;margin-top:4px"><button class="btn primary" onclick="S._commsStep=\'port\';renderFloatingPanel()">Next \u2192</button></div>';
-
-    } else if(_step==="port"){
-      h+=_bk;
-      h+='<div class="ed-section-title" style="margin-top:8px">SERVER PORT</div>';
-      h+='<div style="font-size:11px;opacity:.7;margin-bottom:6px">Default is 9000. If you don\'t know, leave it as-is.</div>';
-      h+='<label>Port</label><input type="number" id="net-sig-port" value="'+(_ss.port||9000)+'" placeholder="9000">';
-      h+='<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px">';
-      h+='<button class="btn" onclick="S._commsStep=\'turn\';renderFloatingPanel()">Next \u2192</button>';
-      h+='</div>';
-
-    } else if(_step==="turn"){
-      h+=_bk;
-      h+='<div class="ed-section-title" style="margin-top:8px">TURN RELAY</div>';
-      h+='<div style="font-size:11px;opacity:.7;margin-bottom:10px">A TURN relay helps connections work across firewalls. Most local networks don\'t need one. If unsure, skip this.</div>';
-      h+='<div style="display:flex;flex-direction:column;gap:8px">';
-      h+='<button class="btn primary" style="padding:10px" onclick="S._commsStep=\'go\';renderFloatingPanel()">Skip — I don\'t need TURN</button>';
-      h+='<button class="btn" style="padding:10px" onclick="S._commsStep=\'turnconfig\';renderFloatingPanel()">Configure TURN relay</button>';
-      h+='</div>';
-
-    } else if(_step==="turnconfig"){
-      h+=_bk;
-      h+='<div class="ed-section-title" style="margin-top:8px">TURN RELAY SETTINGS</div>';
-      h+='<div style="font-size:11px;opacity:.7;margin-bottom:6px">Get these from your server admin. If your TURN server runs on the same machine as your signal server, use the same host.</div>';
-      h+='<label>Host</label><input type="text" id="net-turn-host" value="'+escAttr(_ts.host||'')+'" placeholder="Same as signal server">';
-      h+='<label>Port</label><input type="number" id="net-turn-port" value="'+(_ts.port||3478)+'" placeholder="3478">';
-      h+='<label>Username</label><input type="text" id="net-turn-user" value="'+escAttr(_ts.user||'')+'" placeholder="staffmaps">';
-      h+='<label>Password</label><input type="password" id="net-turn-pass" value="'+escAttr(_ts.pass||'')+'" placeholder="staffmaps">';
-      h+='<div style="display:flex;justify-content:flex-end;margin-top:4px"><button class="btn primary" onclick="S._commsStep=\'go\';renderFloatingPanel()">Next \u2192</button></div>';
-
-    } else if(_step==="diagApply"){
-      h+=_bk;
-      /* Config summary */
-      var _csOn=S._signalServer&&S._signalServer.host&&S._signalServer.host.trim();
-      var _ctOn=S._turnServer&&S._turnServer.host&&S._turnServer.host.trim();
-      h+='<div style="background:rgba(74,158,255,.08);border:1px solid rgba(74,158,255,.2);border-radius:6px;padding:8px;margin-bottom:12px;font-size:10px">';
-      h+='<div style="font-weight:600;margin-bottom:4px;font-size:11px">✅ Optimized Settings</div>';
-      h+='<div style="opacity:.8">Signal: '+(_csOn?escHtml(S._signalServer.host):'PeerJS Cloud')+'</div>';
-      h+='<div style="opacity:.8">TURN: '+(_ctOn?escHtml(S._turnServer.host)+':'+S._turnServer.port:'None')+'</div>';
-      h+='<div style="opacity:.8">STUN: Google + OpenRelay</div>';
-      h+='</div>';
-      /* Host / Join choice */
-      h+='<div style="display:flex;flex-direction:column;gap:8px">';
-      h+='<button class="btn primary" style="padding:14px;font-size:13px;font-weight:600" onclick="S._commsRole=\'host\';S._commsStep=\'go\';renderFloatingPanel()">\u25B6 Host a Room</button>';
-      h+='<button class="btn" style="padding:14px;font-size:13px;font-weight:600" onclick="S._commsRole=\'join\';S._commsStep=\'go\';renderFloatingPanel()">\u2192 Join a Room</button>';
-      h+='</div>';
-      /* Manual connect fallback link */
-      var rec=window._diagRec;
-      if(rec&&rec.method==='manual'){
-        h+='<div style="margin-top:10px;padding-top:8px;border-top:1px solid #333;font-size:11px;color:#e0a030">⚠️ Signal server unreachable — if room codes fail, use Manual Connect below.</div>';
+      /* Status message */
+      if(n.mode==="connecting"){
+        h+='<div style="margin-top:8px;padding:8px 10px;border-radius:6px;background:rgba(74,158,255,.08);border:1px solid rgba(74,158,255,.2);font-size:11px;color:#4a9eff">\u23F3 '+escHtml(n.status)+'</div>';
+      } else if(n.status&&n.status.indexOf('Error')===0){
+        h+='<div style="margin-top:8px;padding:8px 10px;border-radius:6px;background:rgba(255,68,68,.08);border:1px solid rgba(255,68,68,.2);font-size:11px;color:#ff6666">'+escHtml(n.status)+'</div>';
       }
+    } else {
+      /* ── JOIN FAILED — RANKED FALLBACK ── */
+      h+='<div style="margin-top:8px;padding:10px;border-radius:8px;border:1px solid rgba(255,68,68,.3);background:rgba(255,68,68,.06)">';
+      h+='<div style="font-size:12px;font-weight:700;color:#ff6666;margin-bottom:4px">\u26A0 Connection Failed</div>';
+      h+='<div style="font-size:10px;opacity:.7;margin-bottom:10px">'+escHtml(_joinErr)+'</div>';
 
-    } else if(_step==="go"){
-      h+=_bk;
+      h+='<div style="display:flex;flex-direction:column;gap:6px">';
+      /* 1. Retry */
+      h+='<button class="btn" style="padding:10px;text-align:left;display:flex;align-items:center;gap:10px" onclick="S._commsJoinError=null;netJoinRoom()">';
+      h+='<span style="font-size:18px;flex-shrink:0">\u{1F504}</span>';
+      h+='<div><strong style="font-size:11px">Retry Connection</strong><br><span style="font-size:10px;opacity:.6">Try again with the same room code</span></div>';
+      h+='</button>';
+      /* 2. BLE Bridge */
+      if(_ble.present&&!_ble.connected){
+        h+='<button class="btn" style="padding:10px;text-align:left;display:flex;align-items:center;gap:10px" onclick="window._smConnector&&window._smConnector.connect();S._net._ble.connecting=true;S._commsJoinError=null;renderFloatingPanel()">';
+        h+='<span style="font-size:18px;flex-shrink:0">\u{1F4F6}</span>';
+        h+='<div><strong style="font-size:11px">Connect via BLE</strong><br><span style="font-size:10px;opacity:.6">Bluetooth bridge \u2014 no internet needed</span></div>';
+        h+='</button>';
+      }
+      /* 3. Manual Signaling */
+      h+='<button class="btn" style="padding:10px;text-align:left;display:flex;align-items:center;gap:10px" onclick="S._commsJoinError=null;S._commsShowManual=true;renderFloatingPanel()">';
+      h+='<span style="font-size:18px;flex-shrink:0">\u{1F4CB}</span>';
+      h+='<div><strong style="font-size:11px">Manual Connect</strong><br><span style="font-size:10px;opacity:.6">Copy/paste signaling \u2014 bypasses firewalls</span></div>';
+      h+='</button>';
+      /* 4. Custom Server */
+      h+='<button class="btn" style="padding:10px;text-align:left;display:flex;align-items:center;gap:10px" onclick="S._commsJoinError=null;S._commsShowAdvanced=true;renderFloatingPanel()">';
+      h+='<span style="font-size:18px;flex-shrink:0">\u{1F5A7}</span>';
+      h+='<div><strong style="font-size:11px">Custom Server</strong><br><span style="font-size:10px;opacity:.6">Use a local signal server instead of cloud</span></div>';
+      h+='</button>';
+      h+='</div>';
+      /* Dismiss / try different code */
+      h+='<div style="display:flex;gap:6px;margin-top:8px">';
+      h+='<button class="btn" style="flex:1;font-size:10px" onclick="S._commsJoinError=null;renderFloatingPanel()">\u2190 Back</button>';
+      h+='</div>';
+      h+='</div>';
+    }
+
+    /* ── Manual Connect (expandable) ── */
+    if(S._commsShowManual){
+      h+='<div class="section" style="margin-top:12px"><div class="section-title">Manual Connect</div>';
+      h+='<div style="font-size:10px;opacity:.6;margin-bottom:8px">Same network required. Exchange signaling data via text, email, or any side channel.</div>';
+      h+='<div style="display:flex;gap:4px;margin-bottom:8px">';
+      h+='<button id="mr-host" class="btn" style="flex:1" onclick="netManualRole(\'host\')">I am HOST</button>';
+      h+='<button id="mr-peer" class="btn" style="flex:1" onclick="netManualRole(\'peer\')">I am PEER</button>';
+      h+='</div>';
+      h+='<div id="net-manual-host" style="display:none">';
+      h+='<div style="background:#1e2a1e;border:1px solid #3a5a3a;border-radius:6px;padding:8px;margin-bottom:8px">';
+      h+='<b style="color:#7fc97f">STEP 1 \u2014 Generate offer</b>';
+      h+='<div style="color:#aaa;font-size:9px;margin:4px 0">Click, wait 5s, send copied text to peer via Teams/text.</div>';
+      h+='<button class="btn primary" style="width:100%;margin-bottom:6px" onclick="netManualOffer()">Generate Offer</button>';
+      h+='<textarea id="net-manual-out" readonly placeholder="Offer appears here" style="width:100%;height:50px;font-size:9px;background:#111;color:#eee;border:1px solid #444;border-radius:4px;padding:4px;box-sizing:border-box;resize:none"></textarea>';
+      h+='<div id="net-manual-qr" style="margin-top:6px;display:flex;justify-content:center"></div>';
+      h+='<button class="btn" style="width:100%;margin-top:4px" onclick="netManualCopy()">Copy Again</button>';
+      h+='</div>';
+      h+='<div style="background:#2a1e1e;border:1px solid #5a3a3a;border-radius:6px;padding:8px">';
+      h+='<b style="color:#c97f7f">STEP 2 \u2014 Apply answer</b>';
+      h+='<div style="color:#aaa;font-size:9px;margin:4px 0">Paste answer received from peer, then apply.</div>';
+      h+='<textarea id="net-manual-in2" placeholder="Paste answer from peer..." style="width:100%;height:50px;font-size:9px;background:#111;color:#eee;border:1px solid #444;border-radius:4px;padding:4px;box-sizing:border-box;resize:none;margin-bottom:4px"></textarea>';
+      h+='<button class="btn primary" style="width:100%" onclick="netManualApply()">Apply Answer</button>';
+      h+='</div>';
+      h+='</div>';
+      h+='<div id="net-manual-peer" style="display:none">';
+      h+='<div style="background:#1e1e2a;border:1px solid #3a3a5a;border-radius:6px;padding:8px">';
+      h+='<b style="color:#7f9fc9">YOUR STEP \u2014 Respond to host</b>';
+      h+='<div style="color:#aaa;font-size:9px;margin:4px 0">Paste offer, generate answer, send it back to host.</div>';
+      h+='<textarea id="net-manual-in" placeholder="Paste offer from host..." style="width:100%;height:50px;font-size:9px;background:#111;color:#eee;border:1px solid #444;border-radius:4px;padding:4px;box-sizing:border-box;resize:none;margin-bottom:4px"></textarea>';
+      h+='<button class="btn primary" style="width:100%" onclick="netManualAnswer()">Generate Answer &amp; Copy</button>';
+      h+='</div>';
+      h+='</div>';
+      h+='<button class="btn" style="width:100%;margin-top:6px;font-size:10px" onclick="S._commsShowManual=false;renderFloatingPanel()">\u2190 Hide Manual Connect</button>';
+      h+='</div>';
+    }
+
+    /* ── Advanced / Custom Server (collapsible) ── */
+    h+='<div style="margin-top:12px;border-top:1px solid var(--border);padding-top:8px">';
+    h+='<div style="font-size:10px;cursor:pointer;opacity:.5" onclick="S._commsShowAdvanced=!S._commsShowAdvanced;renderFloatingPanel()">'+(_showAdvanced?'\u25BC':'\u25B6')+' Advanced Settings</div>';
+    if(_showAdvanced){
+      var _ss=S._signalServer||{};var _ssOn=!!S._signalServer;
+      var _ts=S._turnServer||{};
+      h+='<div style="margin-top:8px">';
+      /* Signal Server */
+      h+='<div class="toggle-row" style="margin-bottom:6px"><span style="font-size:11px">Custom Signal Server</span><label class="switch"><input type="checkbox" id="net-custom-sig"'+(_ssOn?' checked':'')+'><span class="slider"></span></label></div>';
       if(_ssOn){
-        h+='<div style="font-size:10px;opacity:.5;margin-bottom:8px">Server: '+escHtml(_ss.host||"cloud")+':'+(_ss.port||9000)+'</div>';
-      } else {
-        h+='<div style="font-size:10px;opacity:.5;margin-bottom:8px">Using default PeerJS cloud</div>';
+        h+='<label>Host</label><input type="text" id="net-sig-host" value="'+escAttr(_ss.host||'')+'" placeholder="e.g. 192.168.1.100">';
+        h+='<label>Port</label><input type="number" id="net-sig-port" value="'+(_ss.port||9000)+'" placeholder="9000">';
       }
-      if(S._commsRole==="host"){
-        h+='<div class="ed-section-title">CREATE ROOM</div>';
-        h+='<button class="btn primary" style="width:100%;padding:14px;font-size:13px;font-weight:600" onclick="netCreateRoom()">Create Room</button>';
-      } else {
-        h+='<div class="ed-section-title">JOIN ROOM</div>';
-        h+='<div style="font-size:11px;opacity:.7;margin-bottom:6px">Enter the 6-character room code from the host.</div>';
-        h+='<div class="row" style="align-items:stretch"><input type="text" id="net-code" placeholder="Room code" maxlength="6" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" style="flex:2;margin-bottom:0"><button class="btn primary" onclick="netJoinRoom()" style="min-height:0;align-self:stretch">Join</button></div>';
-        if(n.mode==="connecting"){h+='<div style="margin-top:6px;padding:6px 8px;border-radius:6px;background:rgba(74,158,255,.08);border:1px solid rgba(74,158,255,.2);font-size:11px;color:#4a9eff">⏳ '+escHtml(n.status)+'</div>';}
-        else if(n.status&&n.status.indexOf('Error')===0){h+='<div style="margin-top:6px;padding:6px 8px;border-radius:6px;background:rgba(255,68,68,.08);border:1px solid rgba(255,68,68,.2);font-size:11px;color:#ff6666">'+escHtml(n.status)+'</div>';}
-      }
-      /* TURN server settings — collapsible */
-      var _hasTurn=S._turnServer&&S._turnServer.host&&S._turnServer.host.trim();
-      h+='<div style="margin-top:12px;border-top:1px solid #333;padding-top:8px">';
-      h+='<div style="font-size:11px;cursor:pointer;color:#aaa" onclick="S._showTurnSettings=!S._showTurnSettings;renderFloatingPanel()">'+(!S._showTurnSettings?'▶':'▼')+' TURN Relay'+(_hasTurn?' <span style="color:#40e060">(auto-configured)</span>':'')+'</div>';
+      /* TURN Server */
+      var _hasTurn=_ts.host&&_ts.host.trim();
+      h+='<div style="font-size:10px;cursor:pointer;opacity:.5;margin-top:8px" onclick="S._showTurnSettings=!S._showTurnSettings;renderFloatingPanel()">'+(!S._showTurnSettings?'\u25B6':'\u25BC')+' TURN Relay'+(_hasTurn?' <span style="color:#40e060">(configured)</span>':'')+'</div>';
       if(S._showTurnSettings){
-        h+='<div style="font-size:10px;opacity:.6;margin:6px 0">Auto-configured with free public relay. Override below only if using your own TURN server.</div>';
-        h+='<label>Host</label><input type="text" id="net-turn-host" value="'+escAttr(_ts.host||'')+'" placeholder="e.g. 192.168.1.100 or turn.example.com">';
+        h+='<div style="font-size:10px;opacity:.5;margin:6px 0">Override public relay with your own TURN server.</div>';
+        h+='<label>Host</label><input type="text" id="net-turn-host" value="'+escAttr(_ts.host||'')+'" placeholder="e.g. 192.168.1.100">';
         h+='<label>Port</label><input type="number" id="net-turn-port" value="'+(_ts.port||3478)+'" placeholder="3478">';
         h+='<label>Username</label><input type="text" id="net-turn-user" value="'+escAttr(_ts.user||'')+'" placeholder="staffmaps">';
         h+='<label>Password</label><input type="password" id="net-turn-pass" value="'+escAttr(_ts.pass||'')+'" placeholder="staffmaps">';
         h+='<div style="display:flex;gap:6px;margin-top:4px">';
         if(_hasTurn) h+='<button class="btn" style="font-size:10px;flex:1" onclick="S._turnServer=null;localStorage.removeItem(\'sm_turnServer\');renderFloatingPanel()">Clear</button>';
-        h+='<button class="btn" style="font-size:10px;flex:1" onclick="S._turnServer={host:\'openrelay.metered.ca\',port:443,user:\'openrelayproject\',pass:\'openrelayproject\'};localStorage.setItem(\'sm_turnServer\',JSON.stringify(S._turnServer));renderFloatingPanel();IO.notify(\'Reset to public relay\',\'success\')">Reset to Default</button>';
+        h+='<button class="btn" style="font-size:10px;flex:1" onclick="S._turnServer={host:\'openrelay.metered.ca\',port:443,user:\'openrelayproject\',pass:\'openrelayproject\'};localStorage.setItem(\'sm_turnServer\',JSON.stringify(S._turnServer));renderFloatingPanel();IO.notify(\'Reset to public relay\',\'success\')">Reset Default</button>';
         h+='</div>';
       }
+      /* Diagnostics */
+      h+='<button class="btn" style="width:100%;margin-top:8px;font-size:10px" onclick="netDiag()">Run Diagnostics</button>';
+      h+='<div id="net-diag-out" style="font-size:10px;color:#aaa;min-height:16px;margin-top:4px;max-height:200px;overflow-y:auto"></div>';
       h+='</div>';
     }
+    h+='</div>';
   }
 
 else{
@@ -1848,46 +2025,9 @@ else{
     }
     h+='<div class="row" style="margin-top:8px"><button class="btn danger" onclick="netLeave()">Leave Room</button></div>';
   }
-  h+='<div class="section">';
-  h+='<div class="section-title">Connection Troubleshooting</div>';
-  h+='<div style="font-size:11px;color:#aaa;margin-bottom:8px">If auto-connect fails on restricted networks, use manual signaling below.</div>';
-  h+='<button class="btn" style="width:100%;margin-bottom:6px" onclick="netDiag()">Run Diagnostics</button>';
-  h+='<div id="net-diag-out" style="font-size:10px;color:#aaa;min-height:16px;margin-bottom:6px;max-height:300px;overflow-y:auto"></div>';
-  h+='<button class="btn" style="width:100%;margin-bottom:4px" onclick="netManualToggle()">Manual Connect (Firewall Bypass)</button>';
-  h+='<div id="net-manual" style="display:none;font-size:10px;margin-top:6px">';
-  h+='<div style="color:#aaa;margin-bottom:8px">Same building WiFi required. Pick your role.</div>';
-  h+='<div style="display:flex;gap:4px;margin-bottom:8px">';
-  h+='<button id="mr-host" class="btn" style="flex:1" onclick="netManualRole(\'host\')">I am HOST</button>';
-  h+='<button id="mr-peer" class="btn" style="flex:1" onclick="netManualRole(\'peer\')">I am PEER</button>';
-  h+='</div>';
-  h+='<div id="net-manual-host" style="display:none">';
-  h+='<div style="background:#1e2a1e;border:1px solid #3a5a3a;border-radius:6px;padding:8px;margin-bottom:8px">';
-  h+='<b style="color:#7fc97f">STEP 1 — Generate offer</b>';
-  h+='<div style="color:#aaa;font-size:9px;margin:4px 0">Click, wait 5s, send copied text to peer via Teams/text. Repeat per peer.</div>';
-  h+='<button class="btn primary" style="width:100%;margin-bottom:6px" onclick="netManualOffer()">Generate Offer</button>';
-  h+='<textarea id="net-manual-out" readonly placeholder="Offer appears here — auto-copied" style="width:100%;height:50px;font-size:9px;background:#111;color:#eee;border:1px solid #444;border-radius:4px;padding:4px;box-sizing:border-box;resize:none"></textarea>';
-  h+='<div id="net-manual-qr" style="margin-top:6px;display:flex;justify-content:center"></div>';
-  h+='<button class="btn" style="width:100%;margin-top:4px" onclick="netManualCopy()">Copy Again</button>';
-  h+='</div>';
-  h+='<div style="background:#2a1e1e;border:1px solid #5a3a3a;border-radius:6px;padding:8px">';
-  h+='<b style="color:#c97f7f">STEP 2 — Apply answer</b>';
-  h+='<div style="color:#aaa;font-size:9px;margin:4px 0">Paste answer received from peer, then apply.</div>';
-  h+='<textarea id="net-manual-in2" placeholder="Paste answer from peer..." style="width:100%;height:50px;font-size:9px;background:#111;color:#eee;border:1px solid #444;border-radius:4px;padding:4px;box-sizing:border-box;resize:none;margin-bottom:4px"></textarea>';
-  h+='<button class="btn primary" style="width:100%" onclick="netManualApply()">Apply Answer</button>';
-  h+='</div>';
-  h+='</div>';
-  h+='<div id="net-manual-peer" style="display:none">';
-  h+='<div style="background:#1e1e2a;border:1px solid #3a3a5a;border-radius:6px;padding:8px">';
-  h+='<b style="color:#7f9fc9">YOUR STEP — Respond to host</b>';
-  h+='<div style="color:#aaa;font-size:9px;margin:4px 0">Paste offer, generate answer, send it back to host.</div>';
-  h+='<textarea id="net-manual-in" placeholder="Paste offer from host..." style="width:100%;height:50px;font-size:9px;background:#111;color:#eee;border:1px solid #444;border-radius:4px;padding:4px;box-sizing:border-box;resize:none;margin-bottom:4px"></textarea>';
-  h+='<button class="btn primary" style="width:100%" onclick="netManualAnswer()">Generate Answer &amp; Copy</button>';
-  h+='</div>';
-  h+='</div>';
-  h+='</div>';
-  h+='</div>';
-
-    h+='<div class="section"><div class="section-title">Encryption</div>';
+  /* ── EMCON / Field Mode Section ── */
+  if(typeof renderEmconSection==="function")h+=renderEmconSection();
+  h+='<div class="section"><div class="section-title">Encryption</div>';
   h+='<div class="toggle-row"><span>Encrypt</span><label class="switch"><input type="checkbox" id="net-enc"'+(n.encEnabled?" checked":"")+'><span class="slider"></span></label></div>';
   h+='<div id="enc-fields" style="'+(n.encEnabled?'':'display:none')+'">';
   h+='<label>Passphrase</label><input type="password" id="net-pass" value="'+(n.passphrase||"")+'" placeholder="Passphrase">';
@@ -1992,7 +2132,12 @@ function renderLayers(){
       h+='<div style="display:flex;align-items:center;gap:4px;padding:5px 6px;background:rgba(74,158,255,.06);cursor:pointer" onclick="toggleImportGroupCollapse(\''+ig.id+'\')">';
       h+='<span style="font-size:10px;opacity:.6;transition:transform .15s;transform:rotate('+(ig.collapsed?'0':'90')+'deg)">\u25b6</span>';
       h+='<span style="font-size:10px;opacity:.5">\ud83d\udcc1</span>';
-      h+='<span style="font-size:11px;font-weight:700;flex:1;color:var(--accent)">'+escHtml(ig.name)+'</span>';
+      if(S._renamingIGId===ig.id){
+        h+='<input type="text" value="'+escAttr(ig.name)+'" id="ig-rename-'+ig.id+'" onclick="event.stopPropagation()" onblur="commitIGRename(\''+ig.id+'\')" onkeydown="if(event.key===\'Enter\')commitIGRename(\''+ig.id+'\')" style="flex:1;background:var(--btn-bg);color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:2px 4px;font-size:11px;font-weight:700;font-family:var(--font);min-width:0">';
+      }else{
+        h+='<span style="font-size:11px;font-weight:700;flex:1;color:var(--accent)" ondblclick="event.stopPropagation();startIGRename(\''+ig.id+'\')">'+escHtml(ig.name)+'</span>';
+        h+='<span style="cursor:pointer;font-size:14px;opacity:.5;padding:2px 3px" onclick="event.stopPropagation();startIGRename(\''+ig.id+'\')" title="Rename">\u270e</span>';
+      }
       h+='<span style="font-size:9px;opacity:.4">('+igObjCount+')</span>';
       /* Import group visibility toggle */
       var igVis=igPkgs.every(function(pkg){return pkg.layerIds.every(function(lid){var l=S.layers.find(function(x){return x.id===lid});return l&&l.visible})});
@@ -2025,7 +2170,12 @@ function renderPackageItem(pkg,inRoom){
   h+='<div style="margin-bottom:3px;border:1px solid rgba(255,255,255,.08);border-radius:5px;overflow:hidden;margin-left:4px">';
   h+='<div style="display:flex;align-items:center;gap:4px;padding:3px 6px;background:rgba(255,255,255,.03);cursor:pointer" onclick="togglePackageCollapse(\''+pkg.id+'\')">';
   h+='<span style="font-size:9px;opacity:.5;transition:transform .15s;transform:rotate('+(pkg.collapsed?'0':'90')+'deg)">\u25b6</span>';
-  h+='<span style="font-size:10px;font-weight:600;flex:1">'+escHtml(pkg.name)+'</span>';
+  if(S._renamingPkgId===pkg.id){
+    h+='<input type="text" value="'+escAttr(pkg.name)+'" id="pkg-rename-'+pkg.id+'" onclick="event.stopPropagation()" onblur="commitPkgRename(\''+pkg.id+'\')" onkeydown="if(event.key===\'Enter\')commitPkgRename(\''+pkg.id+'\')" style="flex:1;background:var(--btn-bg);color:var(--fg);border:1px solid var(--accent);border-radius:3px;padding:2px 4px;font-size:10px;font-weight:600;font-family:var(--font);min-width:0">';
+  }else{
+    h+='<span style="font-size:10px;font-weight:600;flex:1" ondblclick="event.stopPropagation();startPkgRename(\''+pkg.id+'\')">'+escHtml(pkg.name)+'</span>';
+    h+='<span style="cursor:pointer;font-size:12px;opacity:.4;padding:2px 3px" onclick="event.stopPropagation();startPkgRename(\''+pkg.id+'\')" title="Rename">\u270e</span>';
+  }
   h+='<span style="font-size:9px;opacity:.4">('+pkgObjCount+')</span>';
   var pkgVis=pkgLayers.every(l=>l.visible);
   h+='<span style="cursor:pointer;font-size:14px;opacity:.6;padding:2px 3px" onclick="event.stopPropagation();togglePackageVis(\''+pkg.id+'\')">'+(pkgVis?"\ud83d\udc41":"\ud83d\udc41\u200d\ud83d\udde8")+'</span>';
@@ -2156,6 +2306,29 @@ function renderMapToolsPanel(){
   h+=`<button class="btn${S._mapTool==='distance'?' primary':''}" onclick="activateMapTool('distance');togglePanel(null)" style="flex:1;min-width:70px">📏 Dist [M]</button>`;
   h+=`<button class="btn${S._mapTool==='area'?' primary':''}" onclick="activateMapTool('area');togglePanel(null)" style="flex:1;min-width:70px">📐 Area [A]</button>`;
   h+='</div></div>';
+  /* ── Set My Position ── */
+  h+='<div class="section"><div class="section-title">My Position</div>';
+  var _em=S._net._emcon;
+  if(_em.gpsPos){
+    var _myMgrs=toMGRS(_em.gpsPos.lat,_em.gpsPos.lon);
+    var _src=_em._gpsManual?"Manual":"GPS";
+    h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;padding:6px 8px;border-radius:4px;border:1px solid rgba(0,170,255,.25);background:rgba(0,170,255,.06)">';
+    h+='<span style="font-size:18px">\u{1F4CD}</span>';
+    h+='<div style="flex:1;min-width:0"><div style="font-size:11px;font-weight:600">'+_myMgrs+'</div>';
+    h+='<div style="font-size:9px;opacity:.5">'+_src+(_em.gpsPos.accuracy?' • ±'+Math.round(_em.gpsPos.accuracy)+'m':'')+'</div></div>';
+    h+='<button class="btn" style="font-size:10px;padding:3px 8px;flex-shrink:0" onclick="emconCenterOnSelf()">Center</button>';
+    h+='</div>';
+  } else {
+    var statusMsg={"denied":"GPS denied","unavailable":"GPS unavailable","no_hardware":"No GPS","requesting":"Requesting GPS...","off":"GPS off"}[_em._gpsStatus||"off"]||"No position set";
+    h+='<div style="font-size:10px;opacity:.6;margin-bottom:6px">'+statusMsg+'</div>';
+  }
+  h+='<div style="display:flex;gap:4px;align-items:stretch">';
+  h+='<input type="text" id="manual-pos-input" placeholder="MGRS or lat,lon" autocomplete="off" autocorrect="off" spellcheck="false" style="flex:1;margin:0;font-size:10px">';
+  h+='<button class="btn primary" onclick="emconSetManualPosition()" style="margin:0;white-space:nowrap;font-size:10px">Set</button>';
+  h+='</div>';
+  h+='<div style="font-size:9px;opacity:.4;margin-top:3px">Manually set your position from a known grid</div>';
+  h+='<button class="btn" onclick="emconSetPositionFromCenter()" style="width:100%;margin-top:4px;font-size:10px">\u{1F5FA}\uFE0F Use Map Center as My Position</button>';
+  h+='</div>';
   /* Active measurement data */
   if(S._measurePoints.length>=2){
     h+='<div class="section"><div class="section-title">Distance Measurement</div>';
@@ -2176,6 +2349,226 @@ function renderMapToolsPanel(){
   return h}
 
 /* ── IPB Wizard ── */
+/* ── Unified Operations Panel ── */
+function renderOpsPanel(){
+  var op=S._operation;
+  var tab=S._opsTab||"syncmat";
+  var h='';
+
+  /* If no operation, show the create prompt (from SyncMat) */
+  if(!op){
+    h+='<div style="text-align:center;padding:20px 10px">';
+    h+='<div style="font-size:13px;font-weight:600;margin-bottom:8px">No Operation Active</div>';
+    h+='<div style="font-size:11px;opacity:.6;margin-bottom:12px;line-height:1.5">An Operation is the container for your planning process — IPB products, synchronization matrix, phases, and wargame data.</div>';
+    var hasExisting=S.units.length||S.graphics.length;
+    if(hasExisting)h+='<div style="font-size:10px;color:var(--accent);margin-bottom:12px;padding:6px;border:1px solid rgba(74,158,255,.3);border-radius:4px">'+S.units.length+' units and '+S.graphics.length+' graphics on the map will be absorbed into this Operation.</div>';
+    h+='<input type="text" id="op-name" placeholder="Operation Name (e.g., OPN IRON FURY)" style="width:100%;margin-bottom:6px">';
+    h+='<input type="text" id="op-unit" placeholder="Unit Designation (e.g., V16, 1/6)" style="width:100%;margin-bottom:6px">';
+    h+='<input type="text" id="op-coa" placeholder="COA Name (e.g., COA 3)" style="width:100%;margin-bottom:12px">';
+    h+='<button class="btn primary" style="width:100%;padding:12px;font-size:13px" onclick="createOpFromUI()">Create Operation</button>';
+    h+='</div>';
+    return h;
+  }
+
+  /* Operation header — compact */
+  h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;padding:6px 8px;border-radius:6px;background:rgba(74,158,255,.08);border:1px solid rgba(74,158,255,.15)">';
+  h+='<div style="flex:1;min-width:0"><span style="font-weight:700;font-size:11px">'+escHtml(op.name)+'</span>';
+  if(op.unitDesignation)h+=' <span style="opacity:.5;font-size:9px">'+escHtml(op.unitDesignation)+'</span>';
+  if(op.coaName)h+=' <span style="opacity:.5;font-size:9px">\u2014 '+escHtml(op.coaName)+'</span>';
+  h+='</div>';
+  h+='<button class="btn" style="font-size:8px;padding:1px 5px;min-height:18px;flex-shrink:0" onclick="S._opShowSettings=!S._opShowSettings;renderFloatingPanel()">\u2699</button>';
+  h+='</div>';
+  if(S._opShowSettings){
+    h+='<div style="margin-bottom:8px;padding:6px;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.02)">';
+    h+='<input type="text" id="op-edit-name" value="'+escAttr(op.name)+'" placeholder="Operation Name" style="width:100%;margin-bottom:4px;font-size:10px" onchange="S._operation.name=this.value;IO.autosave();renderFloatingPanel()">';
+    h+='<div style="display:flex;gap:4px;margin-bottom:4px"><input type="text" id="op-edit-unit" value="'+escAttr(op.unitDesignation)+'" placeholder="Unit Designation" style="flex:1;font-size:10px" onchange="S._operation.unitDesignation=this.value;IO.autosave()"><input type="text" id="op-edit-coa" value="'+escAttr(op.coaName)+'" placeholder="COA" style="flex:1;font-size:10px" onchange="S._operation.coaName=this.value;IO.autosave()"></div>';
+    h+='<div style="display:flex;gap:4px;font-size:9px;opacity:.5;margin-bottom:4px"><span>'+S.units.length+' units</span><span>'+S.graphics.length+' graphics</span><span>'+S.layers.length+' layers</span><span>'+op.phases.length+' phases</span></div>';
+    h+='<div style="display:flex;gap:4px"><button class="btn" style="font-size:9px;flex:1" onclick="exportSyncMatXLSX()">Export SyncMat</button><button class="btn" style="font-size:9px;flex:1" onclick="exportWargameJournal()">Export Journal</button></div>';
+    h+='<button class="btn danger" style="font-size:9px;width:100%;margin-top:4px" onclick="if(confirm(\'Delete operation? Units and layers remain, but syncmat, IPB, and wargame data will be lost.\')){S._operation=null;S._ipb=null;IO.autosave();renderFloatingPanel()}">Delete Operation</button>';
+    h+='</div>';
+  }
+
+  /* Tab bar */
+  h+='<div style="display:flex;gap:2px;margin-bottom:8px">';
+  var tabs=[["ipb","IPB"],["syncmat","SyncMat"],["journal","Journal"]];
+  tabs.forEach(function(t){
+    var active=tab===t[0];
+    var badge="";
+    if(t[0]==="ipb"&&S._ipb){
+      var done=0;for(var s=1;s<=4;s++)if(ipbStepComplete(s))done++;
+      badge=' <span style="font-size:8px;opacity:.5">'+done+'/4</span>';
+    }
+    if(t[0]==="journal"&&op.wargameJournal&&op.wargameJournal.length){
+      badge=' <span style="font-size:8px;opacity:.5">'+op.wargameJournal.length+'</span>';
+    }
+    h+='<button class="btn'+(active?' primary':'')+'" style="flex:1;font-size:10px;padding:6px 4px" onclick="S._opsTab=\''+t[0]+'\';renderFloatingPanel()">'+t[1]+badge+'</button>';
+  });
+  h+='</div>';
+
+  /* Tab content */
+  if(tab==="ipb"){
+    h+=renderIPBPanel();
+  } else if(tab==="syncmat"){
+    h+=renderSyncMatInner();
+  } else if(tab==="journal"){
+    if(op.wargameJournal&&op.wargameJournal.length||op.wargameActive){
+      h+=renderWargameJournalSection();
+    } else {
+      h+='<div style="text-align:center;padding:16px;opacity:.5;font-size:11px">No journal entries yet. Enable Wargame Mode to begin recording.</div>';
+    }
+    h+='<div class="toggle-row" style="margin-top:8px"><label class="switch"><input type="checkbox" id="op-wargame"'+(op.wargameActive?' checked':'')+'><span class="slider"></span></label><span style="font-size:11px;'+(op.wargameActive?'color:#ff6644;font-weight:600':'')+'">Wargame Mode'+(op.wargameActive?' (ACTIVE)':'')+'</span></div>';
+  }
+
+  return h;
+}
+
+/* Inner SyncMat render (without op creation / header — those are in renderOpsPanel now) */
+function renderSyncMatInner(){
+  var op=S._operation;if(!op)return'';
+  var h='';
+
+  /* Wargame mode toggle */
+  h+='<div class="toggle-row" style="margin-bottom:6px"><label class="switch"><input type="checkbox" id="op-wargame"'+(op.wargameActive?' checked':'')+'><span class="slider"></span></label><span style="font-size:11px;'+(op.wargameActive?'color:#ff6644;font-weight:600':'')+'">Wargame'+(op.wargameActive?' (ACTIVE)':'')+'</span></div>';
+
+  /* Phase tabs */
+  h+='<div style="margin-bottom:8px">';
+  h+='<div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;flex-wrap:wrap">';
+  h+='<span style="font-size:10px;font-weight:600;opacity:.6">PHASES:</span>';
+  op.phases.forEach(function(ph,i){
+    var isActive=S._opActivePhase===ph.id;
+    h+='<button class="btn'+(isActive?' primary':'')+'" style="font-size:9px;padding:2px 8px;min-height:22px" onclick="S._opActivePhase=\''+ph.id+'\';renderFloatingPanel()">'+escHtml(ph.name)+'</button>';
+  });
+  h+='<button class="btn" style="font-size:9px;padding:2px 6px;min-height:22px;opacity:.6" onclick="opAddPhaseUI()">+</button>';
+  h+='</div>';
+  
+  /* Phase metadata */
+  var activePh=op.phases.find(function(p){return p.id===S._opActivePhase});
+  if(activePh&&S._opShowPhaseMeta){
+    h+='<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:6px;font-size:10px">';
+    h+='<div style="display:flex;gap:4px;margin-bottom:3px"><label style="width:60px;opacity:.5">Name</label><input type="text" value="'+escAttr(activePh.name)+'" style="flex:1;font-size:10px;padding:2px 4px" onchange="opEditPhase(\''+activePh.id+'\',\'name\',this.value)"></div>';
+    h+='<div style="display:flex;gap:4px;margin-bottom:3px"><label style="width:60px;opacity:.5">Description</label><input type="text" value="'+escAttr(activePh.description)+'" style="flex:1;font-size:10px;padding:2px 4px" onchange="opEditPhase(\''+activePh.id+'\',\'description\',this.value)"></div>';
+    h+='<div style="display:flex;gap:4px;margin-bottom:3px"><label style="width:60px;opacity:.5">Begins</label><input type="text" value="'+escAttr(activePh.beginsWith)+'" style="flex:1;font-size:10px;padding:2px 4px" onchange="opEditPhase(\''+activePh.id+'\',\'beginsWith\',this.value)"></div>';
+    h+='<div style="display:flex;gap:4px;margin-bottom:3px"><label style="width:60px;opacity:.5">Ends</label><input type="text" value="'+escAttr(activePh.endsWith)+'" style="flex:1;font-size:10px;padding:2px 4px" onchange="opEditPhase(\''+activePh.id+'\',\'endsWith\',this.value)"></div>';
+    h+='<div style="display:flex;gap:4px;margin-bottom:3px"><label style="width:60px;opacity:.5">Timeline</label><input type="text" value="'+escAttr(activePh.timeline)+'" style="flex:1;font-size:10px;padding:2px 4px" onchange="opEditPhase(\''+activePh.id+'\',\'timeline\',this.value)"></div>';
+    h+='<button class="btn danger" style="font-size:9px;margin-top:2px" onclick="if(confirm(\'Remove this phase?\')){opRemovePhase(\''+activePh.id+'\');S._opActivePhase=null;renderFloatingPanel()}">Remove Phase</button>';
+    h+='</div>';
+  }
+  if(activePh){
+    h+='<button class="btn" style="font-size:9px;padding:1px 6px;min-height:18px;opacity:.5" onclick="S._opShowPhaseMeta=!S._opShowPhaseMeta;renderFloatingPanel()">'+(S._opShowPhaseMeta?'\u25BC':'\u25B6')+' Phase Details</button>';
+  }
+  h+='</div>';
+
+  /* SyncMat table */
+  if(op.phases.length===0){
+    h+='<div style="text-align:center;padding:16px;opacity:.5;font-size:11px">Add a phase to begin building the SyncMat.</div>';
+    return h;
+  }
+
+  h+='<div style="display:flex;justify-content:flex-end;margin-bottom:4px"><button class="btn" onclick="openSyncMatFullscreen()" style="font-size:9px;padding:2px 8px;opacity:.6" title="Expand to fullscreen"><svg viewBox="0 0 16 16" width="12" height="12" style="vertical-align:middle;margin-right:3px;stroke:currentColor;fill:none;stroke-width:2"><polyline points="10,2 14,2 14,6"/><polyline points="6,14 2,14 2,10"/><line x1="14" y1="2" x2="9" y2="7"/><line x1="2" y1="14" x2="7" y2="9"/></svg>Expand</button></div>';
+  h+=_renderSyncMatTable(op);
+  return h;
+}
+
+/* ── Shared SyncMat table renderer ── */
+function _smtRowLabel(row){
+  var h='';
+  /* Mini unit icon if linked */
+  if(row.unitId){
+    var u=S.units.find(function(u){return u.id===row.unitId});
+    if(u){
+      var affil=u.affiliation||"friendly";
+      var iconCol=affil==="hostile"?"#ff4444":affil==="neutral"?"#44cc44":"#4a9eff";
+      h+='<span style="display:inline-block;width:12px;height:9px;border:1.5px solid '+iconCol+';border-radius:1px;vertical-align:middle;margin-right:3px;position:relative;top:-1px" title="'+escAttr(u.designation||u.name||u.type)+'"></span>';
+    }
+  }
+  h+=escHtml(row.label);
+  return h;
+}
+function _smtCell(row,ph,op){
+  var key=row.id+"_"+ph.id,task=op.phaseTasks[key],txt=task?task.text:"",additions=task?task.wargameAdditions:[],status=op.phaseReviewStatus[key]||"";
+  var cs="padding:3px 5px;border:1px solid rgba(255,255,255,.1);vertical-align:top;font-size:9px;cursor:pointer;max-width:180px;word-wrap:break-word";
+  if(status==="unreviewed")cs+=";background:rgba(255,165,0,.08);border-left:2px solid rgba(255,165,0,.4)";
+  var h='<td style="'+cs+'" onclick="opEditCell(\''+row.id+'\',\''+ph.id+'\')" title="Click to edit">';
+  if(txt)h+='<div style="white-space:pre-wrap;line-height:1.3">'+escHtml(txt).replace(/\n/g,'<br>')+'</div>';
+  additions.forEach(function(a){h+='<div style="color:#ff4444;white-space:pre-wrap;line-height:1.3;margin-top:2px;border-top:1px solid rgba(255,68,68,.2);padding-top:2px">'+escHtml(a.text).replace(/\n/g,'<br>')+'</div>';});
+  if(!txt&&additions.length===0)h+='<span style="opacity:.2">\u2014</span>';
+  if(status==="unreviewed")h+='<div style="margin-top:2px"><button class="btn" style="font-size:7px;padding:1px 4px;min-height:14px;opacity:.6" onclick="event.stopPropagation();opConfirmNoChange(\''+row.id+'\',\''+ph.id+'\');renderFloatingPanel()">\u2713 No Change</button></div>';
+  h+='</td>';return h;
+}
+
+function _renderSyncMatTable(op){
+  var h='',nPh=op.phases.length;
+  var _wL={};WFF_SECTIONS.forEach(function(w){_wL[w.id]={abbr:w.abbr||w.name.substring(0,4).toUpperCase(),type:w.type||"wff"}});
+  h+='<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -10px;padding:0 10px">';
+  h+='<table style="width:100%;border-collapse:collapse;font-size:10px;min-width:'+(120+nPh*160)+'px">';
+  h+='<thead><tr style="background:rgba(255,255,255,.06)">';
+  h+='<th style="text-align:center;padding:4px 3px;font-size:8px;width:32px;border:1px solid rgba(255,255,255,.1)">WFF</th>';
+  h+='<th style="text-align:left;padding:4px 6px;font-size:9px;width:70px;border:1px solid rgba(255,255,255,.1)">Element</th>';
+  op.phases.forEach(function(ph){
+    h+='<th style="text-align:center;padding:4px 6px;font-size:9px;border:1px solid rgba(255,255,255,.1);min-width:140px">'+escHtml(ph.name);
+    if(ph.timeline)h+='<br><span style="opacity:.5;font-weight:400">'+escHtml(ph.timeline)+'</span>';
+    h+='</th>';
+  });
+  h+='</tr></thead><tbody>';
+
+  op.wffSections.forEach(function(sec){
+    var m=_wL[sec.id]||{abbr:(sec.name||"").substring(0,4).toUpperCase(),type:sec.type||"wff"};
+    var rc=Math.max(1,sec.rows.length);
+
+    /* ── Header: full-width section divider ── */
+    if(m.type==="header"){
+      h+='<tr><td colspan="'+(2+nPh)+'" style="padding:6px 8px;font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:1px;background:rgba(74,158,255,.08);border:1px solid rgba(255,255,255,.1);color:var(--accent)">'+escHtml(sec.name)+'</td></tr>';
+      if(sec.rows.length===0){
+        h+='<tr><td colspan="'+(2+nPh)+'" style="padding:3px 8px;border:1px solid rgba(255,255,255,.1);opacity:.3;font-style:italic;font-size:9px"><span style="cursor:pointer" onclick="opAddRowUI(\''+sec.id+'\')">+ Add row</span></td></tr>';
+      } else {
+        sec.rows.forEach(function(row){
+          h+='<tr><td colspan="2" style="padding:3px 5px;border:1px solid rgba(255,255,255,.1);font-weight:600;font-size:9px">'+escHtml(row.label);
+          h+='<span style="cursor:pointer;opacity:.3;margin-left:2px;font-size:8px" onclick="opRemoveRow(\''+sec.id+'\',\''+row.id+'\');renderFloatingPanel()" title="Remove">\u2715</span></td>';
+          op.phases.forEach(function(ph){h+=_smtCell(row,ph,op);});
+          h+='</tr>';
+        });
+        h+='<tr><td colspan="'+(2+nPh)+'" style="border:none;padding:1px 8px"><span style="cursor:pointer;opacity:.3;font-size:8px" onclick="opAddRowUI(\''+sec.id+'\')">+ Add row</span></td></tr>';
+      }
+      return;
+    }
+
+    /* ── Standalone: spans WFF+Element, distinct style ── */
+    if(m.type==="standalone"){
+      h+='<tr><td colspan="2" rowspan="'+rc+'" style="vertical-align:middle;text-align:center;font-weight:700;font-size:9px;padding:4px 6px;border:1px solid rgba(255,255,255,.1);background:rgba(255,170,0,.08);color:#ffaa00">'+escHtml(sec.name)+'</td>';
+      if(sec.rows.length===0){
+        h+='<td colspan="'+nPh+'" style="padding:4px 6px;border:1px solid rgba(255,255,255,.1);opacity:.3;font-style:italic;font-size:9px"><span style="cursor:pointer" onclick="opAddRowUI(\''+sec.id+'\')">+ Add row</span></td></tr>';
+      } else {
+        sec.rows.forEach(function(row,ri){
+          if(ri>0)h+='<tr>';
+          op.phases.forEach(function(ph){h+=_smtCell(row,ph,op);});
+          h+='</tr>';
+        });
+        h+='<tr><td colspan="'+(2+nPh)+'" style="border:none;padding:1px 5px"><span style="cursor:pointer;opacity:.3;font-size:8px" onclick="opAddRowUI(\''+sec.id+'\')">+ Add row</span></td></tr>';
+      }
+      return;
+    }
+
+    /* ── WFF: abbreviation label + element + phase cells ── */
+    h+='<tr style="background:rgba(255,255,255,.04)">';
+    h+='<td rowspan="'+rc+'" style="vertical-align:middle;text-align:center;font-weight:700;font-size:8px;padding:3px 2px;border:1px solid rgba(255,255,255,.1);background:rgba(128,128,128,.15);width:32px;max-width:32px;line-height:1.1" title="'+escAttr(sec.name)+'">'+escHtml(m.abbr)+'</td>';
+    if(sec.rows.length===0){
+      h+='<td style="padding:4px 6px;border:1px solid rgba(255,255,255,.1);opacity:.3;font-style:italic" colspan="'+(1+nPh)+'"><span style="cursor:pointer" onclick="opAddRowUI(\''+sec.id+'\')">+ Add row</span></td></tr>';
+    } else {
+      sec.rows.forEach(function(row,ri){
+        if(ri>0)h+='<tr>';
+        h+='<td style="padding:3px 5px;border:1px solid rgba(255,255,255,.1);font-weight:600;white-space:nowrap;font-size:9px">'+escHtml(row.label);
+        h+='<span style="cursor:pointer;opacity:.3;margin-left:2px;font-size:8px" onclick="opRemoveRow(\''+sec.id+'\',\''+row.id+'\');renderFloatingPanel()" title="Remove">\u2715</span></td>';
+        op.phases.forEach(function(ph){h+=_smtCell(row,ph,op);});
+        h+='</tr>';
+      });
+    }
+    h+='<tr><td style="border:none"></td><td colspan="'+(1+nPh)+'" style="border:none;padding:1px 5px"><span style="cursor:pointer;opacity:.3;font-size:8px" onclick="opAddRowUI(\''+sec.id+'\')">+ Add row</span></td></tr>';
+  });
+
+  h+='</tbody></table></div>';
+  return h;
+}
+
 function renderIPBPanel(){
   if(!S._ipb)S._ipb={step:1,assignments:{}};/* assignments: graphicId -> "ao"|"ai"|"aoi"|null */
   var ipb=S._ipb;
@@ -4386,18 +4779,12 @@ function renderEditor(){
   h+='</div></div>';
   h+='<div class="editor-body">';
   if(tab==="icon"){
-    // Preview + designation side by side
-    h+='<div style="display:flex!important;flex-direction:row!important;align-items:flex-start;gap:10px;margin-bottom:8px">';
-    h+='<canvas id="preview-cv" width="120" height="120" style="display:block;width:60px;height:60px;min-width:60px;border:1px solid var(--border);border-radius:4px"></canvas>';
-    h+='<div style="flex:1;min-width:0;overflow:hidden">';
-    h+='<input type="text" id="ed-desig" value="'+escAttr(u.designation||'')+'" placeholder="Designation, e.g. 1-67 AR" class="ed-input" maxlength="50">';
-    h+='<input type="text" id="ed-parent" value="'+escAttr(u.parentUnit||'')+'" placeholder="Higher HQ, e.g. 2 ABCT" class="ed-input" maxlength="50">';
-    h+='</div></div>';
-    // Affiliation
-    h+='<div class="ed-section-title">AFFILIATION</div><div class="ed-btn-row" style="flex-wrap:wrap;overflow:hidden">';
-    for(var k in AFFILIATIONS){var v=AFFILIATIONS[k];var abg=u.affiliation===k?v.fill:'transparent';var afg=u.affiliation===k?'#000':v.fill;h+='<button class="ed-btn'+(u.affiliation===k?' active':'')+'" onclick="editUnit(\''+u.id+'\',{affiliation:\''+k+'\'})" style="background:'+abg+';color:'+afg+';border:1.5px solid '+v.fill+';flex:1 1 22%;min-width:0;overflow:hidden;text-overflow:ellipsis">'+v.label+'</button>'}
+    /* === Affiliation row at top === */
+    h+='<div class="sve-aff-row">';
+    for(var k in AFFILIATIONS){var v=AFFILIATIONS[k];var isA=u.affiliation===k;
+      h+='<button class="sve-aff-btn'+(isA?' active':'')+'" onclick="editUnit(\''+u.id+'\',{affiliation:\''+k+'\'})" style="color:'+v.fill+';'+(isA?'background:rgba('+hexToRGB(v.fill)+',.15);border-bottom-color:'+v.fill:'')+'">'+v.label+'</button>'}
     h+='</div>';
-    /* Waypoint display mode toggle */
+    /* Waypoint special controls */
     if(u.type==="waypoint"){
     h+='<div class="ed-section-title">DISPLAY MODE</div><div class="ed-btn-row">';
     h+='<button class="ed-btn'+(u.displayMode==="pin"?' active':'')+'" onclick="editUnit(\''+u.id+'\',{displayMode:\'pin\'})">📍 Pin</button>';
@@ -4409,38 +4796,75 @@ function renderEditor(){
     pinColors.forEach(function(c){h+='<div style="width:28px;height:28px;border-radius:4px;background:'+c+';cursor:pointer;border:2px solid '+((u.pinColor||"#ff4444")===c?'#fff':'transparent')+'" onclick="editUnit(\''+u.id+'\',{pinColor:\''+c+'\'})"></div>'});
     h+='</div>'}
     }
-    // Echelon
-    h+='<div class="ed-section-title">ECHELON</div><div class="ed-btn-row">';
-    ECHELONS.forEach(function(e){h+='<button class="ed-btn'+(u.echelon===e.id?' active':'')+'" onclick="editUnit(\''+u.id+'\',{echelon:'+(u.echelon===e.id?'null':'\''+e.id+'\'')+'})">'+ e.label+'</button>'});
+    /* === Symbol visual editor grid === */
+    var _hqtf=u.isHQ?"hq":(u.modifiers||[]).includes("task_force")?"tf":"";
+    var _rr=(u.modifiers||[]).includes("reinforced")?"+":(u.modifiers||[]).includes("reduced")?"-":"";
+    if((u.modifiers||[]).includes("reinforced")&&(u.modifiers||[]).includes("reduced"))_rr="+-";
+    var _cap="";["airborne","air_assault","mountain","arctic","amphibious","light","heavy"].forEach(function(m){if((u.modifiers||[]).includes(m))_cap=m});
+    var _mob="";["wheeled","motorized","mechanized"].forEach(function(m){if((u.modifiers||[]).includes(m))_mob=m});
+    h+='<div class="sym-layout">';
+    /* TOP LEFT: DTG */
+    h+='<div class="tl"><div class="sve-f right"><label>DTG (W)</label>';
+    h+='<input type="text" id="sve-dtg" value="'+escAttr(u.dtg||'')+'" placeholder="291400ZFEB" maxlength="20"></div></div>';
+    /* TOP CENTER: echelon */
+    h+='<div class="tc"><select class="sve-ech" id="sve-ech">';
+    h+='<option value="">No Echelon</option>';
+    var echOpts=[["team","⊘ Team/Crew"],["squad","● Squad"],["section","●● Section"],["platoon","●●● Platoon"],["company","⏐ Company"],["battalion","⏐⏐ Battalion"],["regiment","⏐⏐⏐ Regt/Group"],["brigade","✕ Brigade"],["division","✕✕ Division"],["corps","✕✕✕ Corps"],["army","✕✕✕✕ Army"],["army_group","✕✕✕✕✕ Army Grp"],["theater","✕✕✕✕✕✕ Theater"],["command","★ Command"]];
+    echOpts.forEach(function(e){h+='<option value="'+e[0]+'"'+(u.echelon===e[0]?' selected':'')+'>'+e[1]+'</option>'});
+    h+='</select><span style="font-size:6px;opacity:.4;letter-spacing:.5px">ECHELON</span></div>';
+    /* TOP RIGHT: R/R */
+    h+='<div class="tr"><div class="sve-f narrow"><label>R/R (F)</label>';
+    h+='<select id="sve-rr"><option value="">—</option><option value="+"'+((_rr==="+"||_rr==="+-")?' selected':'')+'>(+)</option><option value="-"'+(_rr==="-"?' selected':'')+'>(−)</option><option value="+-"'+(_rr==="+-"?' selected':'')+'>(±)</option></select></div></div>';
+    /* MID LEFT: Sector 1 text fields */
+    h+='<div class="ml">';
+    h+='<div class="sve-f right"><label>Designation (T)</label><input type="text" id="sve-desig" value="'+escAttr(u.designation||'')+'" placeholder="1-67 AR" maxlength="21"></div>';
+    h+='<div class="sve-f right"><label>Type (V)</label><input type="text" id="sve-typev" value="'+escAttr(u.typeEquip||'')+'" placeholder="M1A2" maxlength="21"></div>';
+    h+='<div class="sve-f right"><label>Speed (Z)</label><input type="text" id="sve-speed" value="'+escAttr(u.speed||'')+'" placeholder="" maxlength="10"></div>';
     h+='</div>';
-    // Unit Type - icon grid by category
-    h+='<div class="ed-section-title">UNIT TYPE</div>';
+    /* CENTER: milsymbol preview */
+    h+='<div class="mc"><img id="sve-preview"></div>';
+    /* MID RIGHT: Sector 2 text fields */
+    h+='<div class="mr">';
+    h+='<div class="sve-f"><label>Higher HQ (M)</label><input type="text" id="sve-higher" value="'+escAttr(u.parentUnit||'')+'" placeholder="2 ABCT" maxlength="21"></div>';
+    h+='<div class="sve-f"><label>Comments (G)</label><input type="text" id="sve-comment" value="'+escAttr(u.staffComments||'')+'" placeholder="" maxlength="20"></div>';
+    h+='<div class="sve-f"><label>Add\'l Info (H)</label><input type="text" id="sve-addl" value="'+escAttr(u.additionalInfo||'')+'" placeholder="" maxlength="20"></div>';
+    h+='</div>';
+    /* BOT LEFT: HQ/TF */
+    h+='<div class="bl"><div class="sve-f right"><label>HQ / TF</label>';
+    h+='<select id="sve-hqtf" style="width:78px"><option value="">None</option><option value="hq"'+(_hqtf==="hq"?' selected':'')+'>HQ (Staff)</option><option value="tf"'+(_hqtf==="tf"?' selected':'')+'>Task Force</option><option value="fd">Feint/Dummy</option></select></div></div>';
+    /* BOT CENTER: combat effectiveness */
+    h+='<div class="bc"><div class="sve-f"><label>Cmbt Eff (K)</label>';
+    h+='<select id="sve-combeff" style="width:90px"><option value="">—</option><option value="full"'+(u.combatEff==="full"?' selected':'')+'>Full</option><option value="degraded"'+(u.combatEff==="degraded"?' selected':'')+'>Degraded</option><option value="exhausted"'+(u.combatEff==="exhausted"?' selected':'')+'>Exhausted</option></select></div></div>';
+    /* BOT RIGHT: capability + mobility */
+    h+='<div class="br">';
+    h+='<div class="sve-f"><label>Capability</label><select id="sve-cap" style="width:78px"><option value="">None</option>';
+    [["airborne","Airborne"],["air_assault","Air Assault"],["mountain","Mountain"],["arctic","Arctic"],["amphibious","Amphibious"],["light","Light"],["heavy","Heavy"]].forEach(function(c){h+='<option value="'+c[0]+'"'+(_cap===c[0]?' selected':'')+'>'+c[1]+'</option>'});
+    h+='</select></div>';
+    h+='<div class="sve-f"><label>Mobility</label><select id="sve-mob" style="width:78px"><option value="">None</option>';
+    [["wheeled","Wheeled"],["motorized","Motorized"],["mechanized","Mechanized"]].forEach(function(m){h+='<option value="'+m[0]+'"'+(_mob===m[0]?' selected':'')+'>'+m[1]+'</option>'});
+    h+='</select></div>';
+    h+='</div>';
+    h+='</div>'; /* close sym-layout */
+    /* Hierarchy path */
+    h+='<div class="sve-hier" id="sve-hier"></div>';
+    /* Unit type dropdown */
+    h+='<div class="sve-type-row"><span class="sve-type-label">Unit Type</span><select class="sve-type-sel" id="sve-utype">';
     UNIT_CATEGORIES.forEach(function(cat){
-      h+='<div class="cat-header open" onclick="this.classList.toggle(\'open\');this.nextElementSibling.style.display=this.classList.contains(\'open\')?\'\':\' none\'">'+cat.name+'</div><div class="icon-grid">';
-      cat.types.forEach(function(t){h+='<div class="icon-cell'+(u.type===t.id?' selected':'')+'" onclick="editUnit(\''+u.id+'\',{type:\''+t.id+'\'})" title="'+t.label+'"><canvas width="100" height="100" data-type="'+t.id+'" data-aff="'+u.affiliation+'"></canvas><div class="tooltip">'+t.label+'</div></div>'});
-      h+='</div>'});
-    // Modifiers
-    h+='<div class="ed-section-title">MODIFIERS</div><div class="ed-btn-row">';
-    MODIFIERS.forEach(function(m){h+='<button class="ed-btn'+((u.modifiers||[]).includes(m.id)?' active':'')+'" onclick="toggleMod(\''+u.id+'\',\''+m.id+'\')">'+m.label+'</button>'});
-    h+='<button class="ed-btn'+(u.isHQ?' active':'')+'" onclick="editUnit(\''+u.id+'\',{isHQ:'+(!u.isHQ)+'})">HQ</button>';
-    h+='</div>';
+      h+='<optgroup label="'+cat.name+'">';
+      cat.types.forEach(function(t){h+='<option value="'+t.id+'"'+(u.type===t.id?' selected':'')+'>'+t.label+'</option>'});
+      h+='</optgroup>'});
+    h+='</select></div>';
+    /* Rotation + icon size */
     var rot=Math.round(u.rotation||0);
-    h+='<div class="ed-section-title">ROTATION</div>';
+    h+='<div class="ed-section-title" style="margin-top:8px">ROTATION / SIZE</div>';
     h+='<div style="display:flex;align-items:center;gap:4px;margin-bottom:4px">';
-    h+='<button class="ed-btn" onclick="editUnit(\''+u.id+'\',{rotation:((('+(rot-5)+'%360)+360)%360})" style="padding:2px 7px">&minus;5</button>';
-    h+='<button class="ed-btn" onclick="editUnit(\''+u.id+'\',{rotation:((('+(rot-1)+'%360)+360)%360})" style="padding:2px 7px">&minus;1</button>';
-    h+='<input type="number" id="ed-rotation" value="'+rot+'" min="0" max="359" step="1" class="ed-input" style="width:56px;text-align:center;flex:none">';
-    h+='<button class="ed-btn" onclick="editUnit(\''+u.id+'\',{rotation:(('+(rot+1)+')%360)})" style="padding:2px 7px">+1</button>';
-    h+='<button class="ed-btn" onclick="editUnit(\''+u.id+'\',{rotation:(('+(rot+5)+')%360)})" style="padding:2px 7px">+5</button>';
-    h+='<button class="ed-btn" onclick="editUnit(\''+u.id+'\',{rotation:0})" style="padding:2px 7px">Reset</button>';
-    h+='</div>';
-    // Per-unit icon scale
+    h+='<button class="ed-btn" onclick="editUnit(\''+u.id+'\',{rotation:((('+(rot-5)+'%360)+360)%360})" style="padding:2px 6px">&minus;5</button>';
+    h+='<input type="number" id="ed-rotation" value="'+rot+'" min="0" max="359" step="1" class="ed-input" style="width:48px;text-align:center;flex:none">';
+    h+='<button class="ed-btn" onclick="editUnit(\''+u.id+'\',{rotation:(('+(rot+5)+')%360)})" style="padding:2px 6px">+5</button>';
+    h+='<span style="opacity:.3;margin:0 2px">|</span>';
     var usc=u.iconScale||1;
-    h+='<div class="ed-section-title">ICON SIZE</div>';
-    h+='<div style="display:flex;align-items:center;gap:4px;margin-bottom:4px">';
     h+='<input type="range" id="ed-iconscale" min="0.5" max="3" step="0.1" value="'+usc+'" style="flex:1">';
-    h+='<span id="ed-iconscale-val" style="font-size:10px;min-width:32px;text-align:center">'+Math.round(usc*100)+'%</span>';
-    h+='<button class="ed-btn" onclick="editUnit(\''+u.id+'\',{iconScale:1})" style="padding:2px 7px;font-size:9px">Reset</button>';
+    h+='<span id="ed-iconscale-val" style="font-size:10px;min-width:28px;text-align:center">'+Math.round(usc*100)+'%</span>';
     h+='</div>';
   } else if(tab==="info"){
     h+='<div class="ed-section-title">COORDINATES</div>';
@@ -4607,8 +5031,65 @@ function renderEditor(){
   var newBody2=el.querySelector(".editor-body");if(newBody2)newBody2.scrollTop=scrollTop;}
 
 
+function hexToRGB(hex){var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return r+","+g+","+b}
+function sveUpdatePreview(u){
+  var img=document.getElementById("sve-preview");if(!img||!_MS)return;
+  var sidc=buildSIDC(u.type,u.affiliation,u.echelon,u.isHQ);
+  if(!sidc)return;
+  var opts={size:110};
+  if(u.designation)opts.uniqueDesignation=u.designation;
+  if(u.parentUnit)opts.higherFormation=u.parentUnit;
+  if(u.dtg)opts.dtg=u.dtg;
+  if(u.typeEquip)opts.type=u.typeEquip;
+  if(u.speed)opts.speed=u.speed;
+  if(u.staffComments)opts.staffComments=u.staffComments;
+  if(u.additionalInfo)opts.additionalInformation=u.additionalInfo;
+  var rr="";if((u.modifiers||[]).includes("reinforced"))rr+="+";if((u.modifiers||[]).includes("reduced"))rr+="-";
+  if(rr)opts.reinforcedReduced=rr;
+  try{var sym=new _MS.Symbol(sidc,opts);img.src=sym.toDataURL()}catch(e){}
+}
+function sveBindEvents(u){
+  var el=function(id){return document.getElementById(id)};
+  /* Text fields — update unit + live preview on each keystroke */
+  var textMap=[["sve-desig","designation"],["sve-higher","parentUnit"],["sve-dtg","dtg"],["sve-typev","typeEquip"],["sve-speed","speed"],["sve-comment","staffComments"],["sve-addl","additionalInfo"]];
+  textMap.forEach(function(m){var inp=el(m[0]);if(inp){
+    inp.oninput=function(){var ch={};ch[m[1]]=sanitizeStr(this.value,50);Object.assign(u,ch);clearMSCache();debouncedUnitSync(u);sveUpdatePreview(u);requestRender()};
+  }});
+  /* Echelon dropdown */
+  if(el("sve-ech"))el("sve-ech").onchange=function(){editUnit(u.id,{echelon:this.value||null})};
+  /* Unit type dropdown */
+  if(el("sve-utype"))el("sve-utype").onchange=function(){editUnit(u.id,{type:this.value})};
+  /* R/R dropdown — update modifiers */
+  if(el("sve-rr"))el("sve-rr").onchange=function(){
+    var mods=(u.modifiers||[]).filter(function(m){return m!=="reinforced"&&m!=="reduced"});
+    var v=this.value;
+    if(v==="+"||v==="+-")mods.push("reinforced");
+    if(v==="-"||v==="+-")mods.push("reduced");
+    editUnit(u.id,{modifiers:mods})};
+  /* HQ/TF dropdown */
+  if(el("sve-hqtf"))el("sve-hqtf").onchange=function(){
+    var v=this.value;editUnit(u.id,{isHQ:v==="hq"})};
+  /* Combat effectiveness */
+  if(el("sve-combeff"))el("sve-combeff").onchange=function(){editUnit(u.id,{combatEff:this.value||null})};
+  /* Capability dropdown — update modifiers */
+  if(el("sve-cap"))el("sve-cap").onchange=function(){
+    var caps=["airborne","air_assault","mountain","arctic","amphibious","light","heavy"];
+    var mods=(u.modifiers||[]).filter(function(m){return caps.indexOf(m)===-1});
+    if(this.value)mods.push(this.value);
+    editUnit(u.id,{modifiers:mods})};
+  /* Mobility dropdown — update modifiers */
+  if(el("sve-mob"))el("sve-mob").onchange=function(){
+    var mobs=["wheeled","motorized","mechanized"];
+    var mods=(u.modifiers||[]).filter(function(m){return mobs.indexOf(m)===-1});
+    if(this.value)mods.push(this.value);
+    editUnit(u.id,{modifiers:mods})};
+  /* Render milsymbol preview */
+  sveUpdatePreview(u);
+}
 function bindEditorEvents(u){
   const el=id=>document.getElementById(id);
+  /* Symbol Visual Editor bindings */
+  sveBindEvents(u);
   /* Coordinate editing */
   if(el("ed-mgrs"))el("ed-mgrs").onchange=e=>{
     const ll=parseMGRS(e.target.value);
@@ -4803,6 +5284,10 @@ function toggleLayerVis(id){const l=S.layers.find(x=>x.id===id);if(l){l.visible=
 function removeLayer(id){const l=S.layers.find(x=>x.id===id);const unitCount=S.units.filter(u=>u.layerId===id).length;const gfxCount=S.graphics.filter(g=>g.layerId===id).length;const total=unitCount+gfxCount;const name=l?l.name:id;if(total>0){if(!S._confirmDeleteLayer||S._confirmDeleteLayer!==id){S._confirmDeleteLayer=id;renderFloatingPanel();return}}S._confirmDeleteLayer=null;S.units=S.units.filter(u=>u.layerId!==id);S.graphics=S.graphics.filter(g=>g.layerId!==id);S.layers=S.layers.filter(l=>l.id!==id);/* Remove from packages */S.packages.forEach(p=>{p.layerIds=p.layerIds.filter(lid=>lid!==id)});S.packages=S.packages.filter(p=>p.layerIds.length>0);if(S.layers.length===0){S.layers.push({id:'l'+Date.now(),name:'Layer 1',visible:true,hasErrors:false})}if(S.activeLayerId===id)S.activeLayerId=S.layers[0].id;if(S.selectedUnitId&&!S.units.find(u=>u.id===S.selectedUnitId)){S.selectedUnitId=null;closeEditor()}if(S.selectedGraphicId&&!S.graphics.find(g=>g.id===S.selectedGraphicId)){S.selectedGraphicId=null;closeEditor()}renderFloatingPanel();updateLayerIndicator();requestRender()}
 function startLayerRename(id){S._renamingLayerId=id;renderFloatingPanel();setTimeout(()=>{const inp=document.getElementById("layer-rename-"+id);if(inp){inp.focus();inp.select()}},50)}
 function commitLayerRename(id){const inp=document.getElementById("layer-rename-"+id);if(inp){const l=S.layers.find(x=>x.id===id);if(l){const v=sanitizeStr(inp.value.trim(),INPUT_LIMITS.layerName);if(v)l.name=v}}S._renamingLayerId=null;renderFloatingPanel();updateLayerIndicator()}
+function startPkgRename(id){S._renamingPkgId=id;S._renamingIGId=null;renderFloatingPanel();setTimeout(function(){var inp=document.getElementById("pkg-rename-"+id);if(inp){inp.focus();inp.select()}},50)}
+function commitPkgRename(id){var inp=document.getElementById("pkg-rename-"+id);if(inp){var pkg=S.packages.find(function(p){return p.id===id});if(pkg){var v=sanitizeStr(inp.value.trim(),INPUT_LIMITS.layerName);if(v)pkg.name=v}}S._renamingPkgId=null;renderFloatingPanel()}
+function startIGRename(id){S._renamingIGId=id;S._renamingPkgId=null;renderFloatingPanel();setTimeout(function(){var inp=document.getElementById("ig-rename-"+id);if(inp){inp.focus();inp.select()}},50)}
+function commitIGRename(id){var inp=document.getElementById("ig-rename-"+id);if(inp){var ig=(S.importGroups||[]).find(function(g){return g.id===id});if(ig){var v=sanitizeStr(inp.value.trim(),INPUT_LIMITS.layerName);if(v)ig.name=v}}S._renamingIGId=null;renderFloatingPanel()}
 function moveToLayer(kind,id,newLayerId){if(kind==="unit"){const u=S.units.find(x=>x.id===id);if(u){u.layerId=newLayerId;netBroadcast({type:"unitEdit",unit:u})}}else{const g=S.graphics.find(x=>x.id===id);if(g){g.layerId=newLayerId;netBroadcast({type:"graphicEdit",graphic:g})}}renderFloatingPanel();requestRender()}
 function toggleLayerCollapse(id){const l=S.layers.find(x=>x.id===id);if(l)l.collapsed=!l.collapsed;renderFloatingPanel()}
 function togglePackageCollapse(id){const p=S.packages.find(x=>x.id===id);if(p)p.collapsed=!p.collapsed;renderFloatingPanel()}
@@ -5300,7 +5785,7 @@ function _netCreateRoomInner(fixedCode){
         /* Override Operation map data with only shared layers */
         _fsOp.units=_fsUnits;_fsOp.graphics=_fsGraphics;_fsOp.layers=_fsLayers;_fsOp.packages=_fsPkgs;
       }
-      var fMsg={type:"fullState",units:_fsUnits,graphics:_fsGraphics,layers:_fsLayers,packages:_fsPkgs,activeLayerId:n.sharedEditLayer||S.activeLayerId,editMode:n.editMode,sharedLayers:n.sharedLayers,sharedEditLayer:n.sharedEditLayer,operation:_fsOp,ipb:S._ipb||null};conn.send(JSON.stringify(fMsg));/* Send wargame state if active */if(n.wargame.active){setTimeout(function(){var pRole="observer";var wgMsg={type:"wargameState",active:true,phase:n.wargame.phase,turnNumber:n.wargame.turnNumber,myRole:pRole,layerRoles:n.wargame.layerRoles,orders:[],roles:n.wargame.roles};try{conn.send(JSON.stringify(wgMsg))}catch(e){}},100)}n.status=n.conns.length+" peer(s)";renderFloatingPanel()});
+      var fMsg={type:"fullState",units:_fsUnits,graphics:_fsGraphics,layers:_fsLayers,packages:_fsPkgs,activeLayerId:n.sharedEditLayer||S.activeLayerId,editMode:n.editMode,sharedLayers:n.sharedLayers,sharedEditLayer:n.sharedEditLayer,operation:_fsOp,ipb:S._ipb||null,emconPolicy:n._emcon.enabled?{tier:n._emcon.tier,geofences:n._emcon.geofences,syncWindows:n._emcon.syncWindows}:null};conn.send(JSON.stringify(fMsg));/* Send wargame state if active */if(n.wargame.active){setTimeout(function(){var pRole="observer";var wgMsg={type:"wargameState",active:true,phase:n.wargame.phase,turnNumber:n.wargame.turnNumber,myRole:pRole,layerRoles:n.wargame.layerRoles,orders:[],roles:n.wargame.roles};try{conn.send(JSON.stringify(wgMsg))}catch(e){}},100)}n.status=n.conns.length+" peer(s)";renderFloatingPanel()});
     conn.on("data",data=>{try{var msg=JSON.parse(data);sanitizeNetMsg(msg);handleNetMsg(msg,conn.peer)}catch(e){}});
     conn.on("close",()=>{const pid=conn.peer;n.conns=n.conns.filter(c=>c.conn!==conn);delete n.peerNames[pid];delete n.peerPermissions[pid];n.status=n.conns.length+" peer(s)";broadcastRoster();renderFloatingPanel()});
     conn.on("error",()=>{const pid=conn.peer;n.conns=n.conns.filter(c=>c.conn!==conn);delete n.peerNames[pid];delete n.peerPermissions[pid];n.status=n.conns.length+" peer(s)";broadcastRoster();renderFloatingPanel()})});
@@ -5323,16 +5808,17 @@ function _netJoinRoomInner(){
     const conn=n.peer.connect("staffmaps-"+n.roomCode,{reliable:true});n.hostConn=conn;
     /* Timeout if data channel never opens */
     _joinTimeout=setTimeout(function(){
-      if(n.mode!=="connected"){n.status="Connection timed out — host may be offline or firewall is blocking P2P";updateNetDot("error");renderFloatingPanel();IO.notify("Connection timed out. Try Manual Connect if room codes keep failing.","error")}
+      if(n.mode!=="connected"){n.mode="offline";n.status="";S._commsJoinError="Connection timed out — host may be offline or firewall is blocking P2P";updateNetDot("error");renderFloatingPanel();IO.notify("Connection failed — showing recovery options","error")}
     },15000);
-    conn.on("open",()=>{clearTimeout(_joinTimeout);n.mode="connected";n.status="Connected";updateNetDot("connected");S._net._lastHostPing=Date.now();vcOnSessionStart();conn.send(JSON.stringify({type:"hello",name:n.peerName}));renderFloatingPanel()});
+    conn.on("open",()=>{clearTimeout(_joinTimeout);S._commsJoinError=null;n.mode="connected";n.status="Connected";updateNetDot("connected");S._net._lastHostPing=Date.now();vcOnSessionStart();conn.send(JSON.stringify({type:"hello",name:n.peerName}));renderFloatingPanel()});
     conn.on("data",data=>{try{var msg=JSON.parse(data);sanitizeNetMsg(msg);handleNetMsg(msg,null)}catch(e){}});
     conn.on("close",()=>{clearTimeout(_joinTimeout);n.hostConn=null;attemptHostMigration()});
-    conn.on("error",e=>{clearTimeout(_joinTimeout);n.status="Data connection error: "+(e.type||e.message||e);updateNetDot("error");renderFloatingPanel()})});
-  n.peer.on("error",e=>{clearTimeout(_joinTimeout);n.status="Error: "+e.type;updateNetDot("error");
-    if(e.type==="peer-unavailable"){IO.notify("Room "+n.roomCode+" not found — check the code or ask host to recreate","error")}
-    else if(e.type==="network"||e.type==="server-error"){IO.notify("Signal server unreachable — check internet or try Manual Connect","error")}
-    else{IO.notify("Connection error: "+e.type,"error")}
+    conn.on("error",e=>{clearTimeout(_joinTimeout);n.mode="offline";n.status="";S._commsJoinError="Data connection error: "+(e.type||e.message||e);updateNetDot("error");renderFloatingPanel()})});
+  n.peer.on("error",e=>{clearTimeout(_joinTimeout);n.mode="offline";n.status="";updateNetDot("error");
+    if(e.type==="peer-unavailable"){S._commsJoinError="Room "+n.roomCode+" not found — check the code or ask host to recreate"}
+    else if(e.type==="network"||e.type==="server-error"){S._commsJoinError="Signal server unreachable — check internet connection"}
+    else{S._commsJoinError="Connection error: "+e.type}
+    IO.notify("Connection failed — showing recovery options","error");
     renderFloatingPanel()})}
 
 function netLeave(){const n=S._net;if(n.peer)n.peer.destroy();n.peer=null;n.conns=[];n.hostConn=null;n.isHost=false;n.roomCode=null;n.mode="offline";n.status="";n.peerNames={};n.sharedLayers={};n.sharedEditLayer=null;n.editScope="local";n.peerPermissions={};n.editRequests=[];n.editRequestStatus=null;n.roomRoster=[];n.wargame={active:false,phase:"planning",roles:{},myRole:null,layerRoles:{},orders:[],turnNumber:1,turnLog:[]};S._wargameOrderPending=null;updateNetDot("");renderFloatingPanel();requestRender()}
@@ -5544,7 +6030,7 @@ function handleNetMsg(msg,fromPeer){
       S._net.conns.forEach(function(c){if(c.peerId!==fromPeer)try{c.conn.send(_str)}catch(e){}});
     }
   }
-  if(msg.type==="fullState"){S.units=(msg.units||[]).map(u=>sanitizeUnit(u)).filter(Boolean);S.graphics=(msg.graphics||[]).map(g=>sanitizeGraphic(g)).filter(Boolean);S.layers=(msg.layers||S.layers).slice(0,50);S.layers.forEach(l=>{l.name=sanitizeStr(l.name,INPUT_LIMITS.layerName)});if(msg.packages)S.packages=msg.packages.slice(0,100);if(msg.activeLayerId)S.activeLayerId=msg.activeLayerId;S._net.editMode=msg.editMode||"observer";if(msg.sharedLayers)S._net.sharedLayers=msg.sharedLayers;/* Load Operation if included */if(msg.operation){S._operation=msg.operation;if(msg.operation.ipb)S._ipb=msg.operation.ipb}else if(msg.ipb){S._ipb=msg.ipb}if(msg.sharedEditLayer){S._net.sharedEditLayer=msg.sharedEditLayer;const el=S.layers.find(x=>x.id===msg.sharedEditLayer);if(el){setTimeout(()=>{if(confirm("Host is sharing '"+escHtml(el.name)+"' as primary edit layer. Switch to it and edit in room?")){S.activeLayerId=msg.sharedEditLayer;S._net.editScope="room";updateLayerIndicator();renderFloatingPanel()}},300)}}if(S._operation)IO.notify("Joined Operation: "+escHtml(S._operation.name),"success");requestRender();updateLayerIndicator()}
+  if(msg.type==="fullState"){S.units=(msg.units||[]).map(u=>sanitizeUnit(u)).filter(Boolean);S.graphics=(msg.graphics||[]).map(g=>sanitizeGraphic(g)).filter(Boolean);S.layers=(msg.layers||S.layers).slice(0,50);S.layers.forEach(l=>{l.name=sanitizeStr(l.name,INPUT_LIMITS.layerName)});if(msg.packages)S.packages=msg.packages.slice(0,100);if(msg.activeLayerId)S.activeLayerId=msg.activeLayerId;S._net.editMode=msg.editMode||"observer";if(msg.sharedLayers)S._net.sharedLayers=msg.sharedLayers;/* Load Operation if included */if(msg.operation){S._operation=msg.operation;if(msg.operation.ipb)S._ipb=msg.operation.ipb}else if(msg.ipb){S._ipb=msg.ipb}if(msg.sharedEditLayer){S._net.sharedEditLayer=msg.sharedEditLayer;const el=S.layers.find(x=>x.id===msg.sharedEditLayer);if(el){setTimeout(()=>{if(confirm("Host is sharing '"+escHtml(el.name)+"' as primary edit layer. Switch to it and edit in room?")){S.activeLayerId=msg.sharedEditLayer;S._net.editScope="room";updateLayerIndicator();renderFloatingPanel()}},300)}}if(S._operation)IO.notify("Joined Operation: "+escHtml(S._operation.name),"success");if(msg.emconPolicy&&typeof emconReceivePolicy==="function")emconReceivePolicy(msg.emconPolicy);requestRender();updateLayerIndicator()}
   else if(msg.type==="sharedConfig"){
     const n=S._net;n.sharedLayers=msg.sharedLayers||{};n.sharedEditLayer=msg.sharedEditLayer||null;n.editMode=msg.editMode||"observer";
     /* Merge shared layers — add/update layers that host is sharing */
@@ -5656,7 +6142,17 @@ function handleNetMsg(msg,fromPeer){
       requestRender();renderFloatingPanel()}}
   else if(msg.type==="operationSync"){
     /* Host pushed updated Operation data (syncmat, IPB, phases, wargame journal) */
-    if(msg.operation){S._operation=msg.operation;if(msg.operation.ipb)S._ipb=msg.operation.ipb;updateLayerIndicator();if(S._activePanel==="syncmat"||S._activePanel==="ipb")renderFloatingPanel()}}
+    if(msg.operation){S._operation=msg.operation;if(msg.operation.ipb)S._ipb=msg.operation.ipb;updateLayerIndicator();if(S._activePanel==="ops"||S._activePanel==="syncmat"||S._activePanel==="ipb")renderFloatingPanel()}}
+  /* ── EMCON Messages ── */
+  else if(msg.type==="emconPolicy"){
+    if(typeof emconReceivePolicy==="function")emconReceivePolicy(msg.policy)}
+  else if(msg.type==="emconLog"){
+    /* Host receives audit log entries from peers */
+    if(S._net.isHost&&msg.entry){
+      msg.entry._fromPeer=fromPeer;
+      msg.entry._peerName=S._net.peerNames[fromPeer]||fromPeer;
+      S._net._emcon.auditLog.push(msg.entry);
+      if(S._net._emcon.auditLog.length>500)S._net._emcon.auditLog.shift()}}
 }
 function updateNetDot(state){const dot=document.querySelector(".topbar-dot");if(dot)dot.className="topbar-dot"+(state?" "+state:"");const cb=document.getElementById("sb-comms");if(cb){cb.classList.remove("conn-blue","conn-green");if(S._net.mode==="hosting")cb.classList.add("conn-green");else if(S._net.mode==="connected")cb.classList.add("conn-blue")}}
 
@@ -6762,17 +7258,17 @@ window.togglePersistRoom=function(cb){
 // ─── OPERATIONS SYSTEM ──────────────────────────────────────────
 
 const WFF_SECTIONS=[
-  {id:"wff_adj",name:"Adjacent Units",type:"header"},
-  {id:"wff_intel",name:"Intelligence",type:"wff"},
-  {id:"wff_engcrit",name:"Engagement Criteria",type:"header"},
-  {id:"wff_man",name:"Maneuver",type:"wff"},
-  {id:"wff_fires",name:"Fires",type:"wff"},
-  {id:"wff_log",name:"Logistics",type:"wff"},
-  {id:"wff_prot",name:"Force Protection",type:"wff"},
-  {id:"wff_info",name:"Information",type:"wff"},
-  {id:"wff_c2",name:"C2",type:"wff"},
-  {id:"wff_air",name:"Air",type:"wff"},
-  {id:"wff_branch",name:"Branches",type:"header"}
+  {id:"wff_adj",name:"Adjacent Units",abbr:"ADJ",type:"header"},
+  {id:"wff_intel",name:"Intelligence",abbr:"INT",type:"wff"},
+  {id:"wff_man",name:"Maneuver",abbr:"MNVR",type:"wff"},
+  {id:"wff_fires",name:"Fires",abbr:"FIRE",type:"wff"},
+  {id:"wff_log",name:"Logistics",abbr:"LOG",type:"wff"},
+  {id:"wff_prot",name:"Force Protection",abbr:"PROT",type:"wff"},
+  {id:"wff_info",name:"Information",abbr:"INFO",type:"wff"},
+  {id:"wff_c2",name:"C2",abbr:"C2",type:"wff"},
+  {id:"wff_air",name:"Air",abbr:"AIR",type:"wff"},
+  {id:"wff_engcrit",name:"Engagement Criteria",abbr:"ENG",type:"standalone"},
+  {id:"wff_branch",name:"Branches",abbr:"BR",type:"header"}
 ];
 
 const WFF_ROW_SUGGESTIONS={
@@ -6912,6 +7408,60 @@ function opConfirmNoChange(rowId,phaseId){
   IO.autosave();netBroadcastOperation();
 }
 
+/* ── Fullscreen SyncMat Overlay ── */
+window.openSyncMatFullscreen=function(){
+  var op=S._operation;if(!op||!op.phases.length)return;
+  var overlay=document.getElementById('syncmat-fullscreen');
+  if(overlay){overlay.remove();return;}
+  overlay=document.createElement('div');
+  overlay.id='syncmat-fullscreen';
+  overlay.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;z-index:8000;background:var(--bg,#111);overflow:auto;padding:16px 20px;display:flex;flex-direction:column';
+  /* Header bar */
+  var hdr=document.createElement('div');
+  hdr.style.cssText='display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-shrink:0';
+  hdr.innerHTML='<div style="flex:1"><div style="font-weight:700;font-size:16px">'+escHtml(op.name)+(op.coaName?' \u2014 '+escHtml(op.coaName):'')+'</div>'
+    +(op.unitDesignation?'<div style="font-size:12px;opacity:.5">'+escHtml(op.unitDesignation)+'</div>':'')+'</div>'
+    +'<button class="btn" style="font-size:12px;padding:6px 14px" onclick="document.getElementById(\'syncmat-fullscreen\').remove()">\u2715 Close</button>';
+  overlay.appendChild(hdr);
+  /* Table container — scale up fonts */
+  var tbl=document.createElement('div');
+  tbl.style.cssText='flex:1;overflow:auto;-webkit-overflow-scrolling:touch';
+  tbl.innerHTML=_renderSyncMatTable(op);
+  /* Scale up the table for fullscreen */
+  var table=tbl.querySelector('table');
+  if(table){
+    table.style.fontSize='13px';
+    table.style.minWidth=Math.max(800,(160+op.phases.length*240))+'px';
+    /* Bump header and cell sizes */
+    table.querySelectorAll('th').forEach(function(th){th.style.fontSize='11px';th.style.padding='6px 10px'});
+    table.querySelectorAll('td').forEach(function(td){
+      td.style.padding='6px 10px';
+      if(td.style.fontSize==='8px'||td.style.fontSize==='9px')td.style.fontSize='11px';
+    });
+  }
+  overlay.appendChild(tbl);
+  document.body.appendChild(overlay);
+};
+
+/* ── Wargame Hover: get unit tasks for current phase ── */
+window.getUnitWargameTasks=function(unitId){
+  var op=S._operation;if(!op||!op.phases.length)return null;
+  var phase=op.phases.find(function(p){return p.id===S._opActivePhase})||op.phases[0];
+  var tasks=[];
+  op.wffSections.forEach(function(sec){
+    sec.rows.forEach(function(row){
+      if(row.unitId!==unitId)return;
+      var key=row.id+"_"+phase.id;
+      var task=op.phaseTasks[key];
+      if(task&&(task.text||(task.wargameAdditions&&task.wargameAdditions.length))){
+        var t={section:sec.name,label:row.label,text:task.text||"",additions:task.wargameAdditions||[]};
+        tasks.push(t);
+      }
+    });
+  });
+  return tasks.length?{phase:phase.name,tasks:tasks}:null;
+};
+
 function opAddJournalEntry(phaseId,entryType,text,linkedCells){
   var op=S._operation;if(!op)return null;
   var entry={
@@ -7020,73 +7570,7 @@ function renderSyncMatPanel(){
     return h;
   }
 
-  h+='<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -10px;padding:0 10px">';
-  h+='<table style="width:100%;border-collapse:collapse;font-size:10px;min-width:'+(120+op.phases.length*160)+'px">';
-  
-  /* Table header */
-  h+='<thead><tr style="background:rgba(255,255,255,.06)">';
-  h+='<th style="text-align:left;padding:4px 6px;font-size:9px;width:50px;border:1px solid rgba(255,255,255,.1)">WFF</th>';
-  h+='<th style="text-align:left;padding:4px 6px;font-size:9px;width:70px;border:1px solid rgba(255,255,255,.1)">Element</th>';
-  op.phases.forEach(function(ph){
-    h+='<th style="text-align:center;padding:4px 6px;font-size:9px;border:1px solid rgba(255,255,255,.1);min-width:140px">'+escHtml(ph.name);
-    if(ph.timeline)h+='<br><span style="opacity:.5;font-weight:400">'+escHtml(ph.timeline)+'</span>';
-    h+='</th>';
-  });
-  h+='</tr></thead><tbody>';
-
-  /* Render each WFF section */
-  op.wffSections.forEach(function(sec){
-    var rowCount=Math.max(1,sec.rows.length);
-    /* Section header row */
-    h+='<tr style="background:rgba(255,255,255,.04)">';
-    h+='<td rowspan="'+rowCount+'" style="vertical-align:middle;text-align:center;font-weight:700;font-size:9px;padding:4px;border:1px solid rgba(255,255,255,.1);background:rgba(128,128,128,.15);writing-mode:vertical-lr;text-orientation:mixed;letter-spacing:1px">'+escHtml(sec.name)+'</td>';
-    
-    if(sec.rows.length===0){
-      /* Empty section */
-      h+='<td style="padding:4px 6px;border:1px solid rgba(255,255,255,.1);opacity:.3;font-style:italic" colspan="'+(1+op.phases.length)+'">';
-      h+='<span style="cursor:pointer" onclick="opAddRowUI(\''+sec.id+'\')">+ Add row</span></td></tr>';
-    }else{
-      sec.rows.forEach(function(row,ri){
-        if(ri>0)h+='<tr>';
-        h+='<td style="padding:3px 5px;border:1px solid rgba(255,255,255,.1);font-weight:600;white-space:nowrap;font-size:9px;position:relative">'+escHtml(row.label);
-        h+='<span style="cursor:pointer;opacity:.3;margin-left:2px;font-size:8px" onclick="opRemoveRow(\''+sec.id+'\',\''+row.id+'\');renderFloatingPanel()" title="Remove">✕</span></td>';
-        
-        /* Phase cells */
-        op.phases.forEach(function(ph){
-          var key=row.id+"_"+ph.id;
-          var task=op.phaseTasks[key];
-          var txt=task?task.text:"";
-          var additions=task?task.wargameAdditions:[];
-          var status=op.phaseReviewStatus[key]||"";
-          
-          var cellStyle="padding:3px 5px;border:1px solid rgba(255,255,255,.1);vertical-align:top;font-size:9px;cursor:pointer;max-width:180px;word-wrap:break-word";
-          if(status==="unreviewed")cellStyle+=";background:rgba(255,165,0,.08);border-left:2px solid rgba(255,165,0,.4)";
-          
-          h+='<td style="'+cellStyle+'" onclick="opEditCell(\''+row.id+'\',\''+ph.id+'\')" title="Click to edit">';
-          if(txt){
-            h+='<div style="white-space:pre-wrap;line-height:1.3">'+escHtml(txt).replace(/\n/g,'<br>')+'</div>';
-          }
-          /* Wargame additions in red */
-          additions.forEach(function(a){
-            h+='<div style="color:#ff4444;white-space:pre-wrap;line-height:1.3;margin-top:2px;border-top:1px solid rgba(255,68,68,.2);padding-top:2px">'+escHtml(a.text).replace(/\n/g,'<br>')+'</div>';
-          });
-          if(!txt&&additions.length===0){
-            h+='<span style="opacity:.2">—</span>';
-          }
-          if(status==="unreviewed"){
-            h+='<div style="margin-top:2px"><button class="btn" style="font-size:7px;padding:1px 4px;min-height:14px;opacity:.6" onclick="event.stopPropagation();opConfirmNoChange(\''+row.id+'\',\''+ph.id+'\');renderFloatingPanel()">✓ No Change</button></div>';
-          }
-          h+='</td>';
-        });
-        h+='</tr>';
-      });
-    }
-    /* Add row button after section */
-    h+='<tr><td style="border:none"></td><td colspan="'+(1+op.phases.length)+'" style="border:none;padding:1px 5px">';
-    h+='<span style="cursor:pointer;opacity:.3;font-size:8px" onclick="opAddRowUI(\''+sec.id+'\')">+ Add row</span></td></tr>';
-  });
-
-  h+='</tbody></table></div>';
+  h+=_renderSyncMatTable(op);
 
   /* Wargame journal (if active or has entries) */
   if(op.wargameActive||op.wargameJournal.length>0){
@@ -7190,8 +7674,20 @@ window.opAddRowUI=function(sectionId){
   }
   if(!label)return;
   
-  /* Check if this matches a map unit */
-  var matchUnit=S.units.find(function(u){return(u.designation||u.uniqueDesig||'')==label});
+  /* Check if this matches a map unit — try designation, uniqueDesig, or name */
+  var matchUnit=S.units.find(function(u){
+    var d=(u.designation||'').toLowerCase(),ud=(u.uniqueDesig||'').toLowerCase(),n=(u.name||'').toLowerCase(),l=label.toLowerCase();
+    return d===l||ud===l||n===l;
+  });
+  /* If no exact match, offer to link to a unit */
+  if(!matchUnit&&S.units.length>0){
+    var unitList=S.units.map(function(u,i){return(i+1)+'. '+(u.designation||u.uniqueDesig||u.name||u.type)}).join('\n');
+    var linkChoice=prompt('Link "'+label+'" to a map unit? Enter number or leave blank:\n\n'+unitList,'');
+    if(linkChoice&&linkChoice.trim()){
+      var idx=parseInt(linkChoice)-1;
+      if(idx>=0&&idx<S.units.length)matchUnit=S.units[idx];
+    }
+  }
   opAddRow(sectionId,label,matchUnit?'unit':'guidance',matchUnit?matchUnit.id:null);
   renderFloatingPanel();
 };
@@ -7339,8 +7835,7 @@ function init(){
         <button class="stack-btn" id="sb-layers" title="Layers" onclick="togglePanel('layers')"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></button>
         <button class="stack-btn" id="sb-addunit" title="Add Unit / Draw" onclick="togglePanel('addunit')"><svg viewBox="0 0 24 24"><defs><mask id="pm"><rect width="24" height="24" fill="white"/><circle cx="19" cy="17" r="5.5" fill="black"/></mask></defs><g mask="url(#pm)"><rect x="2" y="4" width="15" height="11" rx="1" fill="none"/><line x1="2" y1="4" x2="17" y2="15"/><line x1="17" y1="4" x2="2" y2="15"/></g><line x1="19" y1="13.5" x2="19" y2="20.5"/><line x1="15.5" y1="17" x2="22.5" y2="17"/></svg></button>
         <button class="stack-btn" id="sb-maptools" title="Map Tools" onclick="togglePanel('maptools')"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="currentColor"/></svg></button>
-        <button class="stack-btn" id="sb-syncmat" title="Operations / SyncMat" onclick="togglePanel('syncmat')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" fill="none"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg></button>
-        <button class="stack-btn" id="sb-ipb" title="IPB Wizard" onclick="togglePanel('ipb')"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12l2 2 4-4"/></svg></button>
+        <button class="stack-btn" id="sb-ops" title="Operations" onclick="togglePanel('ops')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" fill="none"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><path d="M14 5l2 2-2 2" fill="none" stroke-width="1.5"/></svg></button>
       </div>
       <div class="float-panel" id="float-panel">
         <div class="fp-header"><span class="fp-title" id="fp-title"></span><button class="btn" id="fp-close" style="width:32px;height:32px;min-height:32px;padding:0;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0">\u2715</button></div>
@@ -7546,6 +8041,676 @@ function vcOnSessionStart(){vcStartConsistencyTimer();S._net._vc.seq=0;S._net._v
 function vcOnSessionEnd(){vcStopConsistencyTimer();S._net._vc.locks={};S._net._vc._heavyOp=false;vcShowSyncIndicator(false)}
 setInterval(vcExpireLocks,5000);
 // ─── END VERSION CONTROL ENGINE ──────────────────────────────────────────────
+
+// ─── EMCON / FIELD MODE ENGINE ──────────────────────────────────────────────
+(function(){
+  "use strict";
+  var EM=S._net._emcon;
+
+  /* ── Platform Detection ── */
+  function detectPlatform(){
+    var ua=navigator.userAgent||"";
+    EM.deviceInfo.userAgent=ua;
+    if(/iPhone/.test(ua)){EM.deviceInfo.platform="iphone";EM.deviceInfo.cellularCapable=true}
+    else if(/iPad/.test(ua)){EM.deviceInfo.platform="ipad";EM.deviceInfo.cellularCapable=true}/* assume cellular; user can override */
+    else if(/Android/.test(ua)&&/Mobile/.test(ua)){EM.deviceInfo.platform="android_phone";EM.deviceInfo.cellularCapable=true}
+    else if(/Android/.test(ua)){EM.deviceInfo.platform="android_tablet";EM.deviceInfo.cellularCapable=true}
+    else{EM.deviceInfo.platform="desktop";EM.deviceInfo.cellularCapable=false}
+  }
+  detectPlatform();
+
+  /* ── Compliance Check ── */
+  function checkCompliance(){
+    if(!EM.enabled){EM.complianceStatus="unknown";EM.complianceDetail="Field Mode off";return true}
+    var tier=emconEffectiveTier();
+    var online=navigator.onLine;
+    var bleOk=EM.deviceInfo.platform!=="desktop"?(S._net._ble.present||S._net._ble.connected):true;
+    /* Tier 1: Radio Silent — navigator.onLine must be false */
+    if(tier===1){
+      if(online){EM.complianceStatus="non-compliant";EM.complianceDetail=EM.deviceInfo.cellularCapable?"Enable airplane mode, then turn on Bluetooth":"Disable WiFi";return false}
+      EM.complianceStatus="compliant";EM.complianceDetail="Radio silent — GPS receive only";return true}
+    /* Tier 2: BLE Only — navigator.onLine must be false, BLE available */
+    if(tier===2){
+      if(online){EM.complianceStatus="non-compliant";EM.complianceDetail=EM.deviceInfo.cellularCapable?"Enable airplane mode, then turn on Bluetooth":"Disable WiFi, enable Bluetooth";return false}
+      EM.complianceStatus="compliant";EM.complianceDetail="BLE only — sync via Bluetooth windows";return true}
+    /* Tier 3: Local WiFi — online OK (can't distinguish local vs internet) */
+    if(tier===3){EM.complianceStatus="compliant";EM.complianceDetail="Local WiFi permitted — no internet gateway";return true}
+    /* Tier 4: Full connectivity */
+    if(tier===4){EM.complianceStatus="compliant";EM.complianceDetail="Full connectivity";return true}
+    EM.complianceStatus="unknown";return true;
+  }
+
+  /* ── Effective Tier (lowest of: host policy, geofence ceiling, manual override) ── */
+  function emconEffectiveTier(){
+    if(!EM.enabled)return 0;
+    var t=EM.tier||4;
+    /* Host policy ceiling */
+    if(EM.hostPolicy&&typeof EM.hostPolicy.tier==="number")t=Math.min(t,EM.hostPolicy.tier);
+    /* Geofence ceiling */
+    if(EM.currentGeofence){
+      var gf=EM.geofences.find(function(g){return g.id===EM.currentGeofence});
+      if(gf&&typeof gf.tier==="number")t=Math.min(t,gf.tier);
+    }
+    /* Manual override — user can only go MORE restrictive */
+    if(EM.manualOverride!==null&&EM.manualOverride<t)t=EM.manualOverride;
+    return t;
+  }
+
+  /* ── GPS Tracking ── */
+  /* GPS status: "off"|"requesting"|"active"|"denied"|"unavailable"|"no_hardware" */
+  EM._gpsStatus="off";
+
+  function startGPS(){
+    if(EM.gpsWatchId!==null)return;
+    if(!navigator.geolocation){
+      EM._gpsStatus="no_hardware";
+      emconLog("gps_unavailable","Geolocation API not available");
+      updateEmconIndicator();return;
+    }
+    /* Desktop without GPS hardware — set a short timeout to detect quickly */
+    var isDesktop=EM.deviceInfo.platform==="desktop";
+    var timeout=isDesktop?8000:30000;
+
+    EM._gpsStatus="requesting";
+    updateEmconIndicator();
+
+    EM.gpsWatchId=navigator.geolocation.watchPosition(
+      function(pos){
+        EM._gpsStatus="active";
+        var prev=EM.gpsPos;
+        EM.gpsPos={lat:pos.coords.latitude,lon:pos.coords.longitude,accuracy:pos.coords.accuracy,timestamp:pos.timestamp};
+        checkGeofences(prev);
+        updateEmconIndicator();
+        if(typeof requestRender==="function")requestRender();
+      },
+      function(err){
+        if(err.code===1){
+          EM._gpsStatus="denied";
+          emconLog("gps_denied","GPS permission denied");
+          if(typeof notify==="function")notify("GPS denied — enable location in "+(isDesktop?"Windows Settings":"browser settings"),"error");
+        } else if(err.code===2){
+          EM._gpsStatus="unavailable";
+          emconLog("gps_unavailable","GPS position unavailable");
+          if(typeof notify==="function")notify("GPS unavailable"+(isDesktop?" — enable Windows Location Services":""),"error");
+        } else {
+          EM._gpsStatus="unavailable";
+          emconLog("gps_timeout","GPS timed out");
+          if(typeof notify==="function")notify("GPS timed out"+(isDesktop?" — desktop may not have GPS hardware":""),"error");
+        }
+        updateEmconIndicator();
+      },
+      {enableHighAccuracy:!isDesktop,maximumAge:5000,timeout:timeout}
+    );
+    emconLog("gps_started","GPS watch started");
+  }
+  function stopGPS(){
+    if(EM.gpsWatchId!==null){navigator.geolocation.clearWatch(EM.gpsWatchId);EM.gpsWatchId=null}
+    EM._gpsStatus="off";
+  }
+
+  /* ── Geofence Engine ── */
+  var _geofenceHysteresis={};/* id -> {insideCount, outsideCount} */
+  var GF_THRESHOLD=3;/* consecutive fixes needed to trigger transition */
+
+  function checkGeofences(prevPos){
+    if(!EM.gpsPos||!EM.geofences.length)return;
+    var pos=EM.gpsPos;
+    var insideZone=null;
+    /* Find innermost (smallest radius) geofence we're inside */
+    var candidates=[];
+    EM.geofences.forEach(function(gf){
+      if(!gf.active)return;
+      var dist=haversine(pos.lat,pos.lon,gf.lat,gf.lon);
+      if(dist<=gf.radiusM)candidates.push({gf:gf,dist:dist});
+    });
+    if(candidates.length){
+      candidates.sort(function(a,b){return a.gf.radiusM-b.gf.radiusM});
+      insideZone=candidates[0].gf;
+    }
+    var targetId=insideZone?insideZone.id:null;
+    var currentId=EM.currentGeofence;
+    if(targetId===currentId)return;/* no change */
+
+    /* Hysteresis: require GF_THRESHOLD consecutive fixes inside new zone */
+    var hKey=targetId||"_outside";
+    if(!_geofenceHysteresis[hKey])_geofenceHysteresis[hKey]={count:0};
+    _geofenceHysteresis[hKey].count++;
+    /* Reset other counters */
+    Object.keys(_geofenceHysteresis).forEach(function(k){if(k!==hKey)_geofenceHysteresis[k]={count:0}});
+
+    if(_geofenceHysteresis[hKey].count<GF_THRESHOLD)return;
+
+    /* Transition confirmed */
+    var oldTier=emconEffectiveTier();
+    EM.currentGeofence=targetId;
+    var newTier=emconEffectiveTier();
+    _geofenceHysteresis={};
+
+    if(oldTier!==newTier){
+      var detail=targetId?("Entered "+insideZone.name+" — "+EM.tierLabels[newTier]):("Left geofence — "+EM.tierLabels[newTier]);
+      emconLog("geofence_transition",detail,{from:oldTier,to:newTier,geofence:targetId});
+      checkCompliance();
+      updateEmconIndicator();
+      if(typeof notify==="function")notify("\u{1F6E1}\uFE0F "+detail);
+      if(typeof renderFloatingPanel==="function"&&S._activePanel==="comms")renderFloatingPanel();
+    }
+  }
+
+  /* ── Sync Windows ── */
+  var _syncWindowTimer=null;
+  function startSyncWindowTimer(){
+    if(_syncWindowTimer)clearInterval(_syncWindowTimer);
+    if(!EM.syncWindows.enabled)return;
+    EM.syncWindows.nextWindowTs=Date.now()+(EM.syncWindows.intervalSec*1000);
+    _syncWindowTimer=setInterval(function(){
+      if(!EM.enabled||!EM.syncWindows.enabled)return;
+      var now=Date.now();
+      if(!EM.syncWindows.windowActive&&EM.syncWindows.nextWindowTs&&now>=EM.syncWindows.nextWindowTs){
+        /* Open sync window */
+        EM.syncWindows.windowActive=true;
+        emconLog("sync_window_open","BLE sync window opened for "+EM.syncWindows.durationSec+"s");
+        if(typeof notify==="function")notify("\u{1F4E1} Sync window open — "+EM.syncWindows.durationSec+"s");
+        updateEmconIndicator();
+        /* Auto-close after duration */
+        setTimeout(function(){
+          EM.syncWindows.windowActive=false;
+          EM.syncWindows.nextWindowTs=Date.now()+(EM.syncWindows.intervalSec*1000);
+          emconLog("sync_window_close","BLE sync window closed");
+          if(typeof notify==="function")notify("\u{1F6E1}\uFE0F Sync window closed");
+          updateEmconIndicator();
+        },EM.syncWindows.durationSec*1000);
+      }
+    },1000);
+  }
+
+  /* ── Audit Log ── */
+  function emconLog(event,detail,extra){
+    var entry={ts:Date.now(),event:event,tier:emconEffectiveTier(),detail:detail||"",deviceInfo:{platform:EM.deviceInfo.platform,cellular:EM.deviceInfo.cellularCapable}};
+    if(extra)entry.extra=extra;
+    EM.auditLog.push(entry);
+    if(EM.auditLog.length>500)EM.auditLog.shift();
+    /* Broadcast log entry to host if connected */
+    if(S._net.mode==="connected"&&S._net.hostConn){
+      try{S._net.hostConn.send(JSON.stringify({type:"emconLog",entry:entry}))}catch(e){}
+    }
+  }
+
+  /* ── UI Indicator ── */
+  function updateEmconIndicator(){
+    /* Remove old floating indicator if it exists */
+    var oldFloat=document.getElementById("emcon-indicator");
+    if(oldFloat&&oldFloat.parentElement&&oldFloat.parentElement.id==="app")oldFloat.remove();
+    /* Update topbar inline indicator */
+    var container=document.getElementById("emcon-topbar");
+    if(!EM.enabled){if(container)container.style.display="none";return}
+    if(!container){
+      /* Create container in topbar, before coords */
+      var coordsEl=document.getElementById("coords");
+      if(!coordsEl)return;
+      container=document.createElement("span");container.id="emcon-topbar";
+      container.style.cssText="display:inline-flex;align-items:center;gap:4px;margin-right:6px;cursor:pointer;white-space:nowrap";
+      container.onclick=function(){openPanel("comms")};
+      coordsEl.parentElement.insertBefore(container,coordsEl);
+    }
+    var tier=emconEffectiveTier();
+    var color=EM.tierColors[tier]||"#888";
+    var label=["OFF","T1","T2","T3","T4"][tier]||"?";
+    var isCompliant=EM.complianceStatus==="compliant";
+    var borderColor=isCompliant?color:"#ff4444";
+    container.style.display="inline-flex";
+    /* Sync window pulse */
+    var syncDot=EM.syncWindows.windowActive?"<span style='display:inline-block;width:5px;height:5px;border-radius:50%;background:#44cc44;animation:pulse 1s infinite'></span>":"";
+    container.innerHTML="<span style='display:inline-flex;align-items:center;gap:3px;padding:1px 6px;border-radius:4px;border:1px solid "+borderColor+"66;background:"+color+"15;font-size:9px;font-weight:700;color:"+color+"'><span style='display:inline-block;width:6px;height:6px;border-radius:50%;background:"+color+";box-shadow:0 0 4px "+color+"'></span>"+label+syncDot+(isCompliant?"":"<span style='color:#ff4444'>⚠</span>")+"</span>";
+    /* GPS grid in topbar */
+    var gpsEl=document.getElementById("emcon-gps-grid");
+    if(!gpsEl){
+      gpsEl=document.createElement("span");gpsEl.id="emcon-gps-grid";
+      gpsEl.style.cssText="font-size:9px;opacity:.6;cursor:pointer;margin-right:4px;white-space:nowrap";
+      gpsEl.title="Your GPS position — click to center";
+      gpsEl.onclick=function(e){e.stopPropagation();if(EM.gpsPos){S.lat=EM.gpsPos.lat;S.lon=EM.gpsPos.lon;requestRender()}};
+      container.parentElement.insertBefore(gpsEl,container.nextSibling);
+    }
+    if(EM.gpsPos){
+      var mgrs=toMGRS(EM.gpsPos.lat,EM.gpsPos.lon);
+      gpsEl.textContent="\u{1F4CD}"+mgrs;
+      gpsEl.style.color="";
+      gpsEl.style.display="";
+    }else{
+      var gpsMsg={
+        "off":"GPS off",
+        "requesting":"GPS requesting...",
+        "denied":"GPS denied — check permissions",
+        "unavailable":EM.deviceInfo.platform==="desktop"?"GPS — enable Location Services":"GPS unavailable",
+        "no_hardware":"GPS not supported"
+      }[EM._gpsStatus||"off"]||"GPS off";
+      var isErr=EM._gpsStatus==="denied"||EM._gpsStatus==="unavailable"||EM._gpsStatus==="no_hardware";
+      gpsEl.textContent="\u{1F4CD}"+gpsMsg;
+      gpsEl.style.color=isErr?"#ff4444":EM._gpsStatus==="requesting"?"#ffaa00":"";
+      gpsEl.style.display="";
+    }
+  }
+
+  /* ── Enable/Disable Field Mode ── */
+  window.emconEnable=function(tier){
+    EM.enabled=true;
+    EM.tier=tier||1;
+    emconLog("field_mode_enabled","Field Mode activated at "+EM.tierLabels[EM.tier]);
+    checkCompliance();
+    startGPS();
+    startSyncWindowTimer();
+    updateEmconIndicator();
+    if(typeof renderFloatingPanel==="function")renderFloatingPanel();
+  };
+  window.emconDisable=function(){
+    EM.enabled=false;EM.tier=0;EM.currentGeofence=null;EM.manualOverride=null;
+    EM.complianceStatus="unknown";EM.complianceDetail="";
+    EM.syncWindows.windowActive=false;
+    emconLog("field_mode_disabled","Field Mode deactivated");
+    stopGPS();
+    if(_syncWindowTimer){clearInterval(_syncWindowTimer);_syncWindowTimer=null}
+    updateEmconIndicator();
+    if(typeof renderFloatingPanel==="function")renderFloatingPanel();
+  };
+  window.emconSetTier=function(t){
+    var old=emconEffectiveTier();
+    EM.tier=t;
+    var nw=emconEffectiveTier();
+    if(old!==nw){emconLog("tier_change","Tier changed: "+EM.tierLabels[old]+" → "+EM.tierLabels[nw],{from:old,to:nw})}
+    checkCompliance();updateEmconIndicator();
+    if(typeof renderFloatingPanel==="function"&&S._activePanel==="comms")renderFloatingPanel();
+    /* Host: broadcast policy to peers */
+    if(S._net.isHost)emconBroadcastPolicy();
+  };
+  window.emconSetManualOverride=function(t){
+    EM.manualOverride=(t===null||t===undefined)?null:t;
+    var eff=emconEffectiveTier();
+    emconLog("manual_override","Manual override set to "+EM.tierLabels[eff]);
+    checkCompliance();updateEmconIndicator();
+    if(typeof renderFloatingPanel==="function"&&S._activePanel==="comms")renderFloatingPanel();
+  };
+
+  /* ── Geofence Management (Host) ── */
+  window.emconAddGeofence=function(name,lat,lon,radiusM,tier){
+    var gf={id:"gf_"+Date.now()+"_"+Math.random().toString(36).substr(2,4),name:name||"Zone",lat:lat,lon:lon,radiusM:radiusM||100,tier:tier||3,active:true};
+    EM.geofences.push(gf);
+    emconLog("geofence_added","Geofence added: "+gf.name+" ("+gf.radiusM+"m, "+EM.tierLabels[gf.tier]+")");
+    emconBroadcastPolicy();
+    if(typeof renderFloatingPanel==="function"&&S._activePanel==="comms")renderFloatingPanel();
+    if(typeof requestRender==="function")requestRender();
+    return gf.id;
+  };
+  window.emconRemoveGeofence=function(id){
+    EM.geofences=EM.geofences.filter(function(g){return g.id!==id});
+    if(EM.currentGeofence===id)EM.currentGeofence=null;
+    emconLog("geofence_removed","Geofence removed: "+id);
+    emconBroadcastPolicy();
+    if(typeof renderFloatingPanel==="function"&&S._activePanel==="comms")renderFloatingPanel();
+    if(typeof requestRender==="function")requestRender();
+  };
+
+  /* ── Broadcast EMCON Policy (Host → Peers) ── */
+  function emconBroadcastPolicy(){
+    if(!S._net.isHost||S._net.mode==="offline")return;
+    var policy={tier:EM.tier,geofences:EM.geofences,syncWindows:EM.syncWindows};
+    var str=JSON.stringify({type:"emconPolicy",policy:policy});
+    S._net.conns.forEach(function(c){try{c.conn.send(str)}catch(e){}});
+  }
+  window.emconBroadcastPolicy=emconBroadcastPolicy;
+
+  /* ── Handle Incoming EMCON Policy (Peer) ── */
+  window.emconReceivePolicy=function(policy){
+    if(!policy)return;
+    EM.hostPolicy=policy;
+    if(policy.geofences)EM.geofences=policy.geofences;
+    if(policy.syncWindows){EM.syncWindows.enabled=policy.syncWindows.enabled;EM.syncWindows.durationSec=policy.syncWindows.durationSec;EM.syncWindows.intervalSec=policy.syncWindows.intervalSec}
+    if(!EM.enabled&&policy.tier>0){
+      /* Auto-enable Field Mode when host pushes policy */
+      EM.enabled=true;EM.tier=policy.tier;
+      startGPS();startSyncWindowTimer();
+      emconLog("policy_received","Host EMCON policy received — Field Mode auto-enabled");
+      if(typeof notify==="function")notify("\u{1F6E1}\uFE0F EMCON policy received — "+EM.tierLabels[emconEffectiveTier()]);
+    } else {
+      var eff=emconEffectiveTier();
+      emconLog("policy_update","Host EMCON policy updated — "+EM.tierLabels[eff]);
+    }
+    checkCompliance();updateEmconIndicator();
+    if(typeof renderFloatingPanel==="function"&&S._activePanel==="comms")renderFloatingPanel();
+  };
+
+  /* ── Compliance Gate for Join ── */
+  window.emconCheckJoinCompliance=function(){
+    if(!EM.enabled)return{allowed:true,reason:""};
+    var ok=checkCompliance();
+    return{allowed:ok,reason:EM.complianceDetail,tier:emconEffectiveTier(),status:EM.complianceStatus};
+  };
+
+  /* ── Render EMCON Geofences on Map ── */
+  window.emconRenderGeofences=function(ctx,zoom){
+    var d=devicePixelRatio||1;
+    /* Geofences — only when Field Mode active */
+    if(EM.enabled&&EM.geofences.length){
+    EM.geofences.forEach(function(gf){
+      if(!gf.active)return;
+      var scr=latlonToScreen(gf.lat,gf.lon);
+      var radiusPx=metersToPixels(gf.radiusM,gf.lat,zoom)*d;
+      var color=EM.tierColors[gf.tier]||"#888";
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(scr.x*d,scr.y*d,radiusPx,0,Math.PI*2);
+      ctx.strokeStyle=color;
+      ctx.lineWidth=2*d;
+      ctx.setLineDash([6*d,4*d]);
+      ctx.globalAlpha=0.5;
+      ctx.stroke();
+      ctx.fillStyle=color;
+      ctx.globalAlpha=0.06;
+      ctx.fill();
+      ctx.setLineDash([]);
+      /* Label */
+      ctx.globalAlpha=0.7;
+      ctx.font=(10*d)+"px "+getComputedStyle(document.documentElement).getPropertyValue("--font");
+      ctx.fillStyle=color;
+      ctx.textAlign="center";
+      ctx.fillText(gf.name+" ("+EM.tierLabels[gf.tier]+")",scr.x*d,scr.y*d-radiusPx-4*d);
+      ctx.restore();
+    });
+    }
+    /* My position dot — always renders when position is set */
+    if(EM.gpsPos){
+      var gScr=latlonToScreen(EM.gpsPos.lat,EM.gpsPos.lon);
+      var iconScales={tiny:0.6,small:0.8,medium:1,large:1.3,xlarge:1.6};
+      var dotScale=iconScales[S.iconSize||"medium"]||1;
+      var dotR=Math.max(8,10*dotScale)*d;
+      var gx=gScr.x*d,gy=gScr.y*d;
+      ctx.save();
+      /* Outer glow */
+      ctx.beginPath();ctx.arc(gx,gy,dotR+6*d,0,Math.PI*2);
+      ctx.fillStyle="rgba(0,170,255,.15)";ctx.fill();
+      /* Outer ring */
+      ctx.beginPath();ctx.arc(gx,gy,dotR+2*d,0,Math.PI*2);
+      ctx.strokeStyle="rgba(0,170,255,.5)";ctx.lineWidth=1.5*d;ctx.stroke();
+      /* Core dot */
+      ctx.beginPath();ctx.arc(gx,gy,dotR,0,Math.PI*2);
+      ctx.fillStyle="#00aaff";ctx.globalAlpha=0.95;ctx.fill();
+      ctx.strokeStyle="#fff";ctx.lineWidth=2*d;ctx.stroke();
+      /* Center pip */
+      ctx.beginPath();ctx.arc(gx,gy,2.5*d,0,Math.PI*2);
+      ctx.fillStyle="#fff";ctx.globalAlpha=1;ctx.fill();
+      /* Accuracy ring */
+      if(EM.gpsPos.accuracy&&EM.gpsPos.accuracy>0){
+        var accPx=metersToPixels(EM.gpsPos.accuracy,EM.gpsPos.lat,zoom)*d;
+        if(accPx>dotR+8*d&&accPx<500*d){
+          ctx.beginPath();ctx.arc(gx,gy,accPx,0,Math.PI*2);
+          ctx.fillStyle="rgba(0,170,255,.06)";ctx.fill();
+          ctx.strokeStyle="rgba(0,170,255,.25)";ctx.lineWidth=1*d;
+          ctx.setLineDash([4*d,3*d]);ctx.stroke();ctx.setLineDash([]);
+        }
+      }
+      ctx.restore();
+      /* Store GPS screen pos for click detection */
+      EM._gpsScreenPos={x:gScr.x,y:gScr.y,r:(dotR+6*d)/d};
+    } else {
+      EM._gpsScreenPos=null;
+    }
+  };
+
+  /* ── Render EMCON Section in Comms Panel (Host) ── */
+  window.renderEmconSection=function(){
+    var h='<div class="section"><div class="section-title">\u{1F6E1}\uFE0F Field Mode / EMCON</div>';
+    if(!EM.enabled){
+      h+='<div style="margin:8px 0;font-size:11px;opacity:.6">Field Mode enforces EMCON compliance. When enabled, devices must meet emission requirements to join the network.</div>';
+      h+='<button class="btn primary" style="width:100%;padding:10px;font-size:12px;font-weight:600" onclick="emconEnable(1)">Activate Field Mode</button>';
+      h+='</div>';
+      return h;
+    }
+    /* Active — show controls */
+    var eff=emconEffectiveTier();
+    var color=EM.tierColors[eff]||"#888";
+    h+='<div style="padding:8px 10px;border-radius:6px;border:1px solid '+color+'44;background:'+color+'11;margin-bottom:8px">';
+    h+='<div style="font-size:12px;font-weight:700;color:'+color+'">'+EM.tierLabels[eff]+'</div>';
+    h+='<div style="font-size:10px;opacity:.7;margin-top:2px">'+EM.complianceDetail+'</div>';
+    if(EM.complianceStatus==="non-compliant"){h+='<div style="font-size:10px;color:#ff4444;margin-top:2px">\u26A0 Device non-compliant — '+EM.complianceDetail+'</div>'}
+    h+='</div>';
+
+    /* Tier selector (host or standalone) */
+    if(S._net.isHost||S._net.mode==="offline"){
+      h+='<label style="font-size:10px">EMCON Tier</label>';
+      h+='<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px">';
+      for(var t=1;t<=4;t++){
+        var tc=EM.tierColors[t];var sel=EM.tier===t;
+        h+='<button class="btn'+(sel?' primary':'')+'" style="flex:1;font-size:10px;padding:6px 4px;min-width:60px;'+(sel?'border-color:'+tc+';':'color:'+tc)+'" onclick="emconSetTier('+t+')">'+["","Silent","BLE","Local","Full"][t]+'</button>';
+      }
+      h+='</div>';
+    }
+
+    /* Manual override (peer can go darker) */
+    if(!S._net.isHost&&S._net.mode!=="offline"){
+      h+='<div style="font-size:10px;opacity:.6;margin-bottom:4px">You can go more restrictive than the host policy:</div>';
+      h+='<div style="display:flex;gap:4px;margin-bottom:8px">';
+      var effMax=EM.hostPolicy?EM.hostPolicy.tier:EM.tier;
+      for(var t2=1;t2<=effMax;t2++){
+        var isOver=EM.manualOverride===t2;
+        h+='<button class="btn'+(isOver?' primary':'')+'" style="flex:1;font-size:10px;padding:5px 2px" onclick="emconSetManualOverride('+(isOver?'null':t2)+')">'+["","T1","T2","T3","T4"][t2]+'</button>';
+      }
+      h+='</div>';
+    }
+
+    /* Sync Windows (Host) */
+    if(S._net.isHost||S._net.mode==="offline"){
+      h+='<div style="margin-bottom:8px">';
+      h+='<div class="toggle-row"><span style="font-size:11px">BLE Sync Windows</span><label class="switch"><input type="checkbox" id="emcon-syncwin" '+(EM.syncWindows.enabled?'checked':'')+'><span class="slider"></span></label></div>';
+      if(EM.syncWindows.enabled){
+        h+='<div style="display:flex;gap:6px;margin-top:4px">';
+        h+='<div style="flex:1"><label style="font-size:9px">Duration (s)</label><input type="number" id="emcon-sw-dur" value="'+EM.syncWindows.durationSec+'" min="5" max="300" style="width:100%"></div>';
+        h+='<div style="flex:1"><label style="font-size:9px">Interval (s)</label><input type="number" id="emcon-sw-int" value="'+EM.syncWindows.intervalSec+'" min="60" max="7200" style="width:100%"></div>';
+        h+='</div>';
+        if(EM.syncWindows.windowActive){h+='<div style="font-size:10px;color:#44cc44;margin-top:4px">\u{1F4E1} Sync window ACTIVE</div>'}
+        else if(EM.syncWindows.nextWindowTs){var _rem=Math.max(0,Math.ceil((EM.syncWindows.nextWindowTs-Date.now())/1000));h+='<div style="font-size:10px;opacity:.5;margin-top:4px">Next window in '+_rem+'s</div>'}
+      }
+      h+='</div>';
+    }
+
+    /* Geofences (Host) */
+    if(S._net.isHost||S._net.mode==="offline"){
+      h+='<div style="font-size:11px;font-weight:600;margin-bottom:4px">EMCON Zones</div>';
+      if(!EM.geofences.length){
+        h+='<div style="font-size:10px;opacity:.5;margin-bottom:4px">No zones defined. Add zones to auto-transition tiers by location.</div>';
+      } else {
+        EM.geofences.forEach(function(gf){
+          var gc=EM.tierColors[gf.tier]||"#888";
+          var isCurrent=EM.currentGeofence===gf.id;
+          h+='<div style="display:flex;align-items:center;gap:6px;padding:4px 6px;border-radius:4px;margin-bottom:3px;border:1px solid '+(isCurrent?gc+'66':'transparent')+';background:'+(isCurrent?gc+'11':'rgba(255,255,255,.03)')+'">';
+          h+='<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+gc+'"></span>';
+          h+='<span style="flex:1;font-size:10px">'+escHtml(gf.name)+' <span style="opacity:.5">'+gf.radiusM+'m • '+EM.tierLabels[gf.tier]+'</span></span>';
+          h+='<button class="btn danger" style="font-size:9px;padding:2px 6px" onclick="emconRemoveGeofence(\''+gf.id+'\')">✕</button>';
+          h+='</div>';
+        });
+      }
+      h+='<button class="btn" style="width:100%;font-size:10px;margin-top:4px;padding:6px" onclick="emconStartGeofencePlacement()">+ Add EMCON Zone at Map Center</button>';
+    }
+
+    /* GPS Status */
+    h+='<div style="margin-top:8px;font-size:10px;opacity:.5">';
+    if(EM.gpsPos){
+      var _src=EM._gpsManual?"Manual":"GPS";
+      h+=_src+': '+EM.gpsPos.lat.toFixed(5)+', '+EM.gpsPos.lon.toFixed(5)+(EM.gpsPos.accuracy?' (±'+Math.round(EM.gpsPos.accuracy)+'m)':'');
+    }
+    else if(EM._gpsStatus==="denied"){h+='<span style="color:#ff4444">GPS: Permission denied</span>'}
+    else if(EM._gpsStatus==="unavailable"){h+='<span style="color:#ff4444">GPS: '+(EM.deviceInfo.platform==="desktop"?'Enable Location Services':'Unavailable')+'</span>'}
+    else if(EM._gpsStatus==="no_hardware"){h+='<span style="color:#ff4444">GPS: Not supported</span>'}
+    else if(EM._gpsStatus==="requesting"){h+='GPS: Requesting permission...'}
+    else{h+='GPS: Off'}
+    h+=' • '+EM.deviceInfo.platform+(EM.deviceInfo.cellularCapable?' (cellular)':' (WiFi only)');
+    h+='</div>';
+    h+='<button class="btn" style="width:100%;margin-top:4px;font-size:10px" onclick="togglePanel(\'maptools\')">\u{1F4CD} Set Position Manually (Map Tools)</button>';
+
+    /* Audit Log (collapsible) */
+    h+='<div style="margin-top:8px;cursor:pointer;font-size:10px;opacity:.6" onclick="S._showEmconLog=!S._showEmconLog;renderFloatingPanel()">'+(S._showEmconLog?'\u25BC':'\u25B6')+' Audit Log ('+EM.auditLog.length+')</div>';
+    if(S._showEmconLog&&EM.auditLog.length){
+      h+='<div style="max-height:150px;overflow-y:auto;margin-top:4px;border:1px solid var(--border);border-radius:4px;padding:4px">';
+      var logs=EM.auditLog.slice(-20).reverse();
+      logs.forEach(function(l){
+        var time=new Date(l.ts).toLocaleTimeString();
+        h+='<div style="font-size:9px;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.05)"><span style="opacity:.5">'+time+'</span> <span style="color:'+EM.tierColors[l.tier]+'">T'+l.tier+'</span> '+escHtml(l.detail)+'</div>';
+      });
+      h+='</div>';
+      h+='<button class="btn" style="width:100%;font-size:9px;margin-top:4px" onclick="emconExportLog()">Export Audit Log</button>';
+    }
+
+    /* Deactivate */
+    h+='<button class="btn danger" style="width:100%;margin-top:8px;font-size:10px" onclick="emconDisable()">\u{1F6D1} Deactivate Field Mode</button>';
+    h+='</div>';
+    return h;
+  };
+
+  /* ── Geofence Placement ── */
+  window.emconStartGeofencePlacement=function(){
+    var lat=S.lat,lon=S.lon;
+    var name=prompt("Zone name (e.g. TOC, Patrol Base):","TOC");
+    if(!name)return;
+    var radius=parseInt(prompt("Radius in meters:","100"))||100;
+    var tier=parseInt(prompt("Max tier (1=Silent, 2=BLE, 3=Local WiFi, 4=Full):","3"))||3;
+    if(tier<1)tier=1;if(tier>4)tier=4;
+    emconAddGeofence(name,lat,lon,radius,tier);
+  };
+
+  /* ── Export Audit Log ── */
+  window.emconExportLog=function(){
+    var csv="Timestamp,Event,Tier,Detail,Platform,Cellular\n";
+    EM.auditLog.forEach(function(l){
+      csv+=new Date(l.ts).toISOString()+","+l.event+","+l.tier+",\""+l.detail.replace(/"/g,'""')+"\","+(l.deviceInfo?l.deviceInfo.platform:"")+","+(l.deviceInfo?l.deviceInfo.cellular:"")+"\n";
+    });
+    var blob=new Blob([csv],{type:"text/csv"});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement("a");a.href=url;a.download="emcon_audit_"+new Date().toISOString().replace(/[:.]/g,"-")+".csv";a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  /* ── Manual Position Setting ── */
+  window.emconSetManualPosition=function(){
+    var inp=document.getElementById("manual-pos-input");
+    if(!inp||!inp.value.trim()){if(typeof notify==="function")notify("Enter an MGRS grid or lat,lon","error");return}
+    var parsed=parseCoordInput(inp.value.trim());
+    if(!parsed){if(typeof notify==="function")notify("Could not parse coordinates","error");return}
+    EM.gpsPos={lat:parsed.lat,lon:parsed.lon,accuracy:0,timestamp:Date.now()};
+    EM._gpsManual=true;
+    EM._gpsStatus="active";
+    emconLog("manual_position","Position set manually: "+toMGRS(parsed.lat,parsed.lon));
+    if(typeof notify==="function")notify("\u{1F4CD} Position set: "+toMGRS(parsed.lat,parsed.lon),"success");
+    checkGeofences(null);
+    updateEmconIndicator();
+    if(typeof requestRender==="function")requestRender();
+    if(typeof renderFloatingPanel==="function")renderFloatingPanel();
+    inp.value="";
+  };
+  window.emconSetPositionFromCenter=function(){
+    EM.gpsPos={lat:S.lat,lon:S.lon,accuracy:0,timestamp:Date.now()};
+    EM._gpsManual=true;
+    EM._gpsStatus="active";
+    emconLog("manual_position","Position set from map center: "+toMGRS(S.lat,S.lon));
+    if(typeof notify==="function")notify("\u{1F4CD} Position set: "+toMGRS(S.lat,S.lon),"success");
+    checkGeofences(null);
+    updateEmconIndicator();
+    if(typeof requestRender==="function")requestRender();
+    if(typeof renderFloatingPanel==="function")renderFloatingPanel();
+  };
+  window.emconCenterOnSelf=function(){
+    if(EM.gpsPos){S.lat=EM.gpsPos.lat;S.lon=EM.gpsPos.lon;if(typeof requestRender==="function")requestRender()}
+  };
+
+  /* ── Expose for external use ── */
+  window.emconEffectiveTier=emconEffectiveTier;
+  window.emconCheckCompliance=checkCompliance;
+  window.emconUpdateIndicator=updateEmconIndicator;
+
+  /* ── Compliance Blocker Overlay ── */
+  function updateComplianceBlocker(){
+    var el=document.getElementById("emcon-blocker");
+    var isBlocked=EM.enabled&&EM.complianceStatus==="non-compliant";
+    if(!isBlocked){
+      if(el)el.style.display="none";
+      return;
+    }
+    if(!el){
+      el=document.createElement("div");el.id="emcon-blocker";
+      el.style.cssText="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;font-family:var(--font);color:#fff;text-align:center;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)";
+      document.body.appendChild(el);
+    }
+    el.style.display="flex";
+    var tier=emconEffectiveTier();
+    var color=EM.tierColors[tier]||"#ff4444";
+    var platform=EM.deviceInfo.platform;
+    /* Platform-specific instructions */
+    var instructions="";
+    if(tier<=2){
+      if(EM.deviceInfo.cellularCapable){
+        instructions="<div style='margin:16px 0;text-align:left;max-width:320px'>"
+          +"<div style='display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px'><span style='font-size:20px'>1️⃣</span> Open <strong>Settings</strong> or swipe to <strong>Control Center</strong></div>"
+          +"<div style='display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px'><span style='font-size:20px'>2️⃣</span> Enable <strong style=\"color:#ff4444\">Airplane Mode</strong></div>"
+          +"<div style='display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px'><span style='font-size:20px'>3️⃣</span> Turn <strong style=\"color:#4a9eff\">Bluetooth</strong> back on</div>"
+          +"<div style='font-size:11px;opacity:.5;margin-top:8px'>GPS continues to work in airplane mode — it\\'s receive-only.</div>"
+          +"</div>";
+      } else {
+        instructions="<div style='margin:16px 0;text-align:left;max-width:320px'>"
+          +"<div style='display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px'><span style='font-size:20px'>1️⃣</span> Disable <strong style=\"color:#ff4444\">WiFi</strong></div>"
+          +"<div style='display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px'><span style='font-size:20px'>2️⃣</span> Ensure <strong style=\"color:#4a9eff\">Bluetooth</strong> is on</div>"
+          +"</div>";
+      }
+    }
+    /* Tier controls — always accessible */
+    var tierBtns="";
+    if(S._net.isHost||S._net.mode==="offline"){
+      tierBtns="<div style='margin-top:16px;width:100%;max-width:320px'>"
+        +"<div style='font-size:10px;opacity:.5;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px'>Adjust EMCON Tier</div>"
+        +"<div style='display:flex;gap:6px'>";
+      for(var t=1;t<=4;t++){
+        var tc=EM.tierColors[t];var sel=EM.tier===t;
+        tierBtns+="<button onclick='emconSetTier("+t+")' style='flex:1;padding:10px 4px;border-radius:6px;border:1px solid "+(sel?tc:tc+"44")+";background:"+(sel?tc+"33":"rgba(255,255,255,.05)")+";color:"+tc+";font-family:var(--font);font-size:11px;font-weight:700;cursor:pointer'>"+["","T1","T2","T3","T4"][t]+"</button>";
+      }
+      tierBtns+="</div></div>";
+    }
+    /* Deactivate button */
+    var deactivateBtn="<button onclick='emconDisable()' style='margin-top:16px;padding:10px 24px;border-radius:6px;border:1px solid #ff444466;background:rgba(255,68,68,.1);color:#ff4444;font-family:var(--font);font-size:11px;font-weight:600;cursor:pointer'>Deactivate Field Mode</button>";
+
+    el.innerHTML=""
+      +"<div style='font-size:48px;margin-bottom:8px'>\u{1F6E1}\uFE0F</div>"
+      +"<div style='font-size:18px;font-weight:700;color:"+color+";letter-spacing:1px'>"+EM.tierLabels[tier]+"</div>"
+      +"<div style='font-size:22px;font-weight:800;margin-top:8px;color:#ff4444'>DEVICE NON-COMPLIANT</div>"
+      +"<div style='font-size:12px;opacity:.7;margin-top:6px;max-width:300px'>Your device does not meet the current EMCON posture. StaffMaps is locked until compliance is restored.</div>"
+      +instructions
+      +"<div style='padding:10px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);margin-top:8px;max-width:320px;width:100%'>"
+      +"<div style='font-size:10px;opacity:.4;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px'>Device Status</div>"
+      +"<div style='display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px'><span style='opacity:.6'>Network</span><span style='color:"+(navigator.onLine?"#ff4444":"#44cc44")+"'>"+(navigator.onLine?"\u25CF Online — non-compliant":"\u25CF Offline — OK")+"</span></div>"
+      +"<div style='display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px'><span style='opacity:.6'>Platform</span><span>"+EM.deviceInfo.platform+(EM.deviceInfo.cellularCapable?" (cellular)":"")+"</span></div>"
+      +"<div style='display:flex;justify-content:space-between;font-size:11px'><span style='opacity:.6'>Required</span><span style='color:"+color+"'>"+EM.tierLabels[tier]+"</span></div>"
+      +"</div>"
+      +tierBtns
+      +deactivateBtn
+      +"<div style='font-size:9px;opacity:.25;margin-top:20px'>StaffMaps will automatically unlock when your device is compliant.</div>";
+  }
+
+  /* ── Periodic compliance re-check ── */
+  setInterval(function(){
+    if(!EM.enabled){updateComplianceBlocker();return}
+    var prev=EM.complianceStatus;
+    checkCompliance();
+    updateComplianceBlocker();
+    if(prev!==EM.complianceStatus){
+      updateEmconIndicator();
+      if(typeof renderFloatingPanel==="function"&&S._activePanel==="comms")renderFloatingPanel();
+    }
+  },3000);
+
+  /* Also call blocker on any compliance change triggered by tier/mode changes */
+  var _origCheckCompliance=checkCompliance;
+  checkCompliance=function(){
+    var result=_origCheckCompliance();
+    updateComplianceBlocker();
+    return result;
+  };
+
+})();
+// ─── END EMCON / FIELD MODE ENGINE ──────────────────────────────────────────
 
 // ─── STAFFMAPS CONNECTOR (Bluetooth Bridge) ───────────────────────────────────
 (function(){
