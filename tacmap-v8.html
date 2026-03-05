@@ -186,17 +186,17 @@ input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:20
 </head>
 <body>
 <div id="app"><div id="vc-sync-dot"></div></div><div class="map-tooltip" id="map-tooltip"></div>
-<script id="milsymbol-lib">/*! milsymbol.js - MIT License - spatialillusions.com */</script>
-<script src="milsymbol.js" onerror="console.warn('milsymbol.js external load failed - symbols will use legacy renderer')"></script>
+<script src="milsymbol.js"></script>
 <script>
 "use strict";
+// Built by build.py on 2026-03-05 16:08:38
 
-// === part_01_constants.js ===
+// === 01_constants.js ===
 
 const SVG_W=120,SVG_H=140,CX=60,CY=62,FRAME_W=70,FRAME_H=50,U=10,DEG=Math.PI/180,TILE_SIZE=256,MAX_UNDO=30;
 const TILE_SOURCES={esri_topo:{name:"ESRI Topo",url:"https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",maxZoom:19},osm:{name:"OpenStreetMap",url:"https://tile.openstreetmap.org/{z}/{x}/{y}.png",maxZoom:19},esri_sat:{name:"ESRI Satellite",url:"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",maxZoom:19},esri_natgeo:{name:"ESRI NatGeo",url:"https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}",maxZoom:16},opentopo:{name:"OpenTopo",url:"https://tile.opentopomap.org/{z}/{x}/{y}.png",maxZoom:17},usgs_topo:{name:"USGS Topo",url:"https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}",maxZoom:16},google_sat:{name:"Google Satellite",url:"https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",maxZoom:20},google_hybrid:{name:"Google Hybrid",url:"https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",maxZoom:20},google_terrain:{name:"Google Terrain",url:"https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}",maxZoom:20},google_roads:{name:"Google Roads",url:"https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",maxZoom:20}};
 const AFFILIATIONS={friendly:{color:"#000",fill:"#80E0FF",shape:"rect",label:"Friendly"},hostile:{color:"#000",fill:"#FF8080",shape:"diamond",label:"Hostile"},neutral:{color:"#000",fill:"#AAFFAA",shape:"square",label:"Neutral"},unknown:{color:"#000",fill:"#FFFF80",shape:"quatrefoil",label:"Unknown"}};
-const UNIT_CATEGORIES=[{name:"Infantry & Armor",types:[{id:"infantry",label:"Infantry"},{id:"light_infantry",label:"Light Infantry"},{id:"motorized_infantry",label:"Motorized Inf"},{id:"naval_infantry",label:"Naval Infantry"},{id:"mechanized_infantry",label:"Mech Infantry"},{id:"mechanized_infantry_wheeled",label:"Mech Inf (Whl)"},{id:"ifv",label:"IFV"},{id:"lav_infantry",label:"LAV Infantry"},{id:"armor",label:"Armor"},{id:"amphibious_armor",label:"Amphib Armor"},{id:"armored_wheeled",label:"Armor (Whl)"},{id:"recon",label:"Recon"},{id:"armored_recon",label:"Armored Recon"},{id:"armored_recon_wheeled",label:"Arm Recon (Whl)"},{id:"anti_armor",label:"Anti-Armor"},{id:"magtf",label:"MAGTF"}]},{name:"Fires",types:[{id:"artillery",label:"Field Artillery"},{id:"mechanized_artillery",label:"Mech Artillery"},{id:"rocket_artillery",label:"Rocket Arty"},{id:"mortar",label:"Mortar"},{id:"mortar_wheeled",label:"Mortar (Whl)"}]},{name:"Aviation & Air Defense",types:[{id:"aviation",label:"Aviation"},{id:"fixed_wing",label:"Fixed Wing"},{id:"medevac_aviation",label:"MEDEVAC"},{id:"uav",label:"UAS"},{id:"air_defense",label:"Air Defense Arty"},{id:"sam",label:"SAM"}]},{name:"Engineer",types:[{id:"engineer",label:"Engineer"},{id:"combat_engineer",label:"Combat Engineer"},{id:"bridging",label:"Bridging"}]},{name:"Command, Signal & EW",types:[{id:"headquarters",label:"HQ"},{id:"signal",label:"Signal"},{id:"military_intelligence",label:"MI"},{id:"electronic_warfare",label:"EW"},{id:"cyber",label:"Cyber"}]},{name:"Logistics & Medical",types:[{id:"sustainment",label:"Sustainment"},{id:"combat_service_support",label:"Combat Svc Spt"},{id:"medical",label:"Medical"},{id:"maintenance",label:"Maintenance"},{id:"transportation",label:"Transport"},{id:"supply",label:"Supply"},{id:"ordnance",label:"Ordnance"}]},{name:"Special Forces",types:[{id:"special_forces",label:"SF"},{id:"ranger",label:"Ranger"},{id:"civil_affairs",label:"Civil Affairs"},{id:"psyop",label:"PSYOP"}]},{name:"Waypoints",types:[{id:"waypoint",label:"Waypoint"},{id:"blank",label:"Blank"}]}];
+const UNIT_CATEGORIES=[{name:"Infantry & Armor",types:[{id:"infantry",label:"Infantry"},{id:"light_infantry",label:"Light Infantry"},{id:"motorized_infantry",label:"Motorized Inf"},{id:"naval_infantry",label:"Naval Infantry"},{id:"mechanized_infantry",label:"Mech Infantry"},{id:"mechanized_infantry_wheeled",label:"Mech Inf (Whl)"},{id:"ifv",label:"IFV"},{id:"lav_infantry",label:"LAV Infantry"},{id:"armor",label:"Armor"},{id:"amphibious_armor",label:"Amphib Armor"},{id:"armored_wheeled",label:"Armor (Whl)"},{id:"recon",label:"Recon"},{id:"armored_recon",label:"Armored Recon"},{id:"armored_recon_wheeled",label:"Arm Recon (Whl)"},{id:"anti_armor",label:"Anti-Armor"},{id:"magtf",label:"MAGTF"}]},{name:"Fires",types:[{id:"artillery",label:"Field Artillery"},{id:"mechanized_artillery",label:"Mech Artillery"},{id:"rocket_artillery",label:"Rocket Arty"},{id:"mortar",label:"Mortar"},{id:"mortar_wheeled",label:"Mortar (Whl)"}]},{name:"Aviation & Air Defense",types:[{id:"aviation",label:"Aviation"},{id:"fixed_wing",label:"Fixed Wing"},{id:"uav",label:"UAS"},{id:"air_defense",label:"Air Defense Arty"},{id:"sam",label:"SAM"}]},{name:"Engineer",types:[{id:"engineer",label:"Engineer"},{id:"combat_engineer",label:"Combat Engineer"},{id:"bridging",label:"Bridging"}]},{name:"Command, Signal & EW",types:[{id:"signal",label:"Signal"},{id:"military_intelligence",label:"MI"},{id:"electronic_warfare",label:"EW"}]},{name:"Logistics & Medical",types:[{id:"sustainment",label:"Sustainment"},{id:"combat_service_support",label:"Combat Svc Spt"},{id:"medical",label:"Medical"},{id:"maintenance",label:"Maintenance"},{id:"transportation",label:"Transport"},{id:"supply",label:"Supply"}]},{name:"Special Forces",types:[{id:"special_forces",label:"SF"},{id:"ranger",label:"Ranger"},{id:"civil_affairs",label:"Civil Affairs"},{id:"psyop",label:"PSYOP"}]},{name:"Waypoints",types:[{id:"waypoint",label:"Waypoint"},{id:"blank",label:"Blank"}]}];
 const TYPE_LABELS={};UNIT_CATEGORIES.forEach(c=>c.types.forEach(t=>{TYPE_LABELS[t.id]=t.label}));
 const ECHELONS=[{id:"team",label:"Team/Crew",mark:"slashO"},{id:"squad",label:"Squad",mark:"dot1"},{id:"section",label:"Section",mark:"dot2"},{id:"platoon",label:"Platoon",mark:"dot3"},{id:"company",label:"Company",mark:"bar1"},{id:"battalion",label:"Battalion",mark:"bar2"},{id:"regiment",label:"Regt/Group",mark:"bar3"},{id:"brigade",label:"Brigade",mark:"x1"},{id:"division",label:"Division",mark:"x2"},{id:"corps",label:"Corps",mark:"x3"},{id:"army",label:"Theater Army",mark:"x4"},{id:"army_group",label:"Army Group",mark:"x5"},{id:"theater",label:"Theater",mark:"x6"},{id:"command",label:"Command",mark:"cmd"}];
 const MODIFIERS=[{id:"reinforced",label:"+",symbol:"+"},{id:"reduced",label:"\u2212",symbol:"\u2212"},{id:"airborne",label:"Airborne",symbol:"\u2297"},{id:"air_assault",label:"Air Assault",symbol:"\u2298"},{id:"mountain",label:"Mountain",symbol:"\u25b2"},{id:"arctic",label:"Arctic",symbol:"\u2744"},{id:"amphibious",label:"Amphibious",symbol:"\u2248"},{id:"light",label:"Light",symbol:"L"},{id:"heavy",label:"Heavy",symbol:"H"},{id:"motorized",label:"Motorized",symbol:"\u2299"},{id:"mechanized",label:"Mechanized",symbol:"\u229b"},{id:"wheeled",label:"Wheeled",symbol:"W"}];
@@ -205,56 +205,147 @@ const GRAPHIC_COLORS=["#ff4444","#4a9eff","#44cc44","#ffd700","#80E0FF","#FF8080
 
 /* === milsymbol integration === */
 const _MS=typeof ms!=="undefined"?ms:null;
-const SIDC_MAP={
-infantry:"SFG-UCI----",light_infantry:"SFG-UCIL---",motorized_infantry:"SFG-UCIZ---",
-naval_infantry:"SFG-UCIN---",mechanized_infantry:"SFG-UCIM---",mechanized_infantry_wheeled:"SFG-UCIZ---",
-ifv:"SFG-UCIC---",lav_infantry:"SFG-UCIC---",armor:"SFG-UCA----",amphibious_armor:"SFG-UCATW--",
-armored_wheeled:"SFG-UCA----",recon:"SFG-UCR----",armored_recon:"SFG-UCRA---",
-armored_recon_wheeled:"SFG-UCRA---",anti_armor:"SFG-UCAA---",magtf:"SFG-UCI----",
-artillery:"SFG-UCF----",mechanized_artillery:"SFG-UCFM---",rocket_artillery:"SFG-UCFR---",
-mortar:"SFG-UCFM---",mortar_wheeled:"SFG-UCFM---",
-aviation:"SFG-UCVR---",fixed_wing:"SFG-UCVF---",medevac_aviation:"SFG-UCVR---",
-uav:"SFG-UCVR---",air_defense:"SFG-UCD----",sam:"SFG-UCDS---",
-engineer:"SFG-UCE----",combat_engineer:"SFG-UCE----",bridging:"SFG-UCEC---",
-headquarters:"SFG-UCI----",signal:"SFGPUUS----",military_intelligence:"SFGPUUM----",
-electronic_warfare:"SFG-UUMSE--",cyber:"SFG-UUMSE--",
-sustainment:"SFG-US-----",combat_service_support:"SFG-US-----",medical:"SFG-USM----",
-maintenance:"SFG-USX----",transportation:"SFG-UST----",supply:"SFG-USS----",ordnance:"SFG-USSL---",
-special_forces:"SFG-UCFS---",ranger:"SFG-UCFS---",civil_affairs:"SFF-GCA----",psyop:"SFG-USMP---",
-chemical:"SFG-UUA----"
+/* 20-digit MIL-STD-2525D numeric SIDC — entity codes (6 digits) for symbol set 10 (ground unit) */
+const ENTITY_MAP={
+/* EQUIPMENT (symset 15) — prefix "15:" signals buildSIDC to use symset 15 */
+/* Armor */
+eq_tank:             "15:001202",
+eq_tank_wheeled:     "15:001203",
+eq_apc:              "15:001102",
+eq_ifv:              "15:001103",
+eq_recon_vehicle:    "15:001105",
+/* Fires */
+eq_howitzer:         "15:021302",
+eq_mortar_eq:        "15:021502",
+eq_mlrs:             "15:021402",
+eq_atgm:             "15:010202",
+/* Air Defense */
+eq_sam_system:       "15:030102",
+eq_aaa:              "15:030202",
+/* Aviation */
+eq_helicopter_atk:   "15:110302",
+eq_helicopter_util:  "15:110202",
+eq_helicopter_recon: "15:110402",
+eq_uav_eq:           "15:120102",
+eq_fixed_wing_ftr:   "15:110102",
+/* Engineer */
+eq_engineer_vehicle: "15:060102",
+eq_bridge_layer:     "15:060202",
+eq_minelayer:        "15:060302",
+/* Logistics */
+eq_truck:            "15:140102",
+eq_fuel_vehicle:     "15:140202",
+eq_ambulance:        "15:140502",
+/* C2 / EW */
+eq_command_vehicle:  "15:150102",
+eq_ew_vehicle:       "15:150202",
+eq_radar:            "15:150302",
+/* Infantry & Armor */
+infantry:"121100",light_infantry:"121100",motorized_infantry:"121104",
+naval_infantry:"121101",mechanized_infantry:"121102",mechanized_infantry_wheeled:"121102",
+ifv:"120501",lav_infantry:"120501",armor:"120500",amphibious_armor:"120502",
+armored_wheeled:"120500",recon:"121300",armored_recon:"120501",
+armored_recon_wheeled:"120501",anti_armor:"120400",magtf:"121100",
+/* Fires */
+artillery:"130300",mechanized_artillery:"130301",rocket_artillery:"130700",
+mortar:"130800",mortar_wheeled:"130802",
+/* Aviation & Air Defense */
+aviation:"120600",fixed_wing:"120800",
+uav:"121900",air_defense:"130100",sam:"130102",
+/* Engineer */
+engineer:"140700",combat_engineer:"140700",bridging:"140200",
+/* C2 / Signal / Intel */
+headquarters:"121100",signal:"111000",military_intelligence:"151000",
+electronic_warfare:"150500",
+/* Logistics */
+sustainment:"160000",combat_service_support:"160600",medical:"161300",
+maintenance:"161100",transportation:"163600",supply:"163400",
+/* Special */
+special_forces:"121700",ranger:"122000",civil_affairs:"110200",psyop:"110600",
+chemical:"141600"
 };
-const AFF_CHAR={friendly:"F",hostile:"H",neutral:"N",unknown:"U"};
-const ECH_CHAR={team:"A",squad:"B",section:"C",platoon:"D",company:"E",battalion:"F",regiment:"G",brigade:"H",division:"I",corps:"J",army:"K",army_group:"L",theater:"M",command:"N"};
+const AFF_CODE={friendly:"03",hostile:"06",neutral:"04",unknown:"01"};
+const ECH_CODE={team:"11",squad:"12",section:"13",platoon:"14",company:"15",battalion:"16",regiment:"17",brigade:"18",division:"21",corps:"22",army:"23",army_group:"24",theater:"25",command:"26"};
+/* CAP_M2: milsymbol reads _modifier2 = sidc[21] + sidc[18:20]. m2 placed at sidc[18:20]. */
+const CAP_M2={"airborne":"01","arctic":"02","heavy":"15","light":"19","mountain":"27","ski":"42","air_assault":"59","amphibious":"60"};
+/* TYPE_M2: capability modifiers baked into specific type IDs automatically */
+const TYPE_M2={light_infantry:"19",lav_infantry:"60",armored_wheeled:"51",armored_recon_wheeled:"51",mechanized_infantry_wheeled:"51",combat_engineer:"19"};
+/* ICON_OVERLAY: types rendered with custom canvas compositing after milsymbol */
+const ICON_OVERLAY={
+  combat_engineer:{text:"CBT"},
+  magtf:{custom:"magtf"}
+};
 const _msCache={};
-function buildSIDC(type,aff,ech,isHQ){
-var base=SIDC_MAP[type];if(!base)return null;
-var ac=AFF_CHAR[aff||"friendly"]||"F";
-/* Set affiliation char at position 1 */
-var sidc=base[0]+ac+base.substring(2);
-/* Set echelon at position 11 (pad to 15 chars) */
-while(sidc.length<15)sidc+="-";
-var ec=ech?ECH_CHAR[ech]||"-":"-";
-sidc=sidc.substring(0,11)+ec+sidc.substring(12);
-/* HQ: set position 10 to A */
-if(isHQ)sidc=sidc.substring(0,10)+"A"+sidc.substring(11);
-return sidc;
+function buildSIDC(type,aff,ech,isHQ,mods){
+var entity=ENTITY_MAP[type];if(!entity)return null;
+var id=AFF_CODE[aff||"friendly"]||"03";
+var hq=isHQ?"2":"0";
+/* Equipment symset (15) vs unit symset (10) */
+var isEq=entity.indexOf("15:")===0;
+var symset=isEq?"15":"10";
+if(isEq)entity=entity.slice(3);
+/* Equipment has no echelon or mobility modifiers */
+var ec=(!isEq&&ech)?(ECH_CODE[ech]||"00"):"00";
+var m2="00";
+if(!isEq){m2=TYPE_M2[type]||"00";if(m2==="00"&&mods&&mods.length){for(var i=0;i<mods.length;i++){if(CAP_M2[mods[i]]){m2=CAP_M2[mods[i]];break}}}}
+/* 30-char 2525E: ver(2)+ctx(1)+affil(1)+symset(2)+status(1)+hq(1)+ech(2)+entity(6)+etype(2)+m2(2)+zeros(4)+pad(6) */
+return "13"+id+symset+"0"+hq+ec+entity+"00"+m2+"00"+"00"+"000000";
 }
-function getMSImage(sidc,sz,opts){
+function _compositeIconOverlay(canvas,type,aff){
+var ctx=canvas.getContext("2d");
+var w=canvas.width,h=canvas.height;
+var ovr=ICON_OVERLAY[type];if(!ovr)return canvas;
+if(ovr.text){
+  /* Text badge at top of frame */
+  var fs=Math.round(w*0.20);
+  ctx.font="bold "+fs+"px Arial,sans-serif";
+  ctx.textAlign="center";ctx.textBaseline="top";
+  var tw=ctx.measureText(ovr.text).width;
+  var pad=2,tx=w/2,ty=Math.round(h*0.10);
+  ctx.fillStyle="rgba(128,224,255,0.92)";
+  ctx.fillRect(tx-tw/2-pad,ty-1,tw+pad*2,fs+2);
+  ctx.fillStyle="#000";ctx.fillText(ovr.text,tx,ty);
+}
+if(ovr.custom==="magtf"){
+  /* MAGTF: overlay infantry X, fixed-wing arrow, and amphibious wave */
+  var cx=w/2,cy=h/2,r=w*0.28;
+  ctx.strokeStyle="#000";ctx.lineWidth=Math.max(1,w*0.028);ctx.fillStyle="rgba(0,0,0,0)";
+  /* Infantry X (scaled smaller, upper-left) */
+  var xs=r*0.55,xo=cx-r*0.38,yo=cy-r*0.30;
+  ctx.beginPath();ctx.moveTo(xo-xs,yo-xs*0.65);ctx.lineTo(xo+xs,yo+xs*0.65);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(xo-xs,yo+xs*0.65);ctx.lineTo(xo+xs,yo-xs*0.65);ctx.stroke();
+  /* Fixed-wing arrow (upper-right) */
+  var ax=cx+r*0.38,ay=yo,aw=r*0.45;
+  ctx.beginPath();ctx.moveTo(ax,ay-aw*0.7);ctx.lineTo(ax,ay+aw*0.5);
+  ctx.moveTo(ax-aw*0.5,ay-aw*0.1);ctx.lineTo(ax,ay-aw*0.7);ctx.lineTo(ax+aw*0.5,ay-aw*0.1);
+  ctx.stroke();
+  /* Amphibious wave (bottom center) */
+  var wy=cy+r*0.55,ww=r*1.1;
+  ctx.beginPath();
+  ctx.moveTo(cx-ww,wy);
+  ctx.bezierCurveTo(cx-ww*0.6,wy-r*0.25,cx-ww*0.2,wy-r*0.25,cx,wy);
+  ctx.bezierCurveTo(cx+ww*0.2,wy+r*0.25,cx+ww*0.6,wy+r*0.25,cx+ww,wy);
+  ctx.stroke();
+}
+return canvas;
+}
+function getMSImage(sidc,sz,opts,_type){
 if(!_MS)return null;
-var key=sidc+"|"+sz+(opts?"|"+JSON.stringify(opts):"");
+var key=sidc+"|"+sz+(opts?"|"+JSON.stringify(opts):"")+((_type&&ICON_OVERLAY[_type])?"|ovr":"");
 if(_msCache[key])return _msCache[key];
 try{
 var symOpts=Object.assign({size:sz},opts||{});
 var sym=new _MS.Symbol(sidc,symOpts);
-var url=sym.toDataURL();
-var img=new Image();
 var anchor=sym.getAnchor();var size=sym.getSize();
-var entry={img:img,anchor:anchor,size:size,ready:false};
+var entry={img:null,anchor:anchor,size:size,ready:false};
 _msCache[key]=entry;
-img.onload=function(){entry.ready=true};
-img.src=url;
-/* data: URLs decode synchronously in most browsers */
-if(img.complete)entry.ready=true;
+var cv=sym.asCanvas();
+if(_type&&ICON_OVERLAY[_type])_compositeIconOverlay(cv,_type,opts&&opts.affiliation);
+var img=new Image();
+img.onload=function(){entry.ready=true;requestRender();if(typeof redrawPanelIcons==="function")redrawPanelIcons()};
+img.src=cv.toDataURL();
+entry.img=img;
+entry.ready=true;
 return entry;
 }catch(e){return null}
 }
@@ -263,8 +354,12 @@ function clearMSCache(){for(var k in _msCache)delete _msCache[k]}
 
 const OVERLAY_TYPES=[{id:"none",label:"Basic"},{id:"pl",label:"Phase Line"},{id:"ld",label:"Line of Departure"},{id:"boundary",label:"Boundary"},{id:"aa",label:"Assembly Area"},{id:"axis",label:"Axis of Advance"},{id:"route",label:"Route"}];
 
+/* === cross-module shared variables === */
+var _ipbPlacerOpen=false;
+var _placerPos={x:null,y:null,w:null,pinned:false};
+const APP_VERSION="10.5";
 
-// === part_02_state_coords.js ===
+// === 02_state_coords.js ===
 
 let canvas,ctx;const tileCache=new Map();let _renderQueued=false,_fileMenuOpen=false;
 const S={lat:38.8977,lon:-77.0365,zoom:12,tileSource:"esri_topo",theme:"dark",showGrid:true,showLabels:true,gridOpacity:0.25,gridColor:"#000000",gridMode:"mgrs",gridSpacing:"auto",coordDisplay:"mgrs",autoCenter:true,pencilMode:localStorage.getItem("sm_pencilMode")!=="false",units:[],graphics:[],layers:[{id:"default",name:"Default",color:"#4a9eff",visible:true}],packages:[],activeLayerId:"default",selectedUnitId:null,selectedGraphicId:null,editorTab:"icon",editorPinned:false,_allLayersHidden:false,_perfDecimate:false,_activePanel:null,_drawMode:null,_placementMode:null,_isPanning:false,_panStart:null,_lastPointerType:"mouse",_activePointers:new Map(),_pinchStartDist:null,_pinchStartZoom:null,_layout:"desktop",_isLandscape:false,undoStack:[],_operation:null,_opActivePhase:null,_opShowSettings:false,_opShowPhaseMeta:false,_wjEntryType:'note',_net:{peer:null,conns:[],isHost:false,roomCode:null,hostConn:null,mode:"offline",persistentRoom:null,editMode:"observer",joinOrder:0,nextJoinOrder:1,peerName:localStorage.getItem("staffmaps_callsign")||"",peerNames:{},status:"",encEnabled:false,encKey:null,passphrase:"",chatMessages:[],unreadCount:0,chatTarget:"room",sharedLayers:{},sharedEditLayer:null,editScope:"local",defaultJoinMode:"view",peerPermissions:{},editRequests:[],editRequestStatus:null,roomRoster:[],_ble:{present:false,connected:false,deviceName:null,connecting:false},_vc:{seq:0,log:[],locks:{},sessionChecksum:null,_consistencyTimer:null,consistencyInterval:60000,_heavyOp:false,_pendingEdit:null},
@@ -296,7 +391,7 @@ function pixelToLatlon(px,py,zoom){const s=Math.pow(2,zoom)*TILE_SIZE,n=Math.PI-
 function worldToScreen(wx,wy){const d=devicePixelRatio||1,c=latlonToPixel(S.lat,S.lon,S.zoom);return{x:(wx-c.x)*d+canvas.width/2,y:(wy-c.y)*d+canvas.height/2}}
 function screenToWorld(sx,sy){const d=devicePixelRatio||1,c=latlonToPixel(S.lat,S.lon,S.zoom);return{x:(sx-canvas.width/2)/d+c.x,y:(sy-canvas.height/2)/d+c.y}}
 function screenToLatlon(sx,sy){const d=devicePixelRatio||1,w=screenToWorld(sx*d,sy*d);return pixelToLatlon(w.x,w.y,S.zoom)}
-function latlonToScreen(lat,lon){const p=latlonToPixel(lat,lon,S.zoom),s=worldToScreen(p.x,p.y),d=devicePixelRatio||1;return{x:s.x/d,y:s.y/d}}
+function latlonToScreen(lat,lon){const p=latlonToPixel(lat,lon,S.zoom),s=worldToScreen(p.x,p.y),d=devicePixelRatio||1;return{x:Math.round(s.x/d*2)/2,y:Math.round(s.y/d*2)/2}}
 function latlonToUTM(lat,lon){const z=Math.floor((lon+180)/6)+1,lo=(z-1)*6-180+3,a=6378137,ff=1/298.257223563,e2=2*ff-ff*ff,ep2=e2/(1-e2),k0=.9996,lr=lat*DEG,lonR=lon*DEG,l0=lo*DEG,N=a/Math.sqrt(1-e2*Math.sin(lr)*Math.sin(lr)),T=Math.tan(lr)**2,C=ep2*Math.cos(lr)**2,A=Math.cos(lr)*(lonR-l0),M=a*((1-e2/4-3*e2**2/64-5*e2**3/256)*lr-(3*e2/8+3*e2**2/32+45*e2**3/1024)*Math.sin(2*lr)+(15*e2**2/256+45*e2**3/1024)*Math.sin(4*lr)-(35*e2**3/3072)*Math.sin(6*lr));let e=k0*N*(A+(1-T+C)*A**3/6+(5-18*T+T**2+72*C-58*ep2)*A**5/120)+500000,n=k0*(M+N*Math.tan(lr)*(A**2/2+(5-T+9*C+4*C**2)*A**4/24+(61-58*T+T**2+600*C-330*ep2)*A**6/720));if(lat<0)n+=10000000;return{zone:z,easting:e,northing:n,letter:"CDEFGHJKLMNPQRSTUVWX"[lat<-80||lat>84?-1:Math.floor((lat+80)/8)]||"Z"}}
 function UTMToLatlon(zone,easting,northing,northern){const a=6378137,ff=1/298.257223563,e2=2*ff-ff*ff,ep2=e2/(1-e2),e1=(1-Math.sqrt(1-e2))/(1+Math.sqrt(1-e2)),k0=.9996,x=easting-500000,y=northern?northing:northing-10000000,M=y/k0,mu=M/(a*(1-e2/4-3*e2**2/64-5*e2**3/256)),p1=mu+(3*e1/2-27*e1**3/32)*Math.sin(2*mu)+(21*e1**2/16-55*e1**4/32)*Math.sin(4*mu)+(151*e1**3/96)*Math.sin(6*mu),N1=a/Math.sqrt(1-e2*Math.sin(p1)**2),T1=Math.tan(p1)**2,C1=ep2*Math.cos(p1)**2,R1=a*(1-e2)/(1-e2*Math.sin(p1)**2)**1.5,D=x/(N1*k0);return{lat:(p1-(N1*Math.tan(p1)/R1)*(D**2/2-(5+3*T1+10*C1-4*C1**2-9*ep2)*D**4/24+(61+90*T1+298*C1+45*T1**2-252*ep2-3*C1**2)*D**6/720))/DEG,lon:(D-(1+2*T1+C1)*D**3/6+(5-2*C1+28*T1-3*C1**2+8*ep2+24*T1**2)*D**5/120)/Math.cos(p1)/DEG+(zone-1)*6-180+3}}
 function toMGRS(lat,lon){try{const u=latlonToUTM(lat,lon),s=(u.zone-1)%6,cL="ABCDEFGHJKLMNPQRSTUVWXYZ",rL=s%2===0?"ABCDEFGHJKLMNPQRSTUV":"FGHJKLMNPQRSTUVABCDE",c=Math.floor(u.easting/1e5),r=Math.floor(u.northing%2e6/1e5);return`${u.zone}${u.letter} ${cL[(c-1+s*8)%24]||"?"}${rL[r%20]||"?"} ${String(Math.floor(u.easting%1e5)).padStart(5,"0")} ${String(Math.floor(u.northing%1e5)).padStart(5,"0")}`}catch(e){return"---"}}
@@ -308,8 +403,7 @@ function formatArea(m2){return m2<1e6?(m2.toFixed(0)+" m²"):(m2/1e6).toFixed(2)
 function parseMGRS(s){/* Parse MGRS string like "18S UJ 234 067" */try{s=s.replace(/\s+/g,"").toUpperCase();const m=s.match(/^(\d{1,2})([C-X])([A-Z]{2})(\d+)$/);if(!m)return null;const zone=parseInt(m[1]),band=m[2],sq=m[3],digits=m[4];if(digits.length%2!==0)return null;const half=digits.length/2,e5=parseInt(digits.substr(0,half)),n5=parseInt(digits.substr(half));const prec=5-half,eStr=String(e5).padEnd(5,"0"),nStr=String(n5).padEnd(5,"0");/* Decode 100km square */const L="ABCDEFGHJKLMNPQRSTUVWXYZ",sIdx=(zone-1)%6;const colLetter=sq[0],rowLetter=sq[1];const col=L.indexOf(colLetter);if(col<0)return null;const e100k=((col-sIdx*8%24+24)%24+1)*1e5;const rL=sIdx%2===0?"ABCDEFGHJKLMNPQRSTUV":"FGHJKLMNPQRSTUVABCDE";const row=rL.indexOf(rowLetter);if(row<0)return null;/* Band baseline */const bandIdx="CDEFGHJKLMNPQRSTUVWX".indexOf(band);if(bandIdx<0)return null;const bandLat=-80+bandIdx*8;const baseN=Math.floor(latlonToUTM(bandLat,(zone-1)*6-180+3).northing/2e6)*2e6;let n100k=row*1e5+baseN;/* Ensure northing is in correct band by checking ±2M */const easting=parseInt(eStr)+e100k;for(let adj=-2e6;adj<=4e6;adj+=2e6){const tryN=n100k+adj+parseInt(nStr);const nor=bandLat>=0;try{const ll=UTMToLatlon(zone,easting,tryN,nor);if(ll.lat>=bandLat-1&&ll.lat<=bandLat+9)return ll}catch(ex){}}return null}catch(ex){return null}}
 function parseCoordInput(s){/* Try lat,lon first */s=s.trim();const llm=s.match(/^(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)$/);if(llm){const lat=parseFloat(llm[1]),lon=parseFloat(llm[2]);if(lat>=-90&&lat<=90&&lon>=-180&&lon<=180)return{lat,lon}}/* Try MGRS */const mgrs=parseMGRS(s);if(mgrs)return mgrs;return null}
 
-
-// === part_03_render.js ===
+// === 03_render.js ===
 
 function requestRender(){if(_renderQueued)return;_renderQueued=true;requestAnimationFrame(()=>{_renderQueued=false;render()})}
 function clampView(){S.lat=Math.max(-80,Math.min(84,S.lat));const s=Math.pow(2,S.zoom)*TILE_SIZE;const halfScreenPx=window.innerWidth/(2*(devicePixelRatio||1));const cp=latlonToPixel(S.lat,S.lon,S.zoom);/* If screen is wider than the world, center it */if(halfScreenPx*2>=s){S.lon=0}else{if(cp.x-halfScreenPx<0){S.lon=pixelToLatlon(halfScreenPx,cp.y,S.zoom).lon}else if(cp.x+halfScreenPx>s){S.lon=pixelToLatlon(s-halfScreenPx,cp.y,S.zoom).lon}}}
@@ -460,193 +554,52 @@ function drawWargameOrders(){
 function drawGrid(){const d=devicePixelRatio||1,W=canvas.width,H=canvas.height;if(S.gridMode==="latlon"){drawLLGrid();return}ctx.save();ctx.globalAlpha=S.gridOpacity;ctx.strokeStyle=S.gridColor;ctx.fillStyle=S.gridColor;ctx.font=`${10*d}px ${_gridFont}`;let sp=S.gridSpacing==="auto"?(S.zoom<10?0:S.zoom<13?1e4:S.zoom<16?1e3:100):parseInt(S.gridSpacing);const tl=screenToLatlon(0,0),br=screenToLatlon(W/d,H/d),latMin=Math.max(br.lat,-80),latMax=Math.min(tl.lat,84),lonMin=tl.lon,lonMax=br.lon;const zMin=Math.max(1,Math.floor((lonMin+180)/6)+1),zMax=Math.min(60,Math.floor((lonMax+180)/6)+1);/* GZD zone boundaries and lat bands — always show when zoomed out */if(S.zoom<13){const L="CDEFGHJKLMNPQRSTUVWX";for(let zone=zMin;zone<=zMax;zone++){const zL0=(zone-1)*6-180,zL1=zone*6-180;/* zone boundary vertical lines */const spT=latlonToScreen(latMax,zL0),spB=latlonToScreen(latMin,zL0);ctx.beginPath();ctx.moveTo(spT.x*d,spT.y*d);ctx.lineTo(spB.x*d,spB.y*d);ctx.lineWidth=1.5*d;ctx.stroke();/* lat band boundaries */for(let i=0;i<=L.length;i++){const bL=-80+i*8;if(bL<latMin-2||bL>latMax+2)continue;const spA=latlonToScreen(bL,Math.max(lonMin,zL0)),spB2=latlonToScreen(bL,Math.min(lonMax,zL1));ctx.beginPath();ctx.moveTo(spA.x*d,spA.y*d);ctx.lineTo(spB2.x*d,spB2.y*d);ctx.lineWidth=1*d;ctx.stroke()}/* GZD labels at z5+ */if(S.zoom>=5){for(let i=0;i<L.length;i++){const bL=-80+i*8+4;if(bL<latMin-4||bL>latMax+4)continue;const ss=latlonToScreen(bL,(zL0+zL1)/2);ctx.globalAlpha=Math.min(S.gridOpacity,.8);ctx.font=`bold ${Math.min(16,10+S.zoom)*d}px ${_gridFont}`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(`${zone}${L[i]}`,ss.x*d,ss.y*d);ctx.globalAlpha=S.gridOpacity}}}if(!sp){ctx.restore();return}}/* UTM grid lines */const maxZones=Math.min(zMax,zMin+3);for(let zone=zMin;zone<=maxZones;zone++){const zL0=(zone-1)*6-180,zL1=zone*6-180,cL0=Math.max(lonMin,zL0+.01),cL1=Math.min(lonMax,zL1-.01),mLat=(latMin+latMax)/2,mLon=(cL0+cL1)/2;let uMin,uMax,nBot,nTop;try{uMin=latlonToUTM(mLat,cL0);uMax=latlonToUTM(mLat,cL1);nBot=latlonToUTM(latMin,mLon);nTop=latlonToUTM(latMax,mLon)}catch(e){continue}const eMin=Math.floor(uMin.easting/sp)*sp,eMax=Math.ceil(uMax.easting/sp)*sp,nMin=Math.floor(Math.min(nBot.northing,nTop.northing)/sp)*sp,nMax=Math.ceil(Math.max(nBot.northing,nTop.northing)/sp)*sp,nor=mLat>=0;const maxLines=40,nSteps=30;ctx.lineWidth=sp>=1e4?1.5*d:d;/* Vertical lines (constant easting) */let lc=0;for(let e=eMin;e<=eMax&&lc<maxLines;e+=sp,lc++){if(e<1e5||e>9e5)continue;ctx.beginPath();let f=true;const step=(nMax-nMin)/nSteps;for(let n=nMin;n<=nMax;n+=step){try{const ll=UTMToLatlon(zone,e,n,nor),ss=latlonToScreen(ll.lat,ll.lon);f?(ctx.moveTo(ss.x*d,ss.y*d),f=false):ctx.lineTo(ss.x*d,ss.y*d)}catch(ex){f=true}}ctx.stroke()}/* Horizontal lines (constant northing) */lc=0;const eStep=(eMax-eMin)/nSteps;for(let n=nMin;n<=nMax&&lc<maxLines;n+=sp,lc++){ctx.beginPath();let f=true;for(let e=Math.max(eMin,1e5);e<=Math.min(eMax,9e5);e+=Math.max(eStep,500)){try{const ll=UTMToLatlon(zone,e,n,nor),ss=latlonToScreen(ll.lat,ll.lon);f?(ctx.moveTo(ss.x*d,ss.y*d),f=false):ctx.lineTo(ss.x*d,ss.y*d)}catch(ex){f=true}}ctx.stroke()}}ctx.restore()}
 function drawLLGrid(){const d=devicePixelRatio||1,W=canvas.width,H=canvas.height;ctx.save();ctx.globalAlpha=S.gridOpacity;ctx.strokeStyle=S.gridColor;ctx.fillStyle=S.gridColor;ctx.lineWidth=d;ctx.font=`${9*d}px ${_gridFont}`;const tl=screenToLatlon(0,0),br=screenToLatlon(W/d,H/d),st=S.zoom<4?10:S.zoom<7?5:S.zoom<10?1:S.zoom<13?.1:.01;for(let lat=Math.floor(br.lat/st)*st;lat<=Math.ceil(tl.lat/st)*st;lat+=st){const a=latlonToScreen(lat,tl.lon),b=latlonToScreen(lat,br.lon);ctx.beginPath();ctx.moveTo(a.x*d,a.y*d);ctx.lineTo(b.x*d,b.y*d);ctx.stroke();ctx.fillText(`${lat.toFixed(st<1?2:0)}\u00b0`,4*d,a.y*d-3*d)}for(let lon=Math.floor(tl.lon/st)*st;lon<=Math.ceil(br.lon/st)*st;lon+=st){const a=latlonToScreen(tl.lat,lon),b=latlonToScreen(br.lat,lon);ctx.beginPath();ctx.moveTo(a.x*d,a.y*d);ctx.lineTo(b.x*d,b.y*d);ctx.stroke();ctx.fillText(`${lon.toFixed(st<1?2:0)}\u00b0`,a.x*d+3*d,14*d)}ctx.restore()}
 
-
-// === part_04_units.js ===
+// === 04_units.js ===
 
 function drawUnitIcon(c2,u,cx,cy,sz){
-/* milsymbol path: build SIDC, render cached image, draw centered */
-if(_MS&&!u.customIcon&&!u.displayMode&&u.type!=="waypoint"&&u.type!=="blank"&&u.type!=="_custom"){
-var sidc=buildSIDC(u.type,u.affiliation,u.echelon,u.isHQ||u.type==="headquarters");
+/* Blank — no rendering */
+if(u.type==="blank")return;
+/* Waypoint crosshair (non-pin display mode) */
+if(u.type==="waypoint"){
+c2.save();
+if(u.rotation){c2.translate(cx,cy);c2.rotate(u.rotation*DEG);c2.translate(-cx,-cy)}
+var wr=sz*0.35;
+c2.strokeStyle="#000";c2.lineWidth=2;
+c2.beginPath();c2.moveTo(cx,cy-wr);c2.lineTo(cx,cy+wr);c2.stroke();
+c2.beginPath();c2.moveTo(cx-wr,cy);c2.lineTo(cx+wr,cy);c2.stroke();
+c2.beginPath();c2.arc(cx,cy,wr*0.6,0,Math.PI*2);c2.stroke();
+/* Label */
+var _dpr=devicePixelRatio||1;
+if(S.showLabels&&sz/_dpr>60&&u.designation){c2.fillStyle="#000";c2.font="bold "+Math.round(sz*0.18)+"px sans-serif";c2.textAlign="center";c2.textBaseline="top";c2.fillText(u.designation,cx,cy+wr+4)}
+c2.restore();
+return;
+}
+/* milsymbol path — for _custom type, use infantry SIDC (frame only, no interior needed) */
+var _type=u.type==="_custom"?"infantry":u.type;
+var sidc=buildSIDC(_type,u.affiliation,u.echelon,u.isHQ||u.type==="headquarters",u.modifiers);
 if(sidc){
 var _dpr=devicePixelRatio||1;
 var msOpts={};
 var _showLbl=typeof S!=="undefined"&&S.showLabels&&(sz/_dpr)>60;
-if(_showLbl&&u.designation)msOpts.uniqueDesignation=u.designation;
-if(_showLbl&&u.parentUnit)msOpts.higherFormation=u.parentUnit;
+/* Always pass designation/parentUnit so milsymbol renders them when there is room */
+if(u.designation)msOpts.uniqueDesignation=u.designation;
+if(u.parentUnit)msOpts.higherFormation=u.parentUnit;
 if(_showLbl&&u.dtg)msOpts.dtg=u.dtg;
 if(_showLbl&&u.typeEquip)msOpts.type=u.typeEquip;
 if(_showLbl&&u.speed)msOpts.speed=u.speed;
 if(_showLbl&&u.staffComments)msOpts.staffComments=u.staffComments;
 if(_showLbl&&u.additionalInfo)msOpts.additionalInformation=u.additionalInfo;
-if(_showLbl){var _rr="";if((u.modifiers||[]).includes("reinforced"))_rr+="+";if((u.modifiers||[]).includes("reduced"))_rr+="-";if(_rr)msOpts.reinforcedReduced=_rr}
-var cached=getMSImage(sidc,Math.round(sz*0.8),msOpts);
+/* reinforcedReduced always shown regardless of label visibility */
+var _rr="";if((u.modifiers||[]).includes("reinforced"))_rr+="+";if((u.modifiers||[]).includes("reduced"))_rr+="-";if(_rr)msOpts.reinforcedReduced=_rr;
+var cached=getMSImage(sidc,Math.round(sz*0.8),msOpts,_type);
 if(cached&&cached.ready&&cached.img.complete){
 c2.save();
 if(u.rotation){c2.translate(cx,cy);c2.rotate(u.rotation*DEG);c2.translate(-cx,-cy)}
 c2.drawImage(cached.img,cx-cached.anchor.x,cy-cached.anchor.y);
 c2.restore();
-return;
 }
 }
 }
-/* Fallback to legacy renderer */
-_drawUnitIcon_legacy(c2,u,cx,cy,sz);
-}
-function _drawUnitIcon_legacy(c2,u,cx,cy,sz){const sc=sz/SVG_W;c2.save();c2.translate(cx,cy);if(u.rotation)c2.rotate(u.rotation*DEG);c2.translate(-sz/2,-sz/2);c2.scale(sc,sc);const a=AFFILIATIONS[u.affiliation||"friendly"],col=a.color,sw=4,hw=FRAME_W/2,hh=FRAME_H/2;/* UAV/drone uses house-shaped (pentagon) frame per MIL-STD-2525 equipment */const _isUAV=u.isEquipment&&u.type==="uav";const _cr=Math.max(hw,hh)+U*.1;const B=_isUAV?(CY+hh):a.shape==="circle"?CY+_cr:a.shape==="diamond"?CY+(hh+U*.6):CY+hh;if(u.isHQ){c2.beginPath();c2.moveTo(CX,B);c2.lineTo(CX,SVG_H-U*.5);c2.strokeStyle="#000";c2.lineWidth=sw;c2.stroke()}/* Frame */c2.fillStyle=a.fill;c2.strokeStyle="#000";c2.lineWidth=sw;if(_isUAV){/* House/pentagon frame for drones */const hx=hw*.85,hy=hh+U*.2;const peakY=CY-hy-U*1.0;c2.beginPath();c2.moveTo(CX,peakY);c2.lineTo(CX+hx,CY-hy*.3);c2.lineTo(CX+hx,CY+hy);c2.lineTo(CX-hx,CY+hy);c2.lineTo(CX-hx,CY-hy*.3);c2.closePath();c2.fill();c2.stroke()}else switch(a.shape){case"circle":{const cr=_cr;c2.beginPath();c2.arc(CX,CY,cr,0,Math.PI*2);c2.fill();c2.stroke();break}case"rect":c2.beginPath();c2.rect(CX-hw,CY-hh,FRAME_W,FRAME_H);c2.fill();c2.stroke();break;case"diamond":{const dx=hw+U*.6,dy=hh+U*.6;c2.beginPath();c2.moveTo(CX,CY-dy);c2.lineTo(CX+dx,CY);c2.lineTo(CX,CY+dy);c2.lineTo(CX-dx,CY);c2.closePath();c2.fill();c2.stroke();break}case"square":{const sq=Math.max(hw,hh)+U*.2;c2.beginPath();c2.rect(CX-sq,CY-sq,sq*2,sq*2);c2.fill();c2.stroke();break}case"quatrefoil":{const r=hh*.55;c2.beginPath();c2.moveTo(CX,CY-hh-U*.3);c2.bezierCurveTo(CX+r,CY-hh-U*.3,CX+hw+U*.3,CY-r,CX+hw+U*.3,CY);c2.bezierCurveTo(CX+hw+U*.3,CY+r,CX+r,CY+hh+U*.3,CX,CY+hh+U*.3);c2.bezierCurveTo(CX-r,CY+hh+U*.3,CX-hw-U*.3,CY+r,CX-hw-U*.3,CY);c2.bezierCurveTo(CX-hw-U*.3,CY-r,CX-r,CY-hh-U*.3,CX,CY-hh-U*.3);c2.closePath();c2.fill();c2.stroke();break}}/* Interior bounds */var ihw=hw,ihh=hh;if(_isUAV){ihw=hw*.65;ihh=hh*.65}else switch(a.shape){case"circle":{ihw=_cr*.68;ihh=_cr*.68;break}case"diamond":ihw=hw*.58;ihh=hh*.58;break;case"square":{const sq=Math.max(hw,hh)+U*.2;ihw=sq*.7;ihh=sq*.7;break}case"quatrefoil":ihw=hw*.6;ihh=hh*.6;break}/* Icon interior — clip to frame so custom icons don't bleed outside */c2.save();c2.beginPath();if(_isUAV){const _hx=hw*.85,_hy=hh+U*.2;const _peakY=CY-_hy-U*1.0;c2.moveTo(CX,_peakY);c2.lineTo(CX+_hx,CY-_hy*.3);c2.lineTo(CX+_hx,CY+_hy);c2.lineTo(CX-_hx,CY+_hy);c2.lineTo(CX-_hx,CY-_hy*.3);c2.closePath()}else switch(a.shape){case"circle":{c2.arc(CX,CY,_cr,0,Math.PI*2);break}case"rect":c2.rect(CX-hw,CY-hh,FRAME_W,FRAME_H);break;case"diamond":{const _dx=hw+U*.6,_dy=hh+U*.6;c2.moveTo(CX,CY-_dy);c2.lineTo(CX+_dx,CY);c2.lineTo(CX,CY+_dy);c2.lineTo(CX-_dx,CY);c2.closePath();break}case"square":{const _sq=Math.max(hw,hh)+U*.2;c2.rect(CX-_sq,CY-_sq,_sq*2,_sq*2);break}case"quatrefoil":{const _r=hh*.55;c2.moveTo(CX,CY-hh-U*.3);c2.bezierCurveTo(CX+_r,CY-hh-U*.3,CX+hw+U*.3,CY-_r,CX+hw+U*.3,CY);c2.bezierCurveTo(CX+hw+U*.3,CY+_r,CX+_r,CY+hh+U*.3,CX,CY+hh+U*.3);c2.bezierCurveTo(CX-_r,CY+hh+U*.3,CX-hw-U*.3,CY+_r,CX-hw-U*.3,CY);c2.bezierCurveTo(CX-hw-U*.3,CY-_r,CX-_r,CY-hh-U*.3,CX,CY-hh-U*.3);c2.closePath();break}}c2.clip();c2.strokeStyle="#000";c2.fillStyle="#000";c2.lineWidth=3;drawTS(c2,u.type,CX,CY,hw,hh);c2.restore();if(u.echelon)drawEch(c2,u.echelon,u.affiliation,u.type,u.isEquipment);if(u.modifiers&&u.modifiers.length)drawMods(c2,u.modifiers);/* Text labels outside frame — hide when icon is small */var _dpr=devicePixelRatio||1;if(S.showLabels&&sz/_dpr>60){c2.fillStyle="#000";c2.font=`bold ${U*2.0}px serif`;const textX=_isUAV?(hw*.85):a.shape==="circle"?_cr*0.72:hw;if(u.designation){c2.textAlign="right";c2.textBaseline="alphabetic";c2.fillText(u.designation,CX-textX-U*.3,B)}if(u.parentUnit){c2.textAlign="left";c2.textBaseline="alphabetic";c2.fillText(u.parentUnit,CX+textX+U*.3,B)}}c2.restore()}
-function _drawTrefoil(c2,cx,cy,r,hh){
-/* Aviation: two inverted triangles on vertical axis + horizontal lobes — compact */
-var hw=r/.7;
-/* Top triangle — wide at top, point at center */
-var tw=hw*.22;
-c2.beginPath();
-c2.moveTo(cx-tw,cy-hh*.6);
-c2.lineTo(cx+tw,cy-hh*.6);
-c2.lineTo(cx,cy);
-c2.closePath();c2.fill();
-/* Bottom triangle — wide at bottom, point at center */
-c2.beginPath();
-c2.moveTo(cx-tw,cy+hh*.6);
-c2.lineTo(cx+tw,cy+hh*.6);
-c2.lineTo(cx,cy);
-c2.closePath();c2.fill();
-/* Horizontal lobes — smaller */
-var d=hw*.3;
-var lr=d*(hh/hw)*.85;
-/* Left lobe */
-c2.beginPath();
-c2.moveTo(cx,cy);
-c2.lineTo(cx-d,cy-lr);
-c2.arc(cx-d,cy,lr,Math.PI*1.5,Math.PI*0.5,true);
-c2.closePath();c2.fill();
-/* Right lobe */
-c2.beginPath();
-c2.moveTo(cx,cy);
-c2.lineTo(cx+d,cy-lr);
-c2.arc(cx+d,cy,lr,Math.PI*1.5,Math.PI*0.5,false);
-c2.closePath();c2.fill();
-}
-/* ============================================================
- * CUSTOM ICON DEFS — instruction-based icons from Icon Editor
- * Paste Icon Editor JSON exports here. Each key = unit type,
- * value = array of drawing instructions.
- * Coordinates: -1..1 normalized, (0,0) = center of frame.
- * ============================================================ */
-const CUSTOM_ICON_DEFS = {
-"artillery":[{"op":"arc","cx":0,"cy":0,"r":0.25,"fill":true,"lw":0}],
-"mortar":[{"op":"label","name":"Mortar"},{"op":"arc","cx":0,"cy":0.45,"r":0.18,"fill":false,"lw":0.1},{"op":"line","x1":0,"y1":0.27,"x2":0,"y2":-0.65,"lw":0.1},{"op":"moveTo","x":-0.18,"y":-0.35},{"op":"lineTo","x":0,"y":-0.65},{"op":"lineTo","x":0.18,"y":-0.35},{"op":"stroke","lw":0.1}],
-"signal":[{"op":"label","name":"lightning bolt"},{"op":"moveTo","x":-1.26,"y":-1.22},{"op":"lineTo","x":0,"y":0.28},{"op":"lineTo","x":-0.01,"y":-0.26},{"op":"lineTo","x":1.26,"y":1.07},{"op":"stroke","lw":0.1}],
-"electronic_warfare":[{"op":"text","str":"EW","x":0,"y":0.12,"size":0.7}],
-"armored_recon":[{"op":"line","x1":-1,"y1":1,"x2":1,"y2":-1,"lw":0.12},{"op":"racetrack","cx":0,"cy":0,"w":0.65,"h":0.5,"lw":0.1}],
-"armor":[{"op":"racetrack","cx":0,"cy":0,"w":0.65,"h":0.5,"lw":0.1}],
-"mechanized_artillery":[{"op":"arc","cx":0,"cy":0,"r":0.22,"fill":true,"lw":0,"startAngle":0,"endAngle":6.283},{"op":"racetrack","cx":0,"cy":0,"w":0.65,"h":0.5,"lw":0.1}],
-"naval_infantry":[{"op":"line","x1":-1,"y1":-1,"x2":1,"y2":1,"lw":0.12},{"op":"line","x1":1,"y1":-1,"x2":-1,"y2":1,"lw":0.12},{"op":"label","name":"anchor overlay"},{"op":"arc","cx":-0.01,"cy":-0.79,"r":0.12,"lw":0.08,"startAngle":0,"endAngle":6.283},{"op":"line","x1":-0.01,"y1":-0.61,"x2":0.01,"y2":0.83,"lw":0.08},{"op":"line","x1":-0.28,"y1":-0.5,"x2":0.28,"y2":-0.49,"lw":0.08},{"op":"quadratic","x1":-0.45,"y1":0.48,"cpx":-0.26,"cpy":0.82,"x2":0,"y2":0.83,"lw":0.08},{"op":"quadratic","x1":0.45,"y1":0.48,"cpx":0.26,"cpy":0.82,"x2":0,"y2":0.83,"lw":0.08},{"op":"moveTo","x":0.58,"y":0.23},{"op":"lineTo","x":0.57,"y":0.58},{"op":"lineTo","x":0.35,"y":0.35},{"op":"lineTo","x":0.58,"y":0.24},{"op":"fill","lw":0.06},{"op":"moveTo","x":-0.56,"y":0.24},{"op":"lineTo","x":-0.38,"y":0.33},{"op":"lineTo","x":-0.56,"y":0.52},{"op":"lineTo","x":-0.56,"y":0.25},{"op":"fill","lw":0.1}],
-"motorized_infantry":[{"op":"line","x1":-1,"y1":-1,"x2":1,"y2":1,"lw":0.12},{"op":"line","x1":1,"y1":-1,"x2":-1,"y2":1,"lw":0.12},{"op":"line","x1":0,"y1":-1.37,"x2":0,"y2":1.35,"lw":0.1}],
-"light_infantry":[{"op":"line","x1":-1,"y1":-1,"x2":1,"y2":1,"lw":0.12},{"op":"line","x1":1,"y1":-1,"x2":-1,"y2":1,"lw":0.12},{"op":"text","str":"L","x":0,"y":0.7,"size":0.4}],
-"mortar_wheeled":[{"op":"label","name":"Mortar Wheeled"},{"op":"line","x1":-0.01,"y1":-0.08,"x2":0,"y2":-0.65,"lw":0.1},{"op":"moveTo","x":-0.18,"y":-0.35},{"op":"lineTo","x":0,"y":-0.65},{"op":"lineTo","x":0.18,"y":-0.35},{"op":"stroke","lw":0.1},{"op":"line","x1":-0.58,"y1":0.26,"x2":0.57,"y2":0.27,"lw":0.1},{"op":"arc","cx":0.57,"cy":0.45,"r":0.14,"lw":0.1,"startAngle":-2.892,"endAngle":6.258},{"op":"arc","cx":-0.58,"cy":0.45,"r":0.14,"lw":0.1,"startAngle":-2.892,"endAngle":6.258},{"op":"arc","cx":-0.01,"cy":0.1,"r":0.14,"lw":0.1,"startAngle":-2.892,"endAngle":6.258}],
-"maintenance":[{"op":"line","x1":-0.39,"y1":0,"x2":0.39,"y2":0,"lw":0.1},{"op":"arc","cx":0.59,"cy":0,"r":0.27,"lw":0.08,"startAngle":1.458,"endAngle":4.758},{"op":"arc","cx":-0.61,"cy":-0.01,"r":0.27,"lw":0.08,"startAngle":-1.692,"endAngle":1.658}],
-"engineer":[{"op":"label","name":"castle/crenellation"},{"op":"moveTo","x":-0.5,"y":0.5},{"op":"lineTo","x":-0.5,"y":-0.2},{"op":"lineTo","x":0.5,"y":-0.2},{"op":"lineTo","x":0.5,"y":0.5},{"op":"stroke","lw":0.12},{"op":"line","x1":-0.01,"y1":-0.2,"x2":-0.01,"y2":0.35,"lw":0.1}],
-"combat_engineer":[{"op":"label","name":"castle/crenellation"},{"op":"moveTo","x":-0.5,"y":0.5},{"op":"lineTo","x":-0.5,"y":-0.2},{"op":"lineTo","x":0.5,"y":-0.2},{"op":"lineTo","x":0.5,"y":0.5},{"op":"stroke","lw":0.12},{"op":"line","x1":-0.01,"y1":-0.2,"x2":-0.01,"y2":0.35,"lw":0.1},{"op":"text","str":"CBT","x":-0.03,"y":-0.46,"size":0.3}],
-"combat_service_support":[{"op":"text","str":"CSS","x":0,"y":0.11,"size":0.7}],
-"medical":[{"op":"line","x1":0,"y1":-1.5,"x2":0,"y2":1.5,"lw":0.14},{"op":"line","x1":-1.5,"y1":0,"x2":1.41,"y2":0,"lw":0.14}],
-"amphibious_armor":[{"op":"label","name":"left propeller lobe"},{"op":"label","name":"right propeller lobe"},{"op":"label","name":"sine wave"},{"op":"moveTo","x":-1.05,"y":0.14},{"op":"lineTo","x":-0.9,"y":-0.06},{"op":"lineTo","x":-0.85,"y":-0.13},{"op":"lineTo","x":-0.81,"y":-0.15},{"op":"lineTo","x":-0.76,"y":-0.12},{"op":"lineTo","x":-0.71,"y":-0.04},{"op":"lineTo","x":-0.66,"y":0.06},{"op":"lineTo","x":-0.62,"y":0.15},{"op":"lineTo","x":-0.57,"y":0.2},{"op":"lineTo","x":-0.52,"y":0.21},{"op":"lineTo","x":-0.47,"y":0.16},{"op":"lineTo","x":-0.43,"y":0.07},{"op":"lineTo","x":-0.38,"y":-0.03},{"op":"lineTo","x":-0.33,"y":-0.11},{"op":"lineTo","x":-0.29,"y":-0.15},{"op":"lineTo","x":-0.24,"y":-0.14},{"op":"lineTo","x":-0.19,"y":-0.08},{"op":"lineTo","x":-0.14,"y":0.02},{"op":"lineTo","x":-0.09,"y":0.11},{"op":"lineTo","x":-0.05,"y":0.18},{"op":"lineTo","x":0,"y":0.21},{"op":"lineTo","x":0.05,"y":0.18},{"op":"lineTo","x":0.09,"y":0.11},{"op":"lineTo","x":0.14,"y":0.02},{"op":"lineTo","x":0.19,"y":-0.08},{"op":"lineTo","x":0.24,"y":-0.14},{"op":"lineTo","x":0.28,"y":-0.15},{"op":"lineTo","x":0.33,"y":-0.11},{"op":"lineTo","x":0.38,"y":-0.03},{"op":"lineTo","x":0.43,"y":0.07},{"op":"lineTo","x":0.47,"y":0.16},{"op":"lineTo","x":0.52,"y":0.21},{"op":"lineTo","x":0.57,"y":0.2},{"op":"lineTo","x":0.62,"y":0.15},{"op":"lineTo","x":0.67,"y":0.06},{"op":"lineTo","x":0.71,"y":-0.04},{"op":"lineTo","x":0.76,"y":-0.12},{"op":"lineTo","x":0.81,"y":-0.15},{"op":"lineTo","x":0.86,"y":-0.13},{"op":"lineTo","x":0.9,"y":-0.06},{"op":"lineTo","x":1.02,"y":0.15},{"op":"stroke","lw":0.1},{"op":"racetrack","cx":0,"cy":0,"w":0.65,"h":0.5,"lw":0.1}],
-"supply":[{"op":"line","x1":-0.99,"y1":0.4,"x2":1,"y2":0.4,"lw":0.1}],
-"aviation":[{"op":"label","name":"left propeller lobe"},{"op":"moveTo","x":0,"y":0.08},{"op":"lineTo","x":-0.42,"y":-0.2},{"op":"lineTo","x":-0.49,"y":-0.19},{"op":"lineTo","x":-0.55,"y":-0.18},{"op":"lineTo","x":-0.62,"y":-0.13},{"op":"lineTo","x":-0.66,"y":-0.06},{"op":"lineTo","x":-0.69,"y":0.01},{"op":"lineTo","x":-0.7,"y":0.08},{"op":"lineTo","x":-0.69,"y":0.15},{"op":"lineTo","x":-0.66,"y":0.22},{"op":"lineTo","x":-0.62,"y":0.28},{"op":"lineTo","x":-0.56,"y":0.32},{"op":"lineTo","x":-0.49,"y":0.35},{"op":"lineTo","x":-0.42,"y":0.36},{"op":"lineTo","x":0,"y":0.08},{"op":"fill","lw":0.1},{"op":"label","name":"right propeller lobe"},{"op":"moveTo","x":0,"y":0.08},{"op":"lineTo","x":0.42,"y":-0.2},{"op":"lineTo","x":0.49,"y":-0.19},{"op":"lineTo","x":0.56,"y":-0.16},{"op":"lineTo","x":0.62,"y":-0.12},{"op":"lineTo","x":0.66,"y":-0.06},{"op":"lineTo","x":0.69,"y":0},{"op":"lineTo","x":0.7,"y":0.08},{"op":"lineTo","x":0.69,"y":0.15},{"op":"lineTo","x":0.66,"y":0.22},{"op":"lineTo","x":0.62,"y":0.28},{"op":"lineTo","x":0.56,"y":0.32},{"op":"lineTo","x":0.49,"y":0.35},{"op":"lineTo","x":0.42,"y":0.36},{"op":"lineTo","x":0,"y":0.08},{"op":"fill","lw":0.1},{"op":"label","name":"sine wave"},{"op":"moveTo","x":0,"y":0.13},{"op":"lineTo","x":0.25,"y":0.77},{"op":"lineTo","x":-0.25,"y":0.77},{"op":"lineTo","x":0,"y":0.13},{"op":"fill","lw":0.02},{"op":"moveTo","x":0,"y":0.02},{"op":"lineTo","x":0.28,"y":-0.72},{"op":"lineTo","x":-0.25,"y":-0.72},{"op":"lineTo","x":0,"y":0.02},{"op":"fill","lw":0.02}],
-"fixed_wing":[{"op":"label","name":"left propeller lobe"},{"op":"moveTo","x":0,"y":0.08},{"op":"lineTo","x":-0.42,"y":-0.2},{"op":"lineTo","x":-0.49,"y":-0.19},{"op":"lineTo","x":-0.55,"y":-0.18},{"op":"lineTo","x":-0.62,"y":-0.13},{"op":"lineTo","x":-0.66,"y":-0.06},{"op":"lineTo","x":-0.69,"y":0.01},{"op":"lineTo","x":-0.7,"y":0.08},{"op":"lineTo","x":-0.69,"y":0.15},{"op":"lineTo","x":-0.66,"y":0.22},{"op":"lineTo","x":-0.62,"y":0.28},{"op":"lineTo","x":-0.56,"y":0.32},{"op":"lineTo","x":-0.49,"y":0.35},{"op":"lineTo","x":-0.42,"y":0.36},{"op":"lineTo","x":0,"y":0.08},{"op":"fill","lw":0.1},{"op":"label","name":"right propeller lobe"},{"op":"moveTo","x":0,"y":0.08},{"op":"lineTo","x":0.42,"y":-0.2},{"op":"lineTo","x":0.49,"y":-0.19},{"op":"lineTo","x":0.56,"y":-0.16},{"op":"lineTo","x":0.62,"y":-0.12},{"op":"lineTo","x":0.66,"y":-0.06},{"op":"lineTo","x":0.69,"y":0},{"op":"lineTo","x":0.7,"y":0.08},{"op":"lineTo","x":0.69,"y":0.15},{"op":"lineTo","x":0.66,"y":0.22},{"op":"lineTo","x":0.62,"y":0.28},{"op":"lineTo","x":0.56,"y":0.32},{"op":"lineTo","x":0.49,"y":0.35},{"op":"lineTo","x":0.42,"y":0.36},{"op":"lineTo","x":0,"y":0.08},{"op":"fill","lw":0.1}],
-"air_defense":[{"op":"arc","cx":0,"cy":1.65,"r":1.5,"lw":0.1,"startAngle":-3.142,"endAngle":0.308},{"op":"arc","cx":0.01,"cy":0.33,"r":0.4,"lw":0.06,"startAngle":3.558,"endAngle":-0.442},{"op":"arc","cx":0,"cy":-0.6,"r":0.17,"lw":0.05,"startAngle":-3.142,"endAngle":0.008},{"op":"line","x1":-0.12,"y1":-0.58,"x2":-0.12,"y2":-0.04,"lw":0.05},{"op":"line","x1":-0.12,"y1":-0.58,"x2":-0.12,"y2":-0.04,"lw":0.05},{"op":"line","x1":0.12,"y1":-0.58,"x2":0.12,"y2":-0.04,"lw":0.05},{"op":"line","x1":0,"y1":-0.76,"x2":0,"y2":-0.08,"lw":0.05}],
-"armored_recon_wheeled":[{"op":"line","x1":-1,"y1":1,"x2":1,"y2":-1,"lw":0.12},{"op":"racetrack","cx":0,"cy":0,"w":0.65,"h":0.5,"lw":0.1},{"op":"arc","cx":-0.22,"cy":0.72,"r":0.12,"lw":0.05,"startAngle":0,"endAngle":6.283},{"op":"arc","cx":0,"cy":0.72,"r":0.12,"lw":0.05,"startAngle":0,"endAngle":6.283},{"op":"arc","cx":0.22,"cy":0.72,"r":0.12,"lw":0.05,"startAngle":0,"endAngle":6.283}],
-"mechanized_infantry_wheeled":[{"op":"line","x1":-1,"y1":1,"x2":1,"y2":-1,"lw":0.12},{"op":"racetrack","cx":0,"cy":0,"w":0.65,"h":0.5,"lw":0.1},{"op":"arc","cx":-0.22,"cy":0.72,"r":0.12,"lw":0.05,"startAngle":0,"endAngle":6.283},{"op":"arc","cx":0,"cy":0.72,"r":0.12,"lw":0.05,"startAngle":0,"endAngle":6.283},{"op":"arc","cx":0.22,"cy":0.72,"r":0.12,"lw":0.05,"startAngle":0,"endAngle":6.283},{"op":"line","x1":-1.17,"y1":-1.16,"x2":1.21,"y2":1.19,"lw":0.1}],
-"lav_infantry":[{"op":"line","x1":-1,"y1":1,"x2":1,"y2":-1,"lw":0.12},{"op":"racetrack","cx":0,"cy":0,"w":0.65,"h":0.5,"lw":0.1},{"op":"arc","cx":-0.22,"cy":0.72,"r":0.12,"lw":0.05,"startAngle":0,"endAngle":6.283},{"op":"arc","cx":0,"cy":0.72,"r":0.12,"lw":0.05,"startAngle":0,"endAngle":6.283},{"op":"arc","cx":0.22,"cy":0.72,"r":0.12,"lw":0.05,"startAngle":0,"endAngle":6.283},{"op":"line","x1":-1.17,"y1":-1.16,"x2":1.21,"y2":1.19,"lw":0.1},{"op":"line","x1":-0.73,"y1":1.06,"x2":-0.73,"y2":-1.13,"lw":0.1}],
-"blank":[]
-};
-
-/* Instruction-based icon renderer — matches Icon Editor output exactly */
-function renderCustomIcon(ctx,instructions,cx,cy,hw,hh){
-ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
-ctx.strokeStyle='#000';ctx.fillStyle='#000';
-var pathOpen=false,pathLw=0.1;
-for(var i=0;i<instructions.length;i++){
-var instr=instructions[i];
-var lw=(instr.lw||0.1)*Math.min(hw,hh);
-if(instr.lw!==undefined&&(instr.op==='moveTo'||instr.op==='lineTo'||instr.op==='quadratic'||instr.op==='bezier'))pathLw=instr.lw;
-switch(instr.op){
-case'label':break;
-case'line':ctx.lineWidth=lw;ctx.beginPath();ctx.moveTo(cx+instr.x1*hw,cy+instr.y1*hh);ctx.lineTo(cx+instr.x2*hw,cy+instr.y2*hh);ctx.stroke();break;
-case'arc':{ctx.lineWidth=lw;var sa=instr.startAngle!=null?instr.startAngle:0;var ea=instr.endAngle!=null?instr.endAngle:Math.PI*2;var acx2=cx+(instr.cx||0)*hw,acy2=cy+(instr.cy||0)*hh;ctx.beginPath();if(instr.rx!==undefined||instr.ry!==undefined){var erx2=(instr.rx||instr.r||0.3)*hw,ery2=(instr.ry||instr.r||0.3)*hh;ctx.ellipse(acx2,acy2,erx2,ery2,0,sa,ea)}else{var r2=(instr.r||0.3)*Math.min(hw,hh);ctx.arc(acx2,acy2,r2,sa,ea)}if(instr.fill)ctx.fill();else ctx.stroke();break}
-case'ellipse':{ctx.lineWidth=lw;var erx=(instr.rx||0.5)*hw,ery=(instr.ry||0.35)*hh;ctx.beginPath();ctx.ellipse(cx+(instr.cx||0)*hw,cy+(instr.cy||0)*hh,erx,ery,0,0,Math.PI*2);if(instr.fill)ctx.fill();else ctx.stroke();break}
-case'racetrack':{ctx.lineWidth=lw;var rw=(instr.w||0.7)*hw,rh=(instr.h||0.5)*hh;var rcx=cx+(instr.cx||0)*hw,rcy=cy+(instr.cy||0)*hh;var capR=rh;ctx.beginPath();ctx.moveTo(rcx-rw+capR,rcy-rh);ctx.lineTo(rcx+rw-capR,rcy-rh);ctx.arc(rcx+rw-capR,rcy,capR,-Math.PI/2,Math.PI/2);ctx.lineTo(rcx-rw+capR,rcy+rh);ctx.arc(rcx-rw+capR,rcy,capR,Math.PI/2,-Math.PI/2);ctx.closePath();if(instr.fill)ctx.fill();else ctx.stroke();break}
-case'rect':{ctx.lineWidth=lw;var rx2=cx+(instr.x||0)*hw,ry2=cy+(instr.y||0)*hh;var rw2=(instr.w||0.2)*hw,rh2=(instr.h||0.2)*hh;if(instr.fill)ctx.fillRect(rx2,ry2,rw2,rh2);else{ctx.beginPath();ctx.rect(rx2,ry2,rw2,rh2);ctx.stroke()}break}
-case'moveTo':if(!pathOpen){ctx.beginPath();pathOpen=true}ctx.moveTo(cx+instr.x*hw,cy+instr.y*hh);break;
-case'lineTo':if(!pathOpen){ctx.beginPath();pathOpen=true}ctx.lineTo(cx+instr.x*hw,cy+instr.y*hh);break;
-case'quadratic':{var qlw=(instr.lw||0.1)*Math.min(hw,hh);ctx.lineWidth=qlw;ctx.beginPath();ctx.moveTo(cx+instr.x1*hw,cy+instr.y1*hh);ctx.quadraticCurveTo(cx+instr.cpx*hw,cy+instr.cpy*hh,cx+instr.x2*hw,cy+instr.y2*hh);ctx.stroke();break}
-case'bezier':{var blw=(instr.lw||0.1)*Math.min(hw,hh);ctx.lineWidth=blw;ctx.beginPath();ctx.moveTo(cx+instr.x1*hw,cy+instr.y1*hh);ctx.bezierCurveTo(cx+instr.cp1x*hw,cy+instr.cp1y*hh,cx+instr.cp2x*hw,cy+instr.cp2y*hh,cx+instr.x2*hw,cy+instr.y2*hh);ctx.stroke();break}
-case'stroke':if(pathOpen){var sLw=(instr.lw||pathLw||0.1)*Math.min(hw,hh);ctx.lineWidth=sLw;ctx.stroke();pathOpen=false;pathLw=0.1}break;
-case'fill':if(pathOpen){ctx.fill();pathOpen=false}break;
-case'text':{var sz=(instr.size||0.8)*Math.min(hw,hh)*1.4;ctx.font='bold '+sz+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(instr.str||'?',cx+(instr.x||0)*hw,cy+(instr.y||0)*hh);break}
-}}
-if(pathOpen){ctx.lineWidth=2;ctx.stroke()}
-ctx.restore()}
-
-function drawTS(c2,t,cx,cy,hw,hh){/* Check for custom instruction-based icon first */if(CUSTOM_ICON_DEFS[t]){renderCustomIcon(c2,CUSTOM_ICON_DEFS[t],cx,cy,hw,hh);return}var r=hw*.7;switch(t){case"infantry":c2.beginPath();c2.moveTo(cx-hw,cy-hh);c2.lineTo(cx+hw,cy+hh);c2.moveTo(cx+hw,cy-hh);c2.lineTo(cx-hw,cy+hh);c2.stroke();break;case"naval_infantry":c2.beginPath();c2.moveTo(cx-hw,cy-hh);c2.lineTo(cx+hw,cy+hh);c2.moveTo(cx+hw,cy-hh);c2.lineTo(cx-hw,cy+hh);c2.stroke();{/* Anchor overlay */const as=hw*1.4,lw=c2.lineWidth;c2.save();/* Ring at top */c2.beginPath();c2.arc(cx,cy-as*.64,as*.08,0,Math.PI*2);c2.stroke();/* Vertical shaft from below ring to bottom */c2.beginPath();c2.moveTo(cx,cy-as*.56);c2.lineTo(cx,cy+hh*.93);c2.stroke();/* Horizontal stock/crossbar */c2.beginPath();c2.moveTo(cx-as*.3,cy-as*.35);c2.lineTo(cx+as*.3,cy-as*.35);c2.stroke();/* Flukes: straight arms from X down, hook at tips near bottom of diamond */var ux=hw*.48,uy=hh*.48;/* Left arm */c2.beginPath();c2.moveTo(cx-ux,cy+uy);c2.lineTo(cx-hw*.2,cy+hh*.88);c2.quadraticCurveTo(cx-hw*.08,cy+hh*.97,cx,cy+hh*.93);c2.stroke();/* Right arm */c2.beginPath();c2.moveTo(cx+ux,cy+uy);c2.lineTo(cx+hw*.2,cy+hh*.88);c2.quadraticCurveTo(cx+hw*.08,cy+hh*.97,cx,cy+hh*.93);c2.stroke();/* Barbs - large filled triangles at X intersection */c2.fillStyle=c2.strokeStyle;c2.beginPath();c2.moveTo(cx-ux,cy+uy);c2.lineTo(cx-ux-hw*.35,cy+uy+hh*.35);c2.lineTo(cx-ux-hw*.35,cy+uy-hh*.12);c2.closePath();c2.fill();c2.beginPath();c2.moveTo(cx+ux,cy+uy);c2.lineTo(cx+ux+hw*.35,cy+uy+hh*.35);c2.lineTo(cx+ux+hw*.35,cy+uy-hh*.12);c2.closePath();c2.fill();c2.restore();c2.lineWidth=lw}break;case"mechanized_infantry":c2.beginPath();c2.moveTo(cx-hw,cy-hh);c2.lineTo(cx+hw,cy+hh);c2.moveTo(cx+hw,cy-hh);c2.lineTo(cx-hw,cy+hh);c2.stroke();{const aw=hw*.7,ah=hh*.5,ar=ah;c2.beginPath();c2.moveTo(cx-aw+ar,cy-ah);c2.lineTo(cx+aw-ar,cy-ah);c2.arc(cx+aw-ar,cy,ar,Math.PI*1.5,Math.PI*.5);c2.lineTo(cx-aw+ar,cy+ah);c2.arc(cx-aw+ar,cy,ar,Math.PI*.5,Math.PI*1.5);c2.closePath();c2.stroke()}break;case"ifv":c2.beginPath();c2.moveTo(cx-hw,cy-hh);c2.lineTo(cx+hw,cy+hh);c2.moveTo(cx+hw,cy-hh);c2.lineTo(cx-hw,cy+hh);c2.stroke();{const aw=hw*.7,ah=hh*.5,ar=ah;c2.beginPath();c2.moveTo(cx-aw+ar,cy-ah);c2.lineTo(cx+aw-ar,cy-ah);c2.arc(cx+aw-ar,cy,ar,Math.PI*1.5,Math.PI*.5);c2.lineTo(cx-aw+ar,cy+ah);c2.arc(cx-aw+ar,cy,ar,Math.PI*.5,Math.PI*1.5);c2.closePath();c2.stroke();/* Vertical line at left edge of racetrack */c2.beginPath();c2.moveTo(cx-aw,cy-hh);c2.lineTo(cx-aw,cy+hh);c2.stroke()}break;case"armor":{const aw=hw*.7,ah=hh*.5,ar=ah;c2.beginPath();c2.moveTo(cx-aw+ar,cy-ah);c2.lineTo(cx+aw-ar,cy-ah);c2.arc(cx+aw-ar,cy,ar,Math.PI*1.5,Math.PI*.5);c2.lineTo(cx-aw+ar,cy+ah);c2.arc(cx-aw+ar,cy,ar,Math.PI*.5,Math.PI*1.5);c2.closePath();c2.stroke();break}case"armored_wheeled":{/* Armor racetrack */const aw=hw*.7,ah=hh*.5,ar=ah;c2.beginPath();c2.moveTo(cx-aw+ar,cy-ah);c2.lineTo(cx+aw-ar,cy-ah);c2.arc(cx+aw-ar,cy,ar,Math.PI*1.5,Math.PI*.5);c2.lineTo(cx-aw+ar,cy+ah);c2.arc(cx-aw+ar,cy,ar,Math.PI*.5,Math.PI*1.5);c2.closePath();c2.stroke();/* 3 wheels below: smaller, thinner, with visible gaps */var wLeft=cx-aw+ar,wRight=cx+aw-ar;var wRadius=(wRight-wLeft)/8;var wY=cy+ah+(hh-ah)*.47;var olw=c2.lineWidth;c2.lineWidth=olw*.6;c2.beginPath();c2.arc(wLeft,wY,wRadius,0,Math.PI*2);c2.stroke();c2.beginPath();c2.arc(cx,wY,wRadius,0,Math.PI*2);c2.stroke();c2.beginPath();c2.arc(wRight,wY,wRadius,0,Math.PI*2);c2.stroke();c2.lineWidth=olw;break}case"recon":c2.beginPath();c2.moveTo(cx-hw,cy+hh);c2.lineTo(cx+hw,cy-hh);c2.stroke();break;case"armored_recon":c2.beginPath();c2.moveTo(cx-hw,cy+hh);c2.lineTo(cx+hw,cy-hh);c2.stroke();{const aw=hw*.7,ah=hh*.5,ar=ah;c2.beginPath();c2.moveTo(cx-aw+ar,cy-ah);c2.lineTo(cx+aw-ar,cy-ah);c2.arc(cx+aw-ar,cy,ar,Math.PI*1.5,Math.PI*.5);c2.lineTo(cx-aw+ar,cy+ah);c2.arc(cx-aw+ar,cy,ar,Math.PI*.5,Math.PI*1.5);c2.closePath();c2.stroke()}break;case"artillery":c2.beginPath();c2.arc(cx,cy,r*.22,0,Math.PI*2);c2.fill();break;case"mechanized_artillery":c2.beginPath();c2.arc(cx,cy,r*.22,0,Math.PI*2);c2.fill();{const aw=hw*.7,ah=hh*.5,ar=ah;c2.beginPath();c2.moveTo(cx-aw+ar,cy-ah);c2.lineTo(cx+aw-ar,cy-ah);c2.arc(cx+aw-ar,cy,ar,Math.PI*1.5,Math.PI*.5);c2.lineTo(cx-aw+ar,cy+ah);c2.arc(cx-aw+ar,cy,ar,Math.PI*.5,Math.PI*1.5);c2.closePath();c2.stroke()}break;case"rocket_artillery":{/* ADP 1-02: artillery dot centered + two chevrons above */
-c2.beginPath();c2.arc(cx,cy+r*.1,r*.22,0,Math.PI*2);c2.fill();
-const cw=r*.35,ch=r*.22,cg=r*.28;
-c2.beginPath();c2.moveTo(cx-cw,cy-r*.12);c2.lineTo(cx,cy-r*.12-ch);c2.lineTo(cx+cw,cy-r*.12);c2.stroke();
-c2.beginPath();c2.moveTo(cx-cw,cy-r*.12-cg);c2.lineTo(cx,cy-r*.12-ch-cg);c2.lineTo(cx+cw,cy-r*.12-cg);c2.stroke();
-break}case"mortar":{/* ADP 1-02: open arrowhead on top, vertical shaft, hollow circle at bottom */
-const cr=r*.18;
-/* Hollow circle lower */
-c2.beginPath();c2.arc(cx,cy+r*.45,cr,0,Math.PI*2);c2.stroke();
-/* Vertical shaft from top of circle to arrow tip */
-c2.beginPath();c2.moveTo(cx,cy+r*.45-cr);c2.lineTo(cx,cy-r*.65);c2.stroke();
-/* Open arrowhead — wider angle, less pointy */
-c2.beginPath();c2.moveTo(cx-cr,cy-r*.5);c2.lineTo(cx,cy-r*.65);c2.lineTo(cx+cr,cy-r*.5);c2.stroke();
-break}case"air_defense":{/* ADP 1-02: radar dome — half circle on flat base */c2.beginPath();c2.arc(cx,cy-r*.05,r*.55,Math.PI,0);c2.stroke();c2.beginPath();c2.moveTo(cx-r*.65,cy-r*.05);c2.lineTo(cx+r*.65,cy-r*.05);c2.stroke();/* Small vertical line below */c2.beginPath();c2.moveTo(cx,cy-r*.05);c2.lineTo(cx,cy+r*.4);c2.stroke();break}case"anti_armor":c2.beginPath();c2.moveTo(cx-hw,cy+hh);c2.lineTo(cx,cy-hh);c2.lineTo(cx+hw,cy+hh);c2.stroke();break;case"magtf":{/* MAGTF: infantry X + aviation propellers + wave below */
-/* Infantry X */
-c2.beginPath();c2.moveTo(cx-hw,cy-hh);c2.lineTo(cx+hw,cy+hh);c2.moveTo(cx+hw,cy-hh);c2.lineTo(cx-hw,cy+hh);c2.stroke();
-/* Draw the aviation horizontal lobes only (not triangles) */
-var md=hw*.42,mlr=md*(hh/hw)*.95;
-c2.beginPath();c2.moveTo(cx,cy-hh*.12);c2.lineTo(cx-md,cy-hh*.12-mlr);c2.arc(cx-md,cy-hh*.12,mlr,Math.PI*1.5,Math.PI*0.5,true);c2.closePath();c2.fill();
-c2.beginPath();c2.moveTo(cx,cy-hh*.12);c2.lineTo(cx+md,cy-hh*.12-mlr);c2.arc(cx+md,cy-hh*.12,mlr,Math.PI*1.5,Math.PI*0.5,false);c2.closePath();c2.fill();
-/* Sine wave in lower portion — half wave + 3 full waves + half wave */
-var waveY=cy+hh*.58,waveAmp=hh*.18,waveW=hw*1.9;
-var slw2=c2.lineWidth;c2.lineWidth=slw2*1.2;
-c2.beginPath();
-var waveSteps=80,waves=3.5;
-for(var wi=0;wi<=waveSteps;wi++){
-  var wt=wi/waveSteps;
-  var wx=cx-waveW/2+wt*waveW;
-  /* Start at half wave (0.5) so left edge is a half, 3 full in middle, half on right */
-  var wy=waveY+Math.sin((wt*waves+0.5)*Math.PI*2)*waveAmp;
-  if(wi===0)c2.moveTo(wx,wy);else c2.lineTo(wx,wy);
-}
-c2.stroke();c2.lineWidth=slw2;
-break}case"aviation":{_drawTrefoil(c2,cx,cy,r,hh);break}case"medevac_aviation":{_drawTrefoil(c2,cx,cy,r,hh);
-/* Medical cross */
-c2.beginPath();c2.moveTo(cx,cy-hh*.5);c2.lineTo(cx,cy+hh*.5);c2.moveTo(cx-hw*.4,cy);c2.lineTo(cx+hw*.4,cy);c2.stroke();break}case"uav":{/* Drone: thick flat V/chevron */
-var vw=hw*.7,vh=hh*.45,vt=hh*.22;
-c2.beginPath();
-c2.moveTo(cx-vw,cy-vh);
-c2.lineTo(cx,cy+vh*.4);
-c2.lineTo(cx+vw,cy-vh);
-c2.lineTo(cx+vw*.7,cy-vh);
-c2.lineTo(cx,cy-vh+vh*.9);
-c2.lineTo(cx-vw*.7,cy-vh);
-c2.closePath();c2.fill();break}case"sam":{/* ADP 1-02: Surface-to-Air Missile — shallow dome at bottom touching corners, tall missile on top */
-/* Shallow dome: endpoints exactly at bottom corners */
-var domePeakY=cy+hh*0.3;
-var halfChord=hw;
-var domeH=(cy+hh)-domePeakY;
-var domeR=(domeH/2)+(halfChord*halfChord)/(2*domeH);
-var domeCY=domePeakY+domeR;
-/* atan2 for exact angles to bottom corners */
-var angL=Math.atan2((cy+hh)-domeCY,(cx-hw)-cx);
-var angR=Math.atan2((cy+hh)-domeCY,(cx+hw)-cx);
-c2.beginPath();c2.arc(cx,domeCY,domeR,angL,angR);c2.stroke();
-/* Missile/silo: sits on dome peak, tall with rounded top */
-var mw=r*.2,mBot=domePeakY,mTop=cy-hh*0.55;
-c2.beginPath();c2.moveTo(cx-mw,mBot);c2.lineTo(cx-mw,mTop+mw);c2.arc(cx,mTop+mw,mw,Math.PI,0);c2.lineTo(cx+mw,mBot);c2.stroke();
-break}case"engineer":{/* Castle/crenellation per ADP 1-02 */var olw=c2.lineWidth;c2.lineWidth=hw*0.12;c2.beginPath();c2.moveTo(cx+hw*-0.5,cy+hh*0.6);c2.lineTo(cx+hw*-0.5,cy+hh*-0.2);c2.lineTo(cx+hw*0.5,cy+hh*-0.2);c2.lineTo(cx+hw*0.5,cy+hh*0.6);c2.stroke();c2.lineWidth=hw*0.1;c2.beginPath();c2.moveTo(cx+hw*-0.01,cy+hh*-0.18);c2.lineTo(cx+hw*-0.01,cy+hh*0.4);c2.stroke();c2.lineWidth=olw;break}case"bridging":c2.beginPath();c2.moveTo(cx-r*.7,cy+r*.3);c2.lineTo(cx-r*.3,cy-r*.3);c2.lineTo(cx+r*.3,cy-r*.3);c2.lineTo(cx+r*.7,cy+r*.3);c2.stroke();break;case"headquarters":{/* ADP 1-02: HQ is shown via staff indicator (line below frame) + isHQ flag. Interior can show unit function or be blank */c2.font=`bold ${r*1.2}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("HQ",cx,cy);break}case"signal":{/* ADP 1-02: lightning flash */c2.beginPath();c2.moveTo(cx-r*.15,cy-r*.7);c2.lineTo(cx+r*.25,cy-r*.05);c2.lineTo(cx-r*.1,cy-r*.05);c2.lineTo(cx+r*.2,cy+r*.7);c2.stroke();break}case"military_intelligence":c2.font=`bold ${r*1.2}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("MI",cx,cy);break;case"electronic_warfare":{/* ADP 1-02: lightning zigzag — Z-shape */c2.beginPath();c2.moveTo(cx-r*.5,cy-r*.4);c2.lineTo(cx+r*.5,cy-r*.4);c2.lineTo(cx-r*.5,cy+r*.4);c2.lineTo(cx+r*.5,cy+r*.4);c2.stroke();break}case"cyber":c2.font=`bold ${r}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("CY",cx,cy);break;case"sustainment":{/* ADP 1-02: "SUST" abbreviation */c2.font=`bold ${r*.7}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("SUST",cx,cy);break}case"medical":{/* ADP 1-02: Geneva cross */c2.lineWidth=3;c2.beginPath();c2.moveTo(cx,cy-r*.5);c2.lineTo(cx,cy+r*.5);c2.stroke();c2.beginPath();c2.moveTo(cx-r*.5,cy);c2.lineTo(cx+r*.5,cy);c2.stroke();break}case"maintenance":{/* ADP 1-02: double-end wrench */c2.beginPath();c2.moveTo(cx-r*.6,cy+r*.4);c2.lineTo(cx+r*.6,cy-r*.4);c2.stroke();c2.beginPath();c2.arc(cx-r*.5,cy+r*.3,r*.2,0,Math.PI*2);c2.stroke();c2.beginPath();c2.arc(cx+r*.5,cy-r*.3,r*.2,0,Math.PI*2);c2.stroke();break}case"transportation":{/* ADP 1-02: wheel */c2.beginPath();c2.arc(cx,cy,r*.45,0,Math.PI*2);c2.stroke();/* Spokes */for(let i=0;i<4;i++){const a=Math.PI*i/4;c2.beginPath();c2.moveTo(cx+Math.cos(a)*r*.15,cy+Math.sin(a)*r*.15);c2.lineTo(cx+Math.cos(a)*r*.45,cy+Math.sin(a)*r*.45);c2.moveTo(cx-Math.cos(a)*r*.15,cy-Math.sin(a)*r*.15);c2.lineTo(cx-Math.cos(a)*r*.45,cy-Math.sin(a)*r*.45);c2.stroke()}c2.beginPath();c2.arc(cx,cy,r*.15,0,Math.PI*2);c2.fill();break}case"supply":{/* ADP 1-02: "S" abbreviation */c2.font=`bold ${r}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("S",cx,cy);break}case"ordnance":{/* ADP 1-02: bursting bomb — filled circle with flame/rays on top */c2.beginPath();c2.arc(cx,cy+r*.1,r*.3,0,Math.PI*2);c2.fill();/* Flame/fuse */c2.beginPath();c2.moveTo(cx+r*.15,cy-r*.15);c2.quadraticCurveTo(cx+r*.4,cy-r*.6,cx+r*.1,cy-r*.6);c2.stroke();break}case"special_forces":{/* ADP 1-02: "SF" abbreviation */c2.font=`bold ${r*1.1}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("SF",cx,cy);break}case"ranger":{c2.font=`bold ${r*.8}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("RGR",cx,cy);break}case"civil_affairs":c2.font=`bold ${r}px sans-serif`;c2.textAlign="center";c2.textBaseline="middle";c2.fillText("CA",cx,cy);break;case"psyop":{/* ADP 1-02: psychological operations — lightning bolt with arrow */c2.beginPath();c2.moveTo(cx-r*.2,cy-r*.6);c2.lineTo(cx+r*.15,cy);c2.lineTo(cx-r*.1,cy);c2.lineTo(cx+r*.2,cy+r*.6);c2.stroke();/* Arrow head */c2.beginPath();c2.moveTo(cx+r*.2,cy+r*.6);c2.lineTo(cx+r*.05,cy+r*.35);c2.moveTo(cx+r*.2,cy+r*.6);c2.lineTo(cx+r*.35,cy+r*.4);c2.stroke();break}case"waypoint":{/* Crosshair/pin symbol */c2.beginPath();c2.moveTo(cx,cy-r*.6);c2.lineTo(cx,cy+r*.6);c2.stroke();c2.beginPath();c2.moveTo(cx-r*.6,cy);c2.lineTo(cx+r*.6,cy);c2.stroke();c2.beginPath();c2.arc(cx,cy,r*.35,0,Math.PI*2);c2.stroke();break}}}
-function drawEch(c2,ech,aff,utype,isEquip){const shape=AFFILIATIONS[aff||"friendly"].shape;const isH=shape==="diamond";const isC=shape==="circle";const hh=FRAME_H/2;const cr=isC?(Math.max(FRAME_W/2,hh)+U*.1):0;const _uav=isEquip&&utype==="uav";const by=_uav?CY-(hh+U*.2)-U*1.0-U*1.6:CY-hh-U*1.6-(isH?U*.6:0)-(isC?cr-hh:0);c2.strokeStyle="#000";c2.fillStyle="#000";c2.lineWidth=2.5;const e=ECHELONS.find(x=>x.id===ech);if(!e)return;const m=e.mark;if(m==="slashO"){const r=4;c2.beginPath();c2.arc(CX,by,r,0,Math.PI*2);c2.stroke();c2.beginPath();c2.moveTo(CX-r*.7,by+r*.7);c2.lineTo(CX+r*.7,by-r*.7);c2.stroke()}else if(m==="cmd"){/* Command: star shape */const r=6;c2.beginPath();for(let i=0;i<5;i++){const a1=Math.PI*2*i/5-Math.PI/2,a2=Math.PI*2*(i+0.5)/5-Math.PI/2;c2.lineTo(CX+Math.cos(a1)*r,by+Math.sin(a1)*r);c2.lineTo(CX+Math.cos(a2)*r*0.4,by+Math.sin(a2)*r*0.4)}c2.closePath();c2.fill()}else if(m.startsWith("dot")){const n=parseInt(m[3]),g=7,tw=(n-1)*g;for(let i=0;i<n;i++){c2.beginPath();c2.arc(CX-tw/2+i*g,by,2.8,0,Math.PI*2);c2.fill()}}else if(m.startsWith("bar")){const n=parseInt(m[3]),g=6,tw=(n-1)*g;for(let i=0;i<n;i++){const px=CX-tw/2+i*g;c2.beginPath();c2.moveTo(px,by-7);c2.lineTo(px,by+7);c2.stroke()}}else if(m.startsWith("x")){const n=parseInt(m[1]),g=10,tw=(n-1)*g;for(let i=0;i<n;i++){const px=CX-tw/2+i*g;c2.beginPath();c2.moveTo(px-4,by-5);c2.lineTo(px+4,by+5);c2.moveTo(px+4,by-5);c2.lineTo(px-4,by+5);c2.stroke()}}}
-function drawMods(c2,mods){c2.fillStyle="#aaa";c2.font=`${U*.9}px sans-serif`;c2.textAlign="center";c2.textBaseline="top";c2.fillText(mods.map(m=>(MODIFIERS.find(x=>x.id===m)||{}).symbol||"").join(" "),CX,CY+FRAME_H/2+U*2)}
 function drawUnits(){const d=devicePixelRatio||1;const _W2=canvas.width/d,_H2=canvas.height/d;
 const _luv={};S.layers.forEach(l=>{_luv[l.id]=l.visible});
 S.units.forEach(u=>{if(_luv[u.layerId]===false||(!(u.layerId in _luv)&&S._allLayersHidden))return;if(!wargameCanSeeLayer(u.layerId))return;const sp=latlonToScreen(u.lat,u.lon);
@@ -679,7 +632,7 @@ if(cimg.complete&&cimg.naturalWidth>0){const uSz=sz*d*uScale;const _ar=cimg.natu
 if(S.showLabels&&(u.designation||u.parentUnit)){const _fam=getComputedStyle(document.body).fontFamily;const _by=sp.y*d+uSz/2+2*d;ctx.textAlign="center";ctx.textBaseline="top";if(u.designation){ctx.font=`bold ${Math.max(9,Math.round(sz*0.18))*d}px ${_fam}`;ctx.strokeStyle="rgba(0,0,0,.8)";ctx.lineWidth=3*d;ctx.strokeText(u.designation,sp.x*d,_by);ctx.fillStyle="#fff";ctx.fillText(u.designation,sp.x*d,_by)}if(u.parentUnit){const _py=_by+(u.designation?Math.round(sz*0.2)*d+1*d:0);ctx.font=`${Math.max(8,Math.round(sz*0.15))*d}px ${_fam}`;ctx.strokeStyle="rgba(0,0,0,.8)";ctx.lineWidth=3*d;ctx.strokeText(u.parentUnit,sp.x*d,_py);ctx.fillStyle="rgba(255,255,255,.7)";ctx.fillText(u.parentUnit,sp.x*d,_py)}}}
 else{drawUnitIcon(ctx,u,sp.x*d,sp.y*d,sz*d)}}else{const uScale=u.iconScale||1;
 drawUnitIcon(ctx,u,sp.x*d,sp.y*d,sz*d*uScale)}}
-ctx.restore();if(u.id===S.selectedUnitId){ctx.save();ctx.strokeStyle="#ffd700";ctx.lineWidth=2*d;ctx.setLineDash([4*d,4*d]);const h=sz*d/2+4*d;ctx.strokeRect(sp.x*d-h,sp.y*d-h,h*2,h*2);ctx.restore();/* Rotation handle — red dot around unit */const handleDist=(sz*d/2+20*d);const ang=(u.rotation||0)*DEG;const hx=sp.x*d+Math.sin(ang)*handleDist;const hy=sp.y*d-Math.cos(ang)*handleDist;/* Handle dot */ctx.save();ctx.fillStyle="#ff4444";ctx.strokeStyle="#fff";ctx.lineWidth=2*d;ctx.beginPath();ctx.arc(hx,hy,5*d,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();/* Angle text above icon */if(u.rotation){ctx.save();ctx.fillStyle="#fff";ctx.strokeStyle="rgba(0,0,0,.6)";ctx.lineWidth=3*d;ctx.font=`bold ${10*d}px ${getComputedStyle(document.body).fontFamily}`;ctx.textAlign="center";ctx.textBaseline="bottom";const txt=Math.round(u.rotation)+"\u00b0";ctx.strokeText(txt,sp.x*d,sp.y*d-h-4*d);ctx.fillText(txt,sp.x*d,sp.y*d-h-4*d);ctx.restore()}}})}
+ctx.restore();if(u.id===S.selectedUnitId){ctx.save();ctx.strokeStyle="#ffd700";ctx.lineWidth=2*d;ctx.setLineDash([4*d,4*d]);var _ub=getUnitMSBounds(u,sz);var _ubPad=6*d;ctx.strokeRect(sp.x*d+_ub.left*d-_ubPad,sp.y*d+_ub.top*d-_ubPad,(_ub.right-_ub.left)*d+_ubPad*2,(_ub.bottom-_ub.top)*d+_ubPad*2);ctx.restore();/* Rotation handle — red dot around unit */const handleDist=(Math.max(-_ub.top,_ub.right)*d+20*d);const ang=(u.rotation||0)*DEG;const hx=sp.x*d+Math.sin(ang)*handleDist;const hy=sp.y*d-Math.cos(ang)*handleDist;/* Handle dot */ctx.save();ctx.fillStyle="#ff4444";ctx.strokeStyle="#fff";ctx.lineWidth=2*d;ctx.beginPath();ctx.arc(hx,hy,5*d,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();/* Angle text above icon */if(u.rotation){ctx.save();ctx.fillStyle="#fff";ctx.strokeStyle="rgba(0,0,0,.6)";ctx.lineWidth=3*d;ctx.font=`bold ${10*d}px ${getComputedStyle(document.body).fontFamily}`;ctx.textAlign="center";ctx.textBaseline="bottom";const txt=Math.round(u.rotation)+"\u00b0";var _txtY=sp.y*d+_ub.top*d-_ubPad-4*d;ctx.strokeText(txt,sp.x*d,_txtY);ctx.fillText(txt,sp.x*d,_txtY);ctx.restore()}}})}
 /* Custom icon image cache for KMZ-embedded images */
 const _iconCache={};const _tintCache={};
 function getCustomIconImage(dataUrl){if(_iconCache[dataUrl])return _iconCache[dataUrl];const img=new Image();img.src=dataUrl;_iconCache[dataUrl]=img;img.onload=()=>requestRender();return img}
@@ -691,8 +644,7 @@ const ri=new Image();ri.src=oc.toDataURL();_tintCache[key]=ri;return ri}
 function getUSS(){const bases={tiny:{min:28,base:36,rate:4},small:{min:36,base:46,rate:6},medium:{min:48,base:60,rate:8},large:{min:60,base:76,rate:10},xlarge:{min:72,base:92,rate:12}};const b=bases[S.iconSize]||bases.medium;return Math.max(b.min,Math.min(b.min*3,b.base+(S.zoom-10)*b.rate))}
 function hitTestRotHandle(pos){if(!S.selectedUnitId)return null;const u=S.units.find(x=>x.id===S.selectedUnitId);if(!u)return null;const sp=latlonToScreen(u.lat,u.lon),sz=getUSS(),handleDist=sz/2+20,ang=(u.rotation||0)*DEG,hx=sp.x+Math.sin(ang)*handleDist,hy=sp.y-Math.cos(ang)*handleDist;if(Math.hypot(pos.x-hx,pos.y-hy)<12)return u;return null}
 
-
-// === part_05_graphics.js ===
+// === 05_graphics.js ===
 
 function setDash(c2,s,d){c2.setLineDash(s==="dashed"?[10*d,6*d]:s==="dotted"?[3*d,3*d]:[])}
 function drawHatchClipped(c2,pts,type,col,d,opts){/* Draw hatching lines clipped to polygon/shape path - uses offscreen canvas to avoid shadow bleed */
@@ -721,10 +673,11 @@ const _lgv={};S.layers.forEach(l=>{_lgv[l.id]=l.visible});
 S.graphics.forEach(g=>{if(_lgv[g.layerId]===false||(!(g.layerId in _lgv)&&S._allLayersHidden))return;if(!wargameCanSeeLayer(g.layerId))return;if(!g.points||g.points.length<1)return;
 if(g.points.length>=2){var _mn=90,_mx=-90,_mln=180,_mlx=-180;for(var _i=0;_i<g.points.length;_i++){var _p=g.points[_i];if(_p.lat<_mn)_mn=_p.lat;if(_p.lat>_mx)_mx=_p.lat;if(_p.lon<_mln)_mln=_p.lon;if(_p.lon>_mlx)_mlx=_p.lon}var _tl=screenToLatlon(0,0),_br=screenToLatlon(_gW,_gH);if(_mx<_br.lat||_mn>_tl.lat||_mlx<_tl.lon||_mln>_br.lon)return}
 /* Decimate large polygons for rendering */
-var _rpts=g.points;if(S._perfDecimate&&g.points.length>500){var _maxRPts=S.zoom>=14?2000:S.zoom>=12?1000:500;var _rs=Math.ceil(g.points.length/_maxRPts);_rpts=[];for(var _ri=0;_ri<g.points.length;_ri+=_rs)_rpts.push(g.points[_ri]);if(_ri-_rs!==g.points.length-1)_rpts.push(g.points[g.points.length-1])}
+var _rpts=g.points;if(g.points.length>100){const _vtl=screenToLatlon(0,0),_vbr=screenToLatlon(_gW,_gH);const _degPx=Math.abs(_vtl.lat-_vbr.lat)/(_gH||1);const _vthr=_degPx*1.5;const _vdec=[_rpts[0]];for(var _vi=1;_vi<_rpts.length-1;_vi++){const _vp=_rpts[_vi],_vprev=_vdec[_vdec.length-1];if(Math.abs(_vp.lat-_vprev.lat)>_vthr||Math.abs(_vp.lon-_vprev.lon)>_vthr)_vdec.push(_vp)}_vdec.push(_rpts[_rpts.length-1]);_rpts=_vdec}
 const pts=_rpts.map(p=>{const s=latlonToScreen(p.lat,p.lon);return{x:s.x*d,y:s.y*d}});
 /* Decimate for drawing if too many points */
-var dpts=pts;if(S._perfDecimate&&pts.length>500){var _maxRPts2=S.zoom>=14?2000:S.zoom>=12?1000:500;var ds=Math.ceil(pts.length/_maxRPts2);dpts=[];for(var di=0;di<pts.length;di+=ds)dpts.push(pts[di]);if(di-ds!==pts.length-1)dpts.push(pts[pts.length-1])}ctx.save();if(g.shadow){ctx.shadowColor="rgba(0,0,0,.5)";ctx.shadowBlur=4*d;ctx.shadowOffsetX=d;ctx.shadowOffsetY=d}const col=g.color||"#f44",lw=Math.max(1,(g.lineWidth||2))*d;ctx.strokeStyle=col;ctx.lineWidth=lw;setDash(ctx,g.lineStyle,d);if(g.overlayType&&g.overlayType!=="none")drawOvl(ctx,g,pts,d);else switch(g.tool){case"line":case"arrow":ctx.beginPath();dpts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();if(g.tool==="arrow"&&dpts.length>=2){const as=(g.arrowSize||1)*d;drawAH(ctx,dpts[dpts.length-2],dpts[dpts.length-1],lw,col,as)}break;case"polygon":ctx.beginPath();dpts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();if(g.fill){ctx.fillStyle=g.fillColor||col;ctx.globalAlpha=g.fillOpacity||.2;ctx.fill();ctx.globalAlpha=1;if(g.fillHatch&&g.fillHatch!=="none")drawHatchClipped(ctx,pts,g.fillHatch,col,d,{hatchColor:g.hatchColor,hatchLineWidth:g.hatchLineWidth,hatchSpacing:g.hatchSpacing,hatchOpacity:g.hatchOpacity})}ctx.stroke();if(g.label&&S.showLabels){var pcx=0,pcy=0;pts.forEach(p=>{pcx+=p.x;pcy+=p.y});pcx/=pts.length;pcy/=pts.length;var bMinX=Infinity,bMaxX=-Infinity,bMinY=Infinity,bMaxY=-Infinity;pts.forEach(p=>{if(p.x<bMinX)bMinX=p.x;if(p.x>bMaxX)bMaxX=p.x;if(p.y<bMinY)bMinY=p.y;if(p.y>bMaxY)bMaxY=p.y});var bSz=Math.min(bMaxX-bMinX,bMaxY-bMinY);if(g.labelOffset&&g._labelZoomRef==null)g._labelZoomRef=S.zoom;var _loZs=g._labelZoomRef!=null?Math.pow(2,S.zoom-g._labelZoomRef):1;var lox=g.labelOffset?g.labelOffset.x*d*_loZs:0,loy=g.labelOffset?g.labelOffset.y*d*_loZs:-(bMaxY-bMinY)/2-8*d;/* Font: compute auto-size once at first render, then scale with zoom */if(!g._autoFontSize&&!g.fontSize){g._autoFontSize=12;g._fontZoomRef=S.zoom}var _fZs=g._fontZoomRef!=null?Math.pow(2,S.zoom-g._fontZoomRef):1;var _pZs=g._zoomRef!=null?Math.pow(2,S.zoom-g._zoomRef):1;var fSz=g.fontSize?g.fontSize*d*_pZs:g._autoFontSize?Math.min(g._autoFontSize*d*_fZs,20*d):12*d;var lAlpha=bSz>3000*d?Math.max(0,1-(bSz-3000*d)/1000*d):1;ctx.save();ctx.globalAlpha=lAlpha;ctx.font=`${g.labelBold!==false?'bold ':''}${fSz}px sans-serif`;ctx.fillStyle=col;ctx.textAlign="center";ctx.textBaseline="middle";if(g.labelShadow!==false){ctx.shadowColor="rgba(0,0,0,.45)";ctx.shadowBlur=2*d;ctx.shadowOffsetX=1*d;ctx.shadowOffsetY=1*d}else{ctx.strokeStyle="rgba(255,255,255,.85)";ctx.lineWidth=3*d;ctx.lineJoin="round";ctx.strokeText(g.label,pcx+lox,pcy+loy);ctx.shadowColor="transparent";ctx.shadowBlur=0}ctx.fillText(g.label,pcx+lox,pcy+loy);ctx.restore()}break;case"circle":if(pts.length>=2){const r=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y);ctx.beginPath();ctx.arc(pts[0].x,pts[0].y,r,0,Math.PI*2);if(g.fill){ctx.fillStyle=g.fillColor||col;ctx.globalAlpha=g.fillOpacity||.2;ctx.fill();ctx.globalAlpha=1;if(g.fillHatch&&g.fillHatch!=="none"){const np=64,cpts=[];for(let i=0;i<np;i++){const a=Math.PI*2*i/np;cpts.push({x:pts[0].x+Math.cos(a)*r,y:pts[0].y+Math.sin(a)*r})}drawHatchClipped(ctx,cpts,g.fillHatch,col,d,{hatchColor:g.hatchColor,hatchLineWidth:g.hatchLineWidth,hatchSpacing:g.hatchSpacing,hatchOpacity:g.hatchOpacity})}}ctx.stroke();if(g.label&&S.showLabels&&r>4*d){if(g.labelOffset&&g._labelZoomRef==null)g._labelZoomRef=S.zoom;var _loZs2=g._labelZoomRef!=null?Math.pow(2,S.zoom-g._labelZoomRef):1;var lox2=g.labelOffset?g.labelOffset.x*d*_loZs2:0,loy2=g.labelOffset?g.labelOffset.y*d*_loZs2:-(r+8*d);if(!g._autoFontSize&&!g.fontSize){g._autoFontSize=12;g._fontZoomRef=S.zoom}var _fZs2=g._fontZoomRef!=null?Math.pow(2,S.zoom-g._fontZoomRef):1;var _cZs=g._zoomRef!=null?Math.pow(2,S.zoom-g._zoomRef):1;var fSz2=g.fontSize?g.fontSize*d*_cZs:g._autoFontSize?Math.min(g._autoFontSize*d*_fZs2,20*d):12*d;var lAlpha2=r>1500*d?Math.max(0,1-(r-1500*d)/500*d):1;ctx.save();ctx.globalAlpha=lAlpha2;ctx.font=`${g.labelBold!==false?'bold ':''}${fSz2}px sans-serif`;ctx.fillStyle=col;ctx.textAlign="center";ctx.textBaseline="middle";if(g.labelShadow!==false){ctx.shadowColor="rgba(0,0,0,.45)";ctx.shadowBlur=2*d;ctx.shadowOffsetX=1*d;ctx.shadowOffsetY=1*d}else{ctx.strokeStyle="rgba(255,255,255,.85)";ctx.lineWidth=3*d;ctx.lineJoin="round";ctx.strokeText(g.label,pts[0].x+lox2,pts[0].y+loy2);ctx.shadowColor="transparent";ctx.shadowBlur=0}ctx.fillText(g.label,pts[0].x+lox2,pts[0].y+loy2);ctx.restore()}}break;case"rectangle":if(pts.length>=2){const x=Math.min(pts[0].x,pts[1].x),y=Math.min(pts[0].y,pts[1].y),w=Math.abs(pts[1].x-pts[0].x),h=Math.abs(pts[1].y-pts[0].y),rcx=x+w/2,rcy=y+h/2;ctx.save();if(g.rotation){ctx.translate(rcx,rcy);ctx.rotate(g.rotation*Math.PI/180);ctx.translate(-rcx,-rcy)}if(g.fill){ctx.fillStyle=g.fillColor||col;ctx.globalAlpha=g.fillOpacity||.2;ctx.fillRect(x,y,w,h);ctx.globalAlpha=1;if(g.fillHatch&&g.fillHatch!=="none"){const rpts=[{x,y},{x:x+w,y},{x:x+w,y:y+h},{x,y:y+h}];drawHatchClipped(ctx,rpts,g.fillHatch,col,d,{hatchColor:g.hatchColor,hatchLineWidth:g.hatchLineWidth,hatchSpacing:g.hatchSpacing,hatchOpacity:g.hatchOpacity})}}ctx.strokeRect(x,y,w,h);var rSz=Math.min(w,h);if(g.label){if(g.labelOffset&&g._labelZoomRef==null)g._labelZoomRef=S.zoom;var _loZs3=g._labelZoomRef!=null?Math.pow(2,S.zoom-g._labelZoomRef):1;var lox3=g.labelOffset?g.labelOffset.x*d*_loZs3:0,loy3=g.labelOffset?g.labelOffset.y*d*_loZs3:-(h/2+8*d);if(!g._autoFontSize&&!g.fontSize){g._autoFontSize=12;g._fontZoomRef=S.zoom}var _fZs3=g._fontZoomRef!=null?Math.pow(2,S.zoom-g._fontZoomRef):1;var _rZs=g._zoomRef!=null?Math.pow(2,S.zoom-g._zoomRef):1;var fSz3=g.fontSize?g.fontSize*d*_rZs:g._autoFontSize?Math.min(g._autoFontSize*d*_fZs3,20*d):12*d;var lAlpha3=rSz>3000*d?Math.max(0,1-(rSz-3000*d)/1000*d):1;ctx.globalAlpha=lAlpha3;ctx.font=`${g.labelBold!==false?'bold ':''}${fSz3}px sans-serif`;ctx.fillStyle=col;ctx.textAlign="center";ctx.textBaseline="middle";if(g.labelShadow!==false){ctx.shadowColor="rgba(0,0,0,.45)";ctx.shadowBlur=2*d;ctx.shadowOffsetX=1*d;ctx.shadowOffsetY=1*d}else{ctx.strokeStyle="rgba(255,255,255,.85)";ctx.lineWidth=3*d;ctx.lineJoin="round";ctx.strokeText(g.label,rcx+lox3,rcy+loy3);ctx.shadowColor="transparent";ctx.shadowBlur=0}ctx.fillText(g.label,rcx+lox3,rcy+loy3)}ctx.restore()}break;case"text":if(pts.length>=1&&g.label){ctx.save();if(g.rotation){ctx.translate(pts[0].x,pts[0].y);ctx.rotate(g.rotation*Math.PI/180);ctx.translate(-pts[0].x,-pts[0].y)}/* Scale text with zoom: store reference zoom, scale by 2^(delta) */if(g._zoomRef==null)g._zoomRef=S.zoom;var _tFontSz=(g.fontSize||14)*d*Math.pow(2,S.zoom-g._zoomRef);if(_tFontSz<1.5){ctx.restore();break}ctx.font=`${g.labelBold!==false?'bold ':''}${_tFontSz}px ${g.fontFamily||"sans-serif"}`;ctx.fillStyle=col;ctx.textAlign="left";ctx.textBaseline="top";if(g.labelShadow!==false){ctx.shadowColor="rgba(0,0,0,.45)";ctx.shadowBlur=2*d;ctx.shadowOffsetX=1*d;ctx.shadowOffsetY=1*d}ctx.fillText(g.label,pts[0].x,pts[0].y);ctx.restore()}break}ctx.restore();/* Measurement labels for converted measure graphics */
+var dpts=pts;ctx.save();if(g.shadow){ctx.shadowColor="rgba(0,0,0,.5)";ctx.shadowBlur=4*d;ctx.shadowOffsetX=d;ctx.shadowOffsetY=d}const col=g.color||"#f44",lw=Math.max(1,(g.lineWidth||2))*d;ctx.strokeStyle=col;ctx.lineWidth=lw;setDash(ctx,g.lineStyle,d);if(g.tool==="tacTask"){drawTacTask(ctx,g,d);ctx.restore();return}
+if(g.overlayType&&g.overlayType!=="none")drawOvl(ctx,g,pts,d);else switch(g.tool){case"line":case"arrow":ctx.beginPath();dpts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();if(g.tool==="arrow"&&dpts.length>=2){const as=(g.arrowSize||1)*d;drawAH(ctx,dpts[dpts.length-2],dpts[dpts.length-1],lw,col,as)}break;case"polygon":ctx.beginPath();dpts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();if(g.fill){ctx.fillStyle=g.fillColor||col;ctx.globalAlpha=g.fillOpacity||.2;ctx.fill();ctx.globalAlpha=1;if(g.fillHatch&&g.fillHatch!=="none")drawHatchClipped(ctx,pts,g.fillHatch,col,d,{hatchColor:g.hatchColor,hatchLineWidth:g.hatchLineWidth,hatchSpacing:g.hatchSpacing,hatchOpacity:g.hatchOpacity})}ctx.stroke();if(g.label&&S.showLabels){var pcx=0,pcy=0;pts.forEach(p=>{pcx+=p.x;pcy+=p.y});pcx/=pts.length;pcy/=pts.length;var bMinX=Infinity,bMaxX=-Infinity,bMinY=Infinity,bMaxY=-Infinity;pts.forEach(p=>{if(p.x<bMinX)bMinX=p.x;if(p.x>bMaxX)bMaxX=p.x;if(p.y<bMinY)bMinY=p.y;if(p.y>bMaxY)bMaxY=p.y});var bSz=Math.min(bMaxX-bMinX,bMaxY-bMinY);if(g.labelOffset&&g._labelZoomRef==null)g._labelZoomRef=S.zoom;var _loZs=g._labelZoomRef!=null?Math.pow(2,S.zoom-g._labelZoomRef):1;var lox=g.labelOffset?g.labelOffset.x*d*_loZs:0,loy=g.labelOffset?g.labelOffset.y*d*_loZs:-(bMaxY-bMinY)/2-8*d;/* Font: compute auto-size once at first render, then scale with zoom */if(!g._autoFontSize&&!g.fontSize){g._autoFontSize=12;g._fontZoomRef=S.zoom}var _fZs=g._fontZoomRef!=null?Math.pow(2,S.zoom-g._fontZoomRef):1;var _pZs=g._zoomRef!=null?Math.pow(2,S.zoom-g._zoomRef):1;var fSz=g.fontSize?g.fontSize*d*_pZs:g._autoFontSize?Math.min(g._autoFontSize*d*_fZs,20*d):12*d;var lAlpha=bSz>3000*d?Math.max(0,1-(bSz-3000*d)/1000*d):1;ctx.save();ctx.globalAlpha=lAlpha;ctx.font=`${g.labelBold!==false?'bold ':''}${fSz}px sans-serif`;ctx.fillStyle=col;ctx.textAlign="center";ctx.textBaseline="middle";if(g.labelShadow!==false){ctx.shadowColor="rgba(0,0,0,.45)";ctx.shadowBlur=2*d;ctx.shadowOffsetX=1*d;ctx.shadowOffsetY=1*d}else{ctx.strokeStyle="rgba(255,255,255,.85)";ctx.lineWidth=3*d;ctx.lineJoin="round";ctx.strokeText(g.label,pcx+lox,pcy+loy);ctx.shadowColor="transparent";ctx.shadowBlur=0}ctx.fillText(g.label,pcx+lox,pcy+loy);ctx.restore()}break;case"circle":if(pts.length>=2){const r=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y);ctx.beginPath();ctx.arc(pts[0].x,pts[0].y,r,0,Math.PI*2);if(g.fill){ctx.fillStyle=g.fillColor||col;ctx.globalAlpha=g.fillOpacity||.2;ctx.fill();ctx.globalAlpha=1;if(g.fillHatch&&g.fillHatch!=="none"){const np=64,cpts=[];for(let i=0;i<np;i++){const a=Math.PI*2*i/np;cpts.push({x:pts[0].x+Math.cos(a)*r,y:pts[0].y+Math.sin(a)*r})}drawHatchClipped(ctx,cpts,g.fillHatch,col,d,{hatchColor:g.hatchColor,hatchLineWidth:g.hatchLineWidth,hatchSpacing:g.hatchSpacing,hatchOpacity:g.hatchOpacity})}}ctx.stroke();if(g.label&&S.showLabels&&r>4*d){if(g.labelOffset&&g._labelZoomRef==null)g._labelZoomRef=S.zoom;var _loZs2=g._labelZoomRef!=null?Math.pow(2,S.zoom-g._labelZoomRef):1;var lox2=g.labelOffset?g.labelOffset.x*d*_loZs2:0,loy2=g.labelOffset?g.labelOffset.y*d*_loZs2:-(r+8*d);if(!g._autoFontSize&&!g.fontSize){g._autoFontSize=12;g._fontZoomRef=S.zoom}var _fZs2=g._fontZoomRef!=null?Math.pow(2,S.zoom-g._fontZoomRef):1;var _cZs=g._zoomRef!=null?Math.pow(2,S.zoom-g._zoomRef):1;var fSz2=g.fontSize?g.fontSize*d*_cZs:g._autoFontSize?Math.min(g._autoFontSize*d*_fZs2,20*d):12*d;var lAlpha2=r>1500*d?Math.max(0,1-(r-1500*d)/500*d):1;ctx.save();ctx.globalAlpha=lAlpha2;ctx.font=`${g.labelBold!==false?'bold ':''}${fSz2}px sans-serif`;ctx.fillStyle=col;ctx.textAlign="center";ctx.textBaseline="middle";if(g.labelShadow!==false){ctx.shadowColor="rgba(0,0,0,.45)";ctx.shadowBlur=2*d;ctx.shadowOffsetX=1*d;ctx.shadowOffsetY=1*d}else{ctx.strokeStyle="rgba(255,255,255,.85)";ctx.lineWidth=3*d;ctx.lineJoin="round";ctx.strokeText(g.label,pts[0].x+lox2,pts[0].y+loy2);ctx.shadowColor="transparent";ctx.shadowBlur=0}ctx.fillText(g.label,pts[0].x+lox2,pts[0].y+loy2);ctx.restore()}}break;case"rectangle":if(pts.length>=2){const x=Math.min(pts[0].x,pts[1].x),y=Math.min(pts[0].y,pts[1].y),w=Math.abs(pts[1].x-pts[0].x),h=Math.abs(pts[1].y-pts[0].y),rcx=x+w/2,rcy=y+h/2;ctx.save();if(g.rotation){ctx.translate(rcx,rcy);ctx.rotate(g.rotation*Math.PI/180);ctx.translate(-rcx,-rcy)}if(g.fill){ctx.fillStyle=g.fillColor||col;ctx.globalAlpha=g.fillOpacity||.2;ctx.fillRect(x,y,w,h);ctx.globalAlpha=1;if(g.fillHatch&&g.fillHatch!=="none"){const rpts=[{x,y},{x:x+w,y},{x:x+w,y:y+h},{x,y:y+h}];drawHatchClipped(ctx,rpts,g.fillHatch,col,d,{hatchColor:g.hatchColor,hatchLineWidth:g.hatchLineWidth,hatchSpacing:g.hatchSpacing,hatchOpacity:g.hatchOpacity})}}ctx.strokeRect(x,y,w,h);var rSz=Math.min(w,h);if(g.label){if(g.labelOffset&&g._labelZoomRef==null)g._labelZoomRef=S.zoom;var _loZs3=g._labelZoomRef!=null?Math.pow(2,S.zoom-g._labelZoomRef):1;var lox3=g.labelOffset?g.labelOffset.x*d*_loZs3:0,loy3=g.labelOffset?g.labelOffset.y*d*_loZs3:-(h/2+8*d);if(!g._autoFontSize&&!g.fontSize){g._autoFontSize=12;g._fontZoomRef=S.zoom}var _fZs3=g._fontZoomRef!=null?Math.pow(2,S.zoom-g._fontZoomRef):1;var _rZs=g._zoomRef!=null?Math.pow(2,S.zoom-g._zoomRef):1;var fSz3=g.fontSize?g.fontSize*d*_rZs:g._autoFontSize?Math.min(g._autoFontSize*d*_fZs3,20*d):12*d;var lAlpha3=rSz>3000*d?Math.max(0,1-(rSz-3000*d)/1000*d):1;ctx.globalAlpha=lAlpha3;ctx.font=`${g.labelBold!==false?'bold ':''}${fSz3}px sans-serif`;ctx.fillStyle=col;ctx.textAlign="center";ctx.textBaseline="middle";if(g.labelShadow!==false){ctx.shadowColor="rgba(0,0,0,.45)";ctx.shadowBlur=2*d;ctx.shadowOffsetX=1*d;ctx.shadowOffsetY=1*d}else{ctx.strokeStyle="rgba(255,255,255,.85)";ctx.lineWidth=3*d;ctx.lineJoin="round";ctx.strokeText(g.label,rcx+lox3,rcy+loy3);ctx.shadowColor="transparent";ctx.shadowBlur=0}ctx.fillText(g.label,rcx+lox3,rcy+loy3)}ctx.restore()}break;case"text":if(pts.length>=1&&g.label){ctx.save();if(g.rotation){ctx.translate(pts[0].x,pts[0].y);ctx.rotate(g.rotation*Math.PI/180);ctx.translate(-pts[0].x,-pts[0].y)}/* Scale text with zoom: always reference zoom 10 for consistency across placements */if(g._zoomRef==null){g._zoomRef=10;}else if(g._zoomRef!==10){/* Migrate existing graphics: convert fontSize to zoom-10 equivalent */g.fontSize=(g.fontSize||14)*Math.pow(2,g._zoomRef-10);g._zoomRef=10;}var _tFontSz=(g.fontSize||14)*d*Math.pow(2,S.zoom-10);if(_tFontSz<1.5){ctx.restore();break}ctx.font=`${g.labelBold!==false?'bold ':''}${_tFontSz}px ${g.fontFamily||"sans-serif"}`;ctx.fillStyle=col;ctx.textAlign="left";ctx.textBaseline="top";if(g.labelShadow!==false){ctx.shadowColor="rgba(0,0,0,.45)";ctx.shadowBlur=2*d;ctx.shadowOffsetX=1*d;ctx.shadowOffsetY=1*d}ctx.fillText(g.label,pts[0].x,pts[0].y);ctx.restore()}break}ctx.restore();/* Measurement labels for converted measure graphics */
 if(g.showMeasure&&g._measureData){ctx.save();ctx.font=`bold ${10*d}px ${getComputedStyle(document.body).fontFamily}`;
 if(g._measureData.type==="distance"&&g._measureData.segments){
 for(let i=1;i<pts.length&&i-1<g._measureData.segments.length;i++){const mx=(pts[i-1].x+pts[i].x)/2,my=(pts[i-1].y+pts[i].y)/2;const txt=formatDist(g._measureData.segments[i-1]);const tw=ctx.measureText(txt).width;ctx.fillStyle="rgba(0,0,0,.75)";ctx.fillRect(mx-tw/2-3*d,my-14*d,tw+6*d,14*d);ctx.textAlign="center";ctx.textBaseline="bottom";ctx.fillStyle="#ffd700";ctx.fillText(txt,mx,my-2*d)}
@@ -821,8 +774,299 @@ if(dm.tool==="rectangle"&&dm.points.length===1&&dm._cursor){
 }
 const pts=dm.points.map(p=>{const s=latlonToScreen(p.lat,p.lon);return{x:s.x*d,y:s.y*d}});ctx.save();ctx.strokeStyle=dm.color||"#ffd700";ctx.lineWidth=Math.max(1,(dm.lineWidth||2))*d;ctx.setLineDash([6*d,3*d]);ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));if(dm.tool==="polygon"&&pts.length>2)ctx.lineTo(pts[0].x,pts[0].y);ctx.stroke();ctx.setLineDash([]);pts.forEach((p,i)=>{const isLast=i===pts.length-1;ctx.beginPath();if(isLast){ctx.arc(p.x,p.y,10*d,0,Math.PI*2);ctx.fillStyle="#fff";ctx.fill();ctx.strokeStyle="#ffd700";ctx.lineWidth=3*d;ctx.stroke()}else{ctx.arc(p.x,p.y,6*d,0,Math.PI*2);ctx.fillStyle="#ffd700";ctx.strokeStyle="#fff";ctx.lineWidth=2*d;ctx.fill();ctx.stroke()}});ctx.restore()}
 
+// === 05b_tactasks.js ===
 
-// === part_05b_maptools.js ===
+/* === 05b_tactasks.js — Tactical Task Symbols ===
+   All symbols drawn with direct canvas calls, centered at (cx,cy), half-size sz.
+   lw = line width (already DPR-scaled by caller).
+   Based on FM 3-90 / ADRP 3-90 tactical task symbology. */
+
+const TACTICAL_TASKS = [
+  {id:"ambush",         label:"Ambush",          cat:"Enemy",    placement:"point"},
+  {id:"attack_by_fire", label:"Attack by Fire",  cat:"Enemy",    placement:"point"},
+  {id:"support_by_fire",label:"Support by Fire", cat:"Enemy",    placement:"point"},
+  {id:"fix",            label:"Fix",             cat:"Enemy",    placement:"point"},
+  {id:"destroy",        label:"Destroy",         cat:"Enemy",    placement:"point"},
+  {id:"neutralize",     label:"Neutralize",      cat:"Enemy",    placement:"point"},
+  {id:"suppress",       label:"Suppress",        cat:"Enemy",    placement:"point"},
+  {id:"interdict",      label:"Interdict",       cat:"Enemy",    placement:"point"},
+  {id:"disrupt",        label:"Disrupt",         cat:"Enemy",    placement:"point"},
+  {id:"turn",           label:"Turn",            cat:"Enemy",    placement:"point"},
+  {id:"exfiltrate",     label:"Exfiltrate",      cat:"Friendly", placement:"point"},
+  {id:"block",          label:"Block",           cat:"Enemy",    placement:"linear"},
+  {id:"breach",         label:"Breach",          cat:"Enemy",    placement:"linear"},
+  {id:"bypass",         label:"Bypass",          cat:"Terrain",  placement:"linear"},
+  {id:"canalize",       label:"Canalize",        cat:"Enemy",    placement:"linear"},
+  {id:"clear",          label:"Clear",           cat:"Terrain",  placement:"linear"},
+  {id:"disengage",      label:"Disengage",       cat:"Friendly", placement:"linear"},
+  {id:"follow_assume",  label:"Follow & Assume", cat:"Friendly", placement:"linear"},
+  {id:"occupy",         label:"Occupy",          cat:"Terrain",  placement:"area"},
+  {id:"secure",         label:"Secure",          cat:"Terrain",  placement:"area"},
+  {id:"retain",         label:"Retain",          cat:"Terrain",  placement:"area"},
+  {id:"isolate",        label:"Isolate",         cat:"Enemy",    placement:"area"},
+  {id:"contain",        label:"Contain",         cat:"Enemy",    placement:"area"},
+];
+
+function _ttAH(ctx,x1,y1,x2,y2,aw,col){
+  var a=Math.atan2(y2-y1,x2-x1);
+  ctx.save();ctx.fillStyle=col;
+  ctx.beginPath();
+  ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-aw*Math.cos(a-0.4),y2-aw*Math.sin(a-0.4));
+  ctx.lineTo(x2-aw*Math.cos(a+0.4),y2-aw*Math.sin(a+0.4));
+  ctx.closePath();ctx.fill();ctx.restore();
+}
+
+const _TT_DRAW = {
+
+  ambush: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    var aw=lw*4;
+    ctx.beginPath();ctx.moveTo(cx-sz,cy);ctx.lineTo(cx+sz*0.6,cy);ctx.stroke();
+    _ttAH(ctx,cx-sz,cy,cx+sz*0.8,cy,aw,col);
+    ctx.beginPath();ctx.arc(cx-sz*0.1,cy,sz*0.7,-Math.PI*0.85,0,false);ctx.stroke();
+    ctx.lineWidth=lw*0.8;
+    for(var i=0;i<6;i++){
+      var a=-Math.PI*0.8+i*(Math.PI*0.8/5);
+      var r=sz*0.7,r2=r+sz*0.25;
+      ctx.beginPath();
+      ctx.moveTo(cx-sz*0.1+r*Math.cos(a),cy+r*Math.sin(a));
+      ctx.lineTo(cx-sz*0.1+r2*Math.cos(a),cy+r2*Math.sin(a));
+      ctx.stroke();
+    }
+  },
+
+  attack_by_fire: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    var aw=lw*4;
+    ctx.beginPath();ctx.moveTo(cx-sz*0.6,cy);ctx.lineTo(cx+sz*0.5,cy);ctx.stroke();
+    _ttAH(ctx,cx-sz*0.6,cy,cx+sz*0.7,cy,aw,col);
+    ctx.beginPath();ctx.moveTo(cx-sz*0.6,cy-sz*0.5);ctx.lineTo(cx-sz*0.6,cy+sz*0.5);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx-sz*0.6,cy-sz*0.3);ctx.lineTo(cx-sz*0.9,cy-sz*0.6);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx-sz*0.6,cy+sz*0.3);ctx.lineTo(cx-sz*0.9,cy+sz*0.6);ctx.stroke();
+  },
+
+  support_by_fire: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    var aw=lw*4,ox=cx-sz*0.3;
+    ctx.beginPath();ctx.moveTo(ox,cy);ctx.lineTo(ox+sz*1.1,cy-sz*0.7);ctx.stroke();
+    _ttAH(ctx,ox,cy,ox+sz*1.1,cy-sz*0.7,aw,col);
+    ctx.beginPath();ctx.moveTo(ox,cy);ctx.lineTo(ox+sz*1.1,cy+sz*0.7);ctx.stroke();
+    _ttAH(ctx,ox,cy,ox+sz*1.1,cy+sz*0.7,aw,col);
+    ctx.beginPath();ctx.moveTo(ox-sz*0.3,cy-sz*0.4);ctx.lineTo(ox-sz*0.3,cy+sz*0.4);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(ox-sz*0.3,cy);ctx.lineTo(ox,cy);ctx.stroke();
+  },
+
+  fix: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    ctx.beginPath();
+    ctx.moveTo(cx-sz*0.6,cy-sz*0.6);
+    ctx.lineTo(cx+sz*0.6,cy);
+    ctx.lineTo(cx-sz*0.6,cy+sz*0.6);
+    ctx.closePath();ctx.fill();
+  },
+
+  destroy: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw*1.8;ctx.lineCap='round';
+    var s=sz*0.7;
+    ctx.beginPath();ctx.moveTo(cx-s,cy-s);ctx.lineTo(cx+s,cy+s);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx+s,cy-s);ctx.lineTo(cx-s,cy+s);ctx.stroke();
+  },
+
+  neutralize: function(ctx,cx,cy,sz,col,lw){ _TT_DRAW.destroy(ctx,cx,cy,sz,col,lw); },
+  suppress:   function(ctx,cx,cy,sz,col,lw){ _TT_DRAW.destroy(ctx,cx,cy,sz,col,lw); },
+
+  interdict: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    var s=sz*0.55,aw=lw*4;
+    ctx.beginPath();ctx.moveTo(cx-s,cy-s);ctx.lineTo(cx+s,cy+s);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx+s,cy-s);ctx.lineTo(cx-s,cy+s);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx-sz,cy);ctx.lineTo(cx+sz*0.6,cy);ctx.stroke();
+    _ttAH(ctx,cx,cy,cx+sz*0.8,cy,aw,col);
+    ctx.beginPath();ctx.moveTo(cx+sz*0.85,cy-sz*0.35);ctx.lineTo(cx+sz*0.85,cy+sz*0.35);ctx.stroke();
+  },
+
+  disrupt: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    var aw=lw*3.5,offsets=[-sz*0.45,0,sz*0.45],xoffsets=[0,sz*0.3,0];
+    offsets.forEach(function(dy,i){
+      var x1=cx-sz*0.5+xoffsets[i],x2=cx+sz*0.3+xoffsets[i];
+      ctx.beginPath();ctx.moveTo(x1,cy+dy);ctx.lineTo(x2,cy+dy);ctx.stroke();
+      _ttAH(ctx,x1,cy+dy,x2+aw,cy+dy,aw,col);
+    });
+  },
+
+  turn: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    var aw=lw*4;
+    ctx.beginPath();ctx.moveTo(cx-sz*0.6,cy-sz*0.5);ctx.lineTo(cx-sz*0.6,cy+sz*0.1);
+    ctx.quadraticCurveTo(cx-sz*0.6,cy+sz*0.6,cx-sz*0.1,cy+sz*0.6);ctx.stroke();
+    _ttAH(ctx,cx-sz*0.15,cy+sz*0.55,cx+sz*0.05,cy+sz*0.65,aw,col);
+    ctx.beginPath();ctx.moveTo(cx+sz*0.6,cy-sz*0.5);ctx.lineTo(cx+sz*0.6,cy+sz*0.1);
+    ctx.quadraticCurveTo(cx+sz*0.6,cy+sz*0.6,cx+sz*0.1,cy+sz*0.6);ctx.stroke();
+    _ttAH(ctx,cx+sz*0.15,cy+sz*0.55,cx-sz*0.05,cy+sz*0.65,aw,col);
+  },
+
+  exfiltrate: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    var aw=lw*4;
+    ctx.beginPath();ctx.moveTo(cx+sz*0.5,cy);
+    ctx.bezierCurveTo(cx+sz*0.5,cy-sz*0.8,cx-sz*0.5,cy-sz*0.8,cx-sz*0.5,cy);ctx.stroke();
+    _ttAH(ctx,cx-sz*0.35,cy-sz*0.05,cx-sz*0.6,cy+sz*0.15,aw,col);
+  },
+
+  block: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    ctx.setLineDash([lw*4,lw*3]);
+    ctx.beginPath();ctx.moveTo(cx-sz,cy);ctx.lineTo(cx+sz*0.3,cy);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.lineWidth=lw*2;
+    ctx.beginPath();ctx.moveTo(cx+sz*0.5,cy-sz*0.7);ctx.lineTo(cx+sz*0.5,cy+sz*0.7);ctx.stroke();
+    ctx.lineWidth=lw;
+  },
+
+  breach: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    var aw=lw*4,gap=sz*0.18;
+    ctx.lineWidth=lw*2;
+    ctx.beginPath();ctx.moveTo(cx,cy-sz*0.8);ctx.lineTo(cx,cy+sz*0.8);ctx.stroke();
+    ctx.lineWidth=lw;
+    [-gap,gap].forEach(function(dy){
+      ctx.beginPath();ctx.moveTo(cx-sz*0.8,cy+dy);ctx.lineTo(cx+sz*0.4,cy+dy);ctx.stroke();
+      _ttAH(ctx,cx-sz*0.8,cy+dy,cx+sz*0.65,cy+dy,aw,col);
+    });
+  },
+
+  bypass: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    var aw=lw*4,gap=sz*0.35;
+    [-gap,gap].forEach(function(dy){
+      ctx.beginPath();ctx.moveTo(cx-sz*0.8,cy+dy);ctx.lineTo(cx-sz*0.1,cy+dy);
+      ctx.quadraticCurveTo(cx+sz*0.35,cy+dy,cx+sz*0.35,cy);
+      ctx.quadraticCurveTo(cx+sz*0.35,cy-dy,cx+sz*0.8,cy-dy);ctx.stroke();
+      _ttAH(ctx,cx+sz*0.6,cy-dy,cx+sz*0.9,cy-dy,aw,col);
+    });
+  },
+
+  canalize: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    var aw=lw*4;
+    ctx.beginPath();ctx.moveTo(cx-sz,cy-sz*0.6);ctx.lineTo(cx+sz*0.2,cy-sz*0.15);ctx.stroke();
+    _ttAH(ctx,cx-sz,cy-sz*0.6,cx+sz*0.4,cy-sz*0.08,aw,col);
+    ctx.beginPath();ctx.moveTo(cx-sz,cy+sz*0.6);ctx.lineTo(cx+sz*0.2,cy+sz*0.15);ctx.stroke();
+    _ttAH(ctx,cx-sz,cy+sz*0.6,cx+sz*0.4,cy+sz*0.08,aw,col);
+  },
+
+  clear: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    var aw=lw*4;
+    [-sz*0.4,0,sz*0.4].forEach(function(dy){
+      ctx.beginPath();ctx.moveTo(cx-sz*0.7,cy+dy);ctx.lineTo(cx+sz*0.2,cy+dy);ctx.stroke();
+      _ttAH(ctx,cx-sz*0.7,cy+dy,cx+sz*0.4,cy+dy,aw,col);
+    });
+    ctx.lineWidth=lw*2;
+    ctx.beginPath();ctx.moveTo(cx+sz*0.6,cy-sz*0.7);ctx.lineTo(cx+sz*0.6,cy+sz*0.7);ctx.stroke();
+    ctx.lineWidth=lw;
+  },
+
+  disengage: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    var aw=lw*4;
+    ctx.beginPath();ctx.arc(cx+sz*0.3,cy,sz*0.65,Math.PI*0.55,Math.PI*1.45,false);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx-sz*0.15,cy);ctx.lineTo(cx-sz*0.9,cy);ctx.stroke();
+    _ttAH(ctx,cx-sz*0.15,cy,cx-sz*1.0,cy,aw,col);
+  },
+
+  follow_assume: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    var aw=lw*4,ps=sz*0.45,px=cx-sz*0.5;
+    ctx.beginPath();
+    for(var i=0;i<5;i++){
+      var a=-Math.PI/2+i*Math.PI*2/5;
+      i===0?ctx.moveTo(px+ps*Math.cos(a),cy+ps*Math.sin(a)):ctx.lineTo(px+ps*Math.cos(a),cy+ps*Math.sin(a));
+    }
+    ctx.closePath();ctx.stroke();
+    ctx.setLineDash([lw*3,lw*3]);
+    ctx.beginPath();ctx.moveTo(px+ps,cy);ctx.lineTo(cx+sz*0.2,cy);ctx.stroke();
+    ctx.setLineDash([]);
+    _ttAH(ctx,cx+sz*0.2,cy,cx+sz*0.75,cy,aw,col);
+    _ttAH(ctx,cx+sz*0.2,cy,cx+sz*1.0,cy,aw,col);
+  },
+
+  occupy: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    var rx=sz*0.85,ry=sz*0.55;
+    ctx.beginPath();ctx.ellipse(cx,cy,rx,ry,0,-Math.PI,0,false);ctx.stroke();
+    ctx.beginPath();ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI,false);ctx.stroke();
+    var xs=sz*0.3;
+    ctx.beginPath();ctx.moveTo(cx-xs,cy-xs);ctx.lineTo(cx+xs,cy+xs);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx+xs,cy-xs);ctx.lineTo(cx-xs,cy+xs);ctx.stroke();
+  },
+
+  secure: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    var aw=lw*4,rx=sz*0.85,ry=sz*0.55;
+    ctx.beginPath();ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI*2);ctx.stroke();
+    _ttAH(ctx,cx-rx+aw,cy-sz*0.25,cx-rx-aw*0.3,cy,aw,col);
+  },
+
+  retain: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    var rx=sz*0.75,ry=sz*0.5;
+    ctx.beginPath();ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI*2);ctx.stroke();
+    for(var i=0;i<8;i++){
+      var a=i*Math.PI/4,cos=Math.cos(a),sin=Math.sin(a);
+      ctx.beginPath();ctx.moveTo(cx+rx*cos,cy+ry*sin);ctx.lineTo(cx+(rx+sz*0.3)*cos,cy+(ry+sz*0.3)*sin);ctx.stroke();
+    }
+  },
+
+  isolate: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    var aw=lw*4,rx=sz*0.75,ry=sz*0.5;
+    ctx.beginPath();ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI*2);ctx.stroke();
+    [[cx,cy-ry-sz*0.35,cx,cy-ry+aw],[cx,cy+ry+sz*0.35,cx,cy+ry-aw],
+     [cx-rx-sz*0.35,cy,cx-rx+aw,cy],[cx+rx+sz*0.35,cy,cx+rx-aw,cy]].forEach(function(p){
+      ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(p[2],p[3]);ctx.stroke();
+      _ttAH(ctx,p[0],p[1],p[2],p[3],aw,col);
+    });
+  },
+
+  contain: function(ctx,cx,cy,sz,col,lw){
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    var aw=lw*4,rx=sz*0.75,ry=sz*0.55;
+    ctx.beginPath();ctx.ellipse(cx-sz*0.1,cy,rx,ry,0,-Math.PI*0.75,Math.PI*0.75,false);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx+sz*0.7,cy-sz*0.3);ctx.lineTo(cx+sz*0.1,cy-sz*0.3);ctx.stroke();
+    _ttAH(ctx,cx+sz*0.7,cy-sz*0.3,cx+sz*0.05,cy-sz*0.3,aw,col);
+    ctx.beginPath();ctx.moveTo(cx+sz*0.7,cy+sz*0.3);ctx.lineTo(cx+sz*0.1,cy+sz*0.3);ctx.stroke();
+    _ttAH(ctx,cx+sz*0.7,cy+sz*0.3,cx+sz*0.05,cy+sz*0.3,aw,col);
+  },
+};
+
+function drawTacTask(ctx, g, d) {
+  var task = TACTICAL_TASKS.find(function(t){return t.id===g.tacTask});
+  if(!task) return;
+  var fn = _TT_DRAW[g.tacTask];
+  if(!fn) return;
+  var sp = latlonToScreen(g.points[0].lat, g.points[0].lon);
+  var cx = sp.x*d, cy = sp.y*d;
+  var zoomScale = g._zoomRef!=null ? Math.pow(2,S.zoom-g._zoomRef) : 1;
+  var sz = (g.tacSz||40)*d*(g.tacScale||1)*zoomScale;
+  var lw = Math.max(1,(g.lineWidth||2))*d;
+  var col = g.color||'#ff4444';
+  ctx.save();
+  ctx.translate(cx,cy); ctx.rotate((g.rotation||0)*Math.PI/180); ctx.translate(-cx,-cy);
+  fn(ctx,cx,cy,sz,col,lw);
+  if(g.label&&S.showLabels){
+    ctx.setLineDash([]);
+    ctx.font='bold '+Math.round(11*d)+'px sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='top';
+    ctx.fillStyle=col; ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=2*d;
+    ctx.fillText(g.label,cx,cy+sz+4*d);
+  }
+  ctx.restore();
+}
+
+// === 05b_maptools.js ===
 
 function drawMapTools(){const d=devicePixelRatio||1;
 /* Draw measure line */
@@ -991,7 +1235,7 @@ S.units.push(u);S.editorTab="info";smoothPanTo(result.lat,result.lon,600);S.zoom
 selectUnit(u.id);netBroadcast({type:"unitAdd",unit:u});
 notify("Found: "+toMGRS(result.lat,result.lon));requestRender();renderFloatingPanel()}
 
-// === part_06_interaction.js ===
+// === 06_interaction.js ===
 
 function smoothPanTo(lat,lon,dur){dur=dur||400;
   /* Calculate offset for mobile bottom sheet editor only */
@@ -1014,8 +1258,37 @@ function smoothPanTo(lat,lon,dur){dur=dur||400;
   const sLat=S.lat,sLon=S.lon,sT=performance.now();function step(t){const p=Math.min(1,(t-sT)/dur),e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;S.lat=sLat+(tLat-sLat)*e;S.lon=sLon+(tLon-sLon)*e;requestRender();if(p<1)requestAnimationFrame(step)}requestAnimationFrame(step)}
 var _canvasRect=null;function _updateCanvasRect(){_canvasRect=canvas?canvas.getBoundingClientRect():null}
 function getPos(e){_updateCanvasRect();var r=_canvasRect;return e.clientX!==undefined?{x:e.clientX-r.left,y:e.clientY-r.top}:e.touches&&e.touches[0]?{x:e.touches[0].clientX-r.left,y:e.touches[0].clientY-r.top}:{x:0,y:0}}
-function hitTestUnit(pos,penPrecision){const sz=getUSS(),r=penPrecision?sz*0.3:sz*0.4;const _hv={};S.layers.forEach(l=>{_hv[l.id]=l.visible});for(let i=S.units.length-1;i>=0;i--){const u=S.units[i];if(_hv[u.layerId]===false||(!(u.layerId in _hv)&&S._allLayersHidden))continue;const sp=latlonToScreen(u.lat,u.lon);if(Math.abs(pos.x-sp.x)<r&&Math.abs(pos.y-sp.y)<r)return u;/* Check range rings — click near ring edge selects unit */if(u.rings&&u.rings.length){const dist=Math.hypot(pos.x-sp.x,pos.y-sp.y);for(const ring of u.rings){if(!ring.radius)continue;const rp=metersToPixels(ring.radius,u.lat,S.zoom);if(Math.abs(dist-rp)<(penPrecision?6:10))return u}}}return null}
+/* Get milsymbol-aware bounding box {left,right,top,bottom} in screen pixels relative to anchor */
+function getUnitMSBounds(u,sz){
+var sidc=buildSIDC(u.type,u.affiliation,u.echelon,u.isHQ||u.type==="headquarters",u.modifiers);
+if(_MS&&sidc){try{
+var sym=new _MS.Symbol(sidc,{size:Math.round(sz*0.8)});
+var a=sym.getAnchor(),s=sym.getSize();
+/* bounds relative to screen point: left/top = -(anchor), right/bottom = size-anchor */
+var pad=6;/* extra padding for mobility indicator etc */
+return{left:-a.x-pad,right:s.width-a.x+pad,top:-a.y-pad,bottom:s.height-a.y+pad+12};
+}catch(e){}}
+/* Fallback: symmetric box */
+var h=sz/2+8;return{left:-h,right:h,top:-h,bottom:h};
+}
+function hitTestUnit(pos,penPrecision){const sz=getUSS(),r=penPrecision?sz*0.3:sz*0.4;const _hv={};S.layers.forEach(l=>{_hv[l.id]=l.visible});for(let i=S.units.length-1;i>=0;i--){const u=S.units[i];if(_hv[u.layerId]===false||(!(u.layerId in _hv)&&S._allLayersHidden))continue;const sp=latlonToScreen(u.lat,u.lon);/* Use milsymbol-aware bounds for better hit detection */var b=getUnitMSBounds(u,sz);var dx=pos.x-sp.x,dy=pos.y-sp.y;if(dx>=b.left-r*0.3&&dx<=b.right+r*0.3&&dy>=b.top-r*0.3&&dy<=b.bottom+r*0.3)return u;/* Check range rings — click near ring edge selects unit */if(u.rings&&u.rings.length){const dist=Math.hypot(pos.x-sp.x,pos.y-sp.y);for(const ring of u.rings){if(!ring.radius)continue;const rp=metersToPixels(ring.radius,u.lat,S.zoom);if(Math.abs(dist-rp)<(penPrecision?6:10))return u}}}return null}
 function pointInPoly(px,py,pts){/* Ray casting algorithm */let inside=false;for(let i=0,j=pts.length-1;i<pts.length;j=i++){const xi=pts[i].x,yi=pts[i].y,xj=pts[j].x,yj=pts[j].y;if(((yi>py)!==(yj>py))&&(px<(xj-xi)*(py-yi)/(yj-yi)+xi))inside=!inside}return inside}
+/* Compute screen bounding box for a text graphic at current zoom */
+function _textGfxBounds(g){
+  if(!g||g.tool!=="text"||!g.points||!g.points.length||!g.label)return null;
+  var d=devicePixelRatio||1;
+  /* Render uses fSz*d physical px, but pointer events are CSS px — divide back by d */
+  var fSz=(g.fontSize||14)*Math.pow(2,S.zoom-10);
+  if(fSz<1.5)return null;
+  var font=(g.labelBold!==false?"bold ":"")+fSz*d+"px "+(g.fontFamily||"sans-serif");
+  var _tc=document.createElement("canvas").getContext("2d");
+  _tc.font=font;
+  var w=_tc.measureText(g.label).width/d;
+  var h=fSz*1.2;
+  var sp=latlonToScreen(g.points[0].lat,g.points[0].lon);
+  var pad=Math.max(6,fSz*0.15);
+  return{x:sp.x-pad,y:sp.y-pad,w:w+pad*2,h:h+pad*2};
+}
 function hitTestGraphic(pos){
 function _gsa(g){if(!g.points||g.points.length<2)return 1e18;var n=Infinity,x=-Infinity,ny=Infinity,xy=-Infinity;var st=Math.max(1,Math.floor(g.points.length/100));for(var i=0;i<g.points.length;i+=st){var s=latlonToScreen(g.points[i].lat,g.points[i].lon);if(s.x<n)n=s.x;if(s.x>x)x=s.x;if(s.y<ny)ny=s.y;if(s.y>xy)xy=s.y}return(x-n)*(xy-ny)||1e18}
 function _bbox(g){var mn=90,mx=-90,ml=180,mL=-180;for(var i=0;i<g.points.length;i++){var p=g.points[i];if(p.lat<mn)mn=p.lat;if(p.lat>mx)mx=p.lat;if(p.lon<ml)ml=p.lon;if(p.lon>mL)mL=p.lon}return{mn,mx,ml,mL}}
@@ -1033,7 +1306,11 @@ if(g.tool==="polygon"&&np>=3){var ps=np>500?Math.ceil(np/500):1,sa=[];for(var pi
 if(g.tool==="circle"&&np>=2){var c=latlonToScreen(g.points[0].lat,g.points[0].lon),e2=latlonToScreen(g.points[1].lat,g.points[1].lon),r=Math.hypot(e2.x-c.x,e2.y-c.y);if(Math.hypot(pos.x-c.x,pos.y-c.y)<=r){cands.push({g,a:_gsa(g)});continue}}
 if(g.tool==="rectangle"&&np>=2){var ra=latlonToScreen(g.points[0].lat,g.points[0].lon),rb=latlonToScreen(g.points[1].lat,g.points[1].lon);if(pos.x>=Math.min(ra.x,rb.x)&&pos.x<=Math.max(ra.x,rb.x)&&pos.y>=Math.min(ra.y,rb.y)&&pos.y<=Math.max(ra.y,rb.y)){cands.push({g,a:_gsa(g)});continue}}
 if(g.overlayType==="obj"&&np>=2){var oc=latlonToScreen(g.points[0].lat,g.points[0].lon),oe=latlonToScreen(g.points[1].lat,g.points[1].lon),or=Math.hypot(oe.x-oc.x,oe.y-oc.y);if(Math.hypot(pos.x-oc.x,pos.y-oc.y)<=or){cands.push({g,a:_gsa(g)});continue}}
-if(g.overlayType==="aa"&&np>=2){var aa=latlonToScreen(g.points[0].lat,g.points[0].lon),ab=latlonToScreen(g.points[1].lat,g.points[1].lon);if(pos.x>=Math.min(aa.x,ab.x)&&pos.x<=Math.max(aa.x,ab.x)&&pos.y>=Math.min(aa.y,ab.y)&&pos.y<=Math.max(aa.y,ab.y)){cands.push({g,a:_gsa(g)});continue}}}
+if(g.tool==="text"&&np>=1){var _tb=_textGfxBounds(g);if(_tb&&pos.x>=_tb.x&&pos.x<=_tb.x+_tb.w&&pos.y>=_tb.y&&pos.y<=_tb.y+_tb.h){cands.push({g,a:0});continue}/* fallback if _zoomRef not yet set */
+else if(!_tb){var _tsp=latlonToScreen(g.points[0].lat,g.points[0].lon);if(Math.hypot(pos.x-_tsp.x,pos.y-_tsp.y)<20){cands.push({g,a:_gsa(g)});continue}}}
+if(g.overlayType==="aa"&&np>=2){var aa=latlonToScreen(g.points[0].lat,g.points[0].lon),ab=latlonToScreen(g.points[1].lat,g.points[1].lon);if(pos.x>=Math.min(aa.x,ab.x)&&pos.x<=Math.max(aa.x,ab.x)&&pos.y>=Math.min(aa.y,ab.y)&&pos.y<=Math.max(aa.y,ab.y)){cands.push({g,a:_gsa(g)});continue}}
+/* Tactical task — hit test bounding box around anchor */
+if(g.tool==="tacTask"&&np>=1){var _tsp2=latlonToScreen(g.points[0].lat,g.points[0].lon);var _tsz=(g.tacSz||40)*(g._zoomRef!=null?Math.pow(2,S.zoom-g._zoomRef):1)*(g.tacScale||1)+10;if(Math.abs(pos.x-_tsp2.x)<=_tsz&&Math.abs(pos.y-_tsp2.y)<=_tsz){cands.push({g,a:0});continue}}}
 if(!cands.length)return null;cands.sort((a,b)=>a.a-b.a);return cands[0].g}
 function selectUnit(id){if(id!==S.selectedUnitId){S._lastClickTime=0;S._lastClickUnit=null;S._editorHeight=null}S.selectedUnitId=id;S.selectedGraphicId=null;if(id){openEditor();if(S.autoCenter)centerOnSelected()}requestRender()}
 function selectGraphic(id){if(id!==S.selectedGraphicId){S._editorHeight=null}S.selectedGraphicId=id;S.selectedUnitId=null;if(id){openEditor();if(S.autoCenter)centerOnSelected()}requestRender()}
@@ -1112,17 +1389,33 @@ if(S._activePointers.size===2){
 if(S._placementMode)return;
 /* Allow dragging vertices of selected graphic even without draw mode */
 if(S.selectedGraphicId&&!S._drawMode&&!S._panLockMode){const g=S.graphics.find(x=>x.id===S.selectedGraphicId);if(g&&g.points){
+/* TacTask: click near symbol = drag the whole thing */
+if(g.tool==="tacTask"&&g.points.length>=1){
+  var _ttsp=latlonToScreen(g.points[0].lat,g.points[0].lon);
+  var _ttsz=(g.tacSz||40)*(g._zoomRef!=null?Math.pow(2,S.zoom-g._zoomRef):1)+16;
+  if(Math.abs(pos.x-_ttsp.x)<=_ttsz&&Math.abs(pos.y-_ttsp.y)<=_ttsz){
+    _dragGV={gid:g.id,idx:-1,moveAll:true,startPos:pos,startPts:g.points.map(p=>({lat:p.lat,lon:p.lon}))};
+    _selOnDown=true;openEditor();return}
+  S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon};return}
+var _ttInfo=TACTICAL_TASKS.find(function(t){return t.id===g.tacTask;});if(g.tool!=="tacTask"||(_ttInfo&&_ttInfo.placement!=="point")){
 /* MCOO lock — skip all vertex/move handles, allow label drag only */
 var _gLocked=!!g._mcooEnabled;
 /* Ensure editor is open for the selected graphic */
 openEditor();
+var _vHitR=_isPen?12:20;
+/* Text: click near anchor = move */
+if(g.tool==="text"&&g.points.length>=1){var _tBounds=_textGfxBounds(g);var _tHit=_tBounds?(pos.x>=_tBounds.x-4&&pos.x<=_tBounds.x+_tBounds.w+4&&pos.y>=_tBounds.y-4&&pos.y<=_tBounds.y+_tBounds.h+4):(Math.hypot(pos.x-latlonToScreen(g.points[0].lat,g.points[0].lon).x,pos.y-latlonToScreen(g.points[0].lat,g.points[0].lon).y)<_vHitR+16);if(_tHit){_dragGV={gid:g.id,idx:-1,moveAll:true,startPos:pos,startPts:g.points.map(p=>({lat:p.lat,lon:p.lon}))};_selOnDown=true;return}}
+/* Line/arrow: vertex drag or midpoint move-all */
+if((g.tool==="line"||g.tool==="arrow")&&g.points.length>=2&&!_gLocked){
+for(let _li=0;_li<g.points.length;_li++){const _lsp=latlonToScreen(g.points[_li].lat,g.points[_li].lon);if(Math.hypot(pos.x-_lsp.x,pos.y-_lsp.y)<_vHitR){_dragGV={gid:g.id,idx:_li};_selOnDown=true;return}}
+const _lm0=latlonToScreen(g.points[0].lat,g.points[0].lon),_lmL=latlonToScreen(g.points[g.points.length-1].lat,g.points[g.points.length-1].lon);
+if(Math.hypot(pos.x-(_lm0.x+_lmL.x)/2,pos.y-(_lm0.y+_lmL.y)/2)<_vHitR){_dragGV={gid:g.id,idx:-1,moveAll:true,startPos:pos,startPts:g.points.map(p=>({lat:p.lat,lon:p.lon}))};_selOnDown=true;return}}
 /* Check center handle first for closed shapes */
 if((g.tool==="polygon"&&g.points.length>=3)||(g.tool==="circle"&&g.points.length>=2)||(g.tool==="rectangle"&&g.points.length>=2)){let cx,cy;if(g.tool==="polygon"){cx=0;cy=0;g.points.forEach(p=>{const sp=latlonToScreen(p.lat,p.lon);cx+=sp.x;cy+=sp.y});cx/=g.points.length;cy/=g.points.length}else if(g.tool==="rectangle"){const sp0=latlonToScreen(g.points[0].lat,g.points[0].lon),sp1=latlonToScreen(g.points[1].lat,g.points[1].lon);cx=(sp0.x+sp1.x)/2;cy=(sp0.y+sp1.y)/2}else{const sp=latlonToScreen(g.points[0].lat,g.points[0].lon);cx=sp.x;cy=sp.y}
 /* Label handle check first */
 if(g.label){if(g.labelOffset&&g._labelZoomRef==null)g._labelZoomRef=S.zoom;var _lhZs=g._labelZoomRef!=null?Math.pow(2,S.zoom-g._labelZoomRef):1;var _defLhY;if(g.tool==="rectangle"){const _sp0h=latlonToScreen(g.points[0].lat,g.points[0].lon),_sp1h=latlonToScreen(g.points[1].lat,g.points[1].lon);_defLhY=-(Math.abs(_sp1h.y-_sp0h.y)/2+8)}else if(g.tool==="circle"){const _spch=latlonToScreen(g.points[0].lat,g.points[0].lon),_speh=latlonToScreen(g.points[1].lat,g.points[1].lon);_defLhY=-(Math.hypot(_speh.x-_spch.x,_speh.y-_spch.y)+8)}else if(g.tool==="polygon"){var _htMinY=Infinity,_htMaxY=-Infinity;g.points.forEach(function(p){var _sp=latlonToScreen(p.lat,p.lon);if(_sp.y<_htMinY)_htMinY=_sp.y;if(_sp.y>_htMaxY)_htMaxY=_sp.y});_defLhY=-((_htMaxY-_htMinY)/2+8)}else{_defLhY=-20}var lcx=cx+(g.labelOffset?g.labelOffset.x*_lhZs:0),lcy=cy+(g.labelOffset?g.labelOffset.y*_lhZs:_defLhY);
 /* Approximate text half-width for handle placement */var _tmpC=document.createElement("canvas").getContext("2d");_tmpC.font="bold 13px sans-serif";var _tw=_tmpC.measureText(g.label).width/2+10;var hdx=lcx-_tw;
 if(Math.hypot(pos.x-hdx,pos.y-lcy)<15){_dragGV={gid:g.id,idx:-2,labelDrag:true,startPos:pos,startOffset:{x:g.labelOffset?g.labelOffset.x*_lhZs:0,y:g.labelOffset?g.labelOffset.y*_lhZs:_defLhY}};_selOnDown=true;return}}
-var _vHitR=_isPen?12:20;/* Vertex hit radius: tighter for pen precision */
 if(!_gLocked&&Math.hypot(pos.x-cx,pos.y-cy)<_vHitR){_dragGV={gid:g.id,idx:-1,moveAll:true,startPos:pos,startPts:g.points.map(p=>({lat:p.lat,lon:p.lon}))};_selOnDown=true;return}}
 /* Then check individual vertices — skip if locked */
 if(!_gLocked){for(let i=0;i<g.points.length;i++){const sp=latlonToScreen(g.points[i].lat,g.points[i].lon);if(Math.hypot(pos.x-sp.x,pos.y-sp.y)<_vHitR){_dragGV={gid:g.id,idx:i};_selOnDown=true;return}}}
@@ -1130,7 +1423,7 @@ if(!_gLocked){for(let i=0;i<g.points.length;i++){const sp=latlonToScreen(g.point
 var _nhUnit=hitTestUnit(pos);if(_nhUnit){selectUnit(_nhUnit.id);_dragUnit=_nhUnit;_dragStartPos={lat:_nhUnit.lat,lon:_nhUnit.lon};_selOnDown=true;return}
 var _nhGfx=hitTestGraphic(pos);if(_nhGfx&&_nhGfx.id!==g.id){_gfxSelOnDown=_nhGfx.id;S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon};return}
 /* Inside selected graphic or empty space — pan, allow deselect on pointerUp */
-S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon};return}}
+S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon};return}}}
 /* During active drawing, allow dragging existing points of the in-progress shape */
 if(S._drawMode&&S._drawMode.points.length>0){
 /* Rectangle draw-mode rotation handle hit */
@@ -1139,6 +1432,7 @@ if(S._drawMode.tool==="rectangle"&&S._drawMode.points.length===1&&S._drawMode._r
   if(Math.hypot(pos.x-rh.x,pos.y-rh.y)<14){S._drawMode._rotDrag=true;_selOnDown=true;return}
 }
 for(let i=0;i<S._drawMode.points.length;i++){const sp=latlonToScreen(S._drawMode.points[i].lat,S._drawMode.points[i].lon);if(Math.hypot(pos.x-sp.x,pos.y-sp.y)<20){_dragGV={drawMode:true,idx:i};_selOnDown=true;return}}}
+if(S._tacTaskMode){S._isPanning=false;return}
 if(S._drawMode){S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon};return}
 /* Pan Lock mode — skip all selection, just pan */
 if(S._panLockMode){S._isPanning=true;S._panStart={x:pos.x,y:pos.y,lat:S.lat,lon:S.lon};return}
@@ -1324,6 +1618,25 @@ if(_dragGV){var _fgG=S.graphics.find(function(x){return x.id===_dragGV.gid});if(
 S._isPanning=false;_dragUnit=null;_dragGV=null;_rotUnit=null;_dragStartPos=null;requestRender();
 
 var clickDuration=Date.now()-_ptrDownTime;
+/* Tactical task — single click placement */
+if(S._tacTaskMode&&!wasDraggingVertex&&_upOnCanvas&&moved<(S._lastPointerType==="touch"?30:15)){
+  var _ttm=S._tacTaskMode;
+  var _ttll=screenToLatlon(pos.x,pos.y);
+  var _ttg={id:"g"+Date.now()+Math.random().toString(36).substr(2,4),
+    tool:"tacTask",tacTask:_ttm.taskId,
+    points:[{lat:_ttll.lat,lon:_ttll.lon}],
+    color:"#ff4444",lineWidth:2,lineStyle:"solid",overlayType:"none",
+    fill:false,label:"",layerId:S.activeLayerId,
+    tacSz:40,tacScale:1,rotation:0,_zoomRef:S.zoom};
+  S.graphics.push(_ttg);
+  S._tacTaskMode=null;
+  _ptrDownPos=null;
+  hideModeBar();
+  document.getElementById("sb-addunit").classList.remove("active");
+  netBroadcast({type:"graphicAdd",graphic:_ttg});
+  selectGraphic(_ttg.id);
+  requestRender();
+  return}
 if(S._drawMode&&!wasDraggingVertex&&_upOnCanvas&&(moved<window.innerWidth*0.7||clickDuration<850)){const ll=screenToLatlon(pos.x,pos.y);const dm=S._drawMode;
 /* Check if click is on an existing point — don't add duplicate */
 let onExisting=false;
@@ -1414,12 +1727,14 @@ _zoomTarget=targetZoom;
 const startZoom=S.zoom,startLat=S.lat,startLon=S.lon;
 /* Determine anchor point — selected unit/graphic takes priority */
 let anchorLat=S.lat,anchorLon=S.lon,useAnchor=false;
+if(S.autoCenter){
 const selU=S.selectedUnitId?S.units.find(x=>x.id===S.selectedUnitId):null;
 const selG=(!selU&&S.selectedGraphicId)?S.graphics.find(x=>x.id===S.selectedGraphicId):null;
 if(selU){anchorLat=selU.lat;anchorLon=selU.lon;useAnchor=true}
 else if(selG&&selG.points&&selG.points.length){
 let clat=0,clon=0;selG.points.forEach(p=>{clat+=p.lat;clon+=p.lon});
-anchorLat=clat/selG.points.length;anchorLon=clon/selG.points.length;useAnchor=true}
+anchorLat=clat/selG.points.length;anchorLon=clon/selG.points.length;useAnchor=true}}
+if(!useAnchor&&cursorPos){const cl=screenToLatlon(cursorPos.x,cursorPos.y);anchorLat=cl.lat;anchorLon=cl.lon;useAnchor=true}
 /* Editor offset for centering */
 let offsetLat=0;
 if(useAnchor){
@@ -1452,8 +1767,7 @@ updateCoords(pos)}
 function onContextMenu(e){e.preventDefault();if(S._mapTool==="distance"||S._mapTool==="area"){S._mapTool=null;hideModeBar();canvas.style.cursor="";requestRender();renderFloatingPanel();return}if(S._drawMode&&S._drawMode.points.length>=getMinPoints(S._drawMode.tool)){finishDrawing();return}/* Right-click force deselect */if(S.selectedUnitId||S.selectedGraphicId){deselectAll();return}}
 function updateCoords(pos){const el=document.getElementById("coords");if(!el||!pos)return;const ll=screenToLatlon(pos.x,pos.y);if(S.coordDisplay==="mgrs")el.textContent=`\u2197 ${toMGRS(ll.lat,ll.lon)} z${S.zoom.toFixed(1)}`;else el.textContent=`\u2197 ${ll.lat.toFixed(4)}\u00b0 ${ll.lon.toFixed(4)}\u00b0 z${S.zoom.toFixed(1)}`}
 
-
-// === part_07_ui_init.js ===
+// === 07_panels.js ===
 
 function notify(msg,type){const t=document.createElement("div");t.className="toast"+(type==="error"?" error":"");t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3500)}
 
@@ -1515,40 +1829,44 @@ function renderSettings(){
   h+='</select>';
   h+='<label>Theme</label><select id="set-theme"><option value="dark"'+(S.theme==="dark"?" selected":"")+'>Dark</option><option value="light"'+(S.theme==="light"?" selected":"")+'>Light</option></select>';
   h+='</div><div class="section"><div class="section-title">Grid</div>';
+  /* Toggles row */
   h+='<div class="toggle-row"><span>Show Grid</span><label class="switch"><input type="checkbox" id="set-grid"'+(S.showGrid?" checked":"")+'><span class="slider"></span></label></div>';
   h+='<div class="toggle-row"><span>Show Labels</span><label class="switch"><input type="checkbox" id="set-labels"'+(S.showLabels?" checked":"")+'><span class="slider"></span></label></div>';
-  h+='<div class="toggle-row"><span>Auto-Center on Select</span><label class="switch"><input type="checkbox" id="set-autocenter"'+(S.autoCenter?" checked":"")+'><span class="slider"></span></label></div>';
+  h+='<div class="toggle-row"><span>Auto-Center</span><label class="switch"><input type="checkbox" id="set-autocenter"'+(S.autoCenter?" checked":"")+'><span class="slider"></span></label></div>';
   h+='<div class="toggle-row"><span>Apple Pencil Mode</span><label class="switch"><input type="checkbox" id="set-pencilmode"'+(S.pencilMode?" checked":"")+'><span class="slider"></span></label></div>';
-  h+='<div style="font-size:9px;opacity:.4;margin-bottom:8px">Pencil\u2009=\u2009edit, finger\u2009=\u2009pan, palm rejection</div>';
-  h+='<label>Grid Mode</label><select id="set-gridmode"><option value="mgrs"'+(S.gridMode==="mgrs"?" selected":"")+'>MGRS</option><option value="latlon"'+(S.gridMode==="latlon"?" selected":"")+'>Lat/Lon</option></select>';
-  h+='<label>Coord Display</label><select id="set-coorddisp"><option value="mgrs"'+(S.coordDisplay==="mgrs"?" selected":"")+'>MGRS</option><option value="latlon"'+(S.coordDisplay==="latlon"?" selected":"")+'>Lat/Lon</option></select>';
-  h+='<label>Grid Color</label><div class="color-swatches" id="set-gridcolor">';
-  const gridColors=[["#00ff00","Green"],["#00cccc","Teal"],["#ffffff","White"],["#000000","Black"],["#ff4444","Red"],["#888888","Gray"]];
-  gridColors.forEach(([c,n])=>h+=`<div class="swatch${S.gridColor===c?" active":""}" style="background:${c}" onclick="S.gridColor='${c}';requestRender();renderFloatingPanel()" title="${n}"></div>`);
+  h+='<div style="font-size:9px;opacity:.4;margin-bottom:6px">Pencil = edit, finger = pan, palm rejection</div>';
+  /* Grid Mode + Coord Display side by side */
+  h+='<div style="display:flex;gap:8px;margin-bottom:6px">';
+  h+='<div style="flex:1"><label style="font-size:9px">Grid</label><select id="set-gridmode" style="margin:0"><option value="mgrs"'+(S.gridMode==="mgrs"?" selected":"")+'>MGRS</option><option value="latlon"'+(S.gridMode==="latlon"?" selected":"")+'>Lat/Lon</option></select></div>';
+  h+='<div style="flex:1"><label style="font-size:9px">Coords</label><select id="set-coorddisp" style="margin:0"><option value="mgrs"'+(S.coordDisplay==="mgrs"?" selected":"")+'>MGRS</option><option value="latlon"'+(S.coordDisplay==="latlon"?" selected":"")+'>Lat/Lon</option></select></div>';
   h+='</div>';
-  h+='<label>Grid Opacity</label><input type="range" id="set-gridop" min="0" max="1" step="0.01" value="'+S.gridOpacity+'">';
-  h+='</div><div class="section"><div class="section-title">UI Scale</div>';
-  h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><input type="range" id="set-uiscale" min="0.6" max="2.0" step="0.05" value="'+S.uiScale+'" style="flex:1"><span id="uiscale-val" style="font-size:11px;min-width:32px;text-align:right">'+Math.round(S.uiScale*100)+'%</span></div>';
-  h+='<div class="row">';
+  /* Grid Color + Opacity on one row */
+  h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
+  h+='<label style="margin:0;font-size:9px;opacity:.7;white-space:nowrap">Grid Color</label>';
+  h+='<input type="color" id="set-gridcolor" value="'+S.gridColor+'" style="width:36px;height:28px;padding:2px;border:1px solid #444;border-radius:4px;background:#222;cursor:pointer;flex-shrink:0">';
+  h+='<label style="margin:0;font-size:9px;opacity:.7;white-space:nowrap">Opacity</label>';
+  h+='<input type="range" id="set-gridop" min="0" max="1" step="0.01" value="'+S.gridOpacity+'" style="flex:1">';
+  h+='<span id="set-gridop-val" style="font-size:10px;min-width:28px;text-align:right">'+Math.round(S.gridOpacity*100)+'%</span>';
+  h+='</div>';
+  h+='</div>';
+  /* UI Scale — buttons only */
+  h+='<div class="section"><div class="section-title">UI &amp; Icons</div>';
+  h+='<label style="font-size:9px;opacity:.7">UI Scale</label><div class="row" style="margin-bottom:6px">';
   [0.8,1.0,1.2,1.5].forEach(v=>h+=`<button class="btn${S.uiScale===v?' primary':''}" onclick="applyUIScale(${v})">${Math.round(v*100)}%</button>`);
   h+='</div>';
-  h+='</div><div class="section"><div class="section-title">Map Icon Size</div>';
-  h+='<div class="row">';
+  h+='<label style="font-size:9px;opacity:.7">Icon Size</label><div class="row">';
   ["tiny","small","medium","large","xlarge"].forEach(v=>{const labels={tiny:"XS",small:"S",medium:"M",large:"L",xlarge:"XL"};h+=`<button class="btn${S.iconSize===v?' primary':''}" onclick="S.iconSize='${v}';localStorage.setItem('tacmap-iconsize','${v}');requestRender();renderFloatingPanel()">${labels[v]}</button>`});
-  h+='</div>';
-  h+='</div><div class="section"><div class="section-title">Device Overrides</div>';
-  h+='<label>Layout</label><select id="set-layout"><option value="auto">Auto</option><option value="phone">Phone</option><option value="tablet">Tablet</option><option value="desktop">Desktop</option></select>';
-  h+='</div>';
-  h+='<div class="section"><div class="section-title">Display</div>';
+  h+='</div></div>';
+  h+='<div class="section"><div class="section-title">Device</div>';
+  h+='<label style="font-size:9px;opacity:.7">Layout</label><select id="set-layout" style="margin-top:2px"><option value="auto">Auto</option><option value="phone">Phone</option><option value="tablet">Tablet</option><option value="desktop">Desktop</option></select>';
   if(document.fullscreenEnabled||document.webkitFullscreenEnabled){
     var isFS=!!(document.fullscreenElement||document.webkitFullscreenElement);
-    h+='<button class="btn'+(isFS?' primary':'')+'" onclick="toggleFullscreen()" style="width:100%;margin-bottom:6px">'+(isFS?'Exit Fullscreen':'\u26f6 Fullscreen')+'</button>';
+    h+='<button class="btn'+(isFS?' primary':'')+'" onclick="toggleFullscreen()" style="width:100%;margin-top:6px">'+( isFS?'Exit Fullscreen':'\u26f6 Fullscreen')+'</button>';
   }
   h+='</div>';
   h+='<div class="section"><div class="section-title">About</div>';
   h+='<div style="font-size:10px;opacity:.5;margin-bottom:6px">StaffMaps v'+APP_VERSION+'</div>';
-  h+='<button class="btn" onclick="forceUpdate()" style="margin-bottom:4px;width:100%">\u21bb Force Update (Clear Cache)</button>';
-  h+='<div style="font-size:9px;opacity:.35">Clears service worker cache and reloads from server</div>';
+  h+='<button class="btn" onclick="forceUpdate()" style="width:100%">\u21bb Force Update (Clear Cache)</button>';
   h+='</div>';
   return h}
 
@@ -2260,6 +2578,7 @@ function renderAddUnitPanel(){
   let h='<div style="display:flex;gap:2px;margin-bottom:8px;border-bottom:1px solid var(--border);padding-bottom:6px">';
   h+='<button class="btn'+(tab==="formations"?" primary":"")+'" onclick="S._addUnitTab=\'formations\';renderFloatingPanel()" style="flex:1;font-size:11px;padding:5px 8px">Formations</button>';
   h+='<button class="btn'+(tab==="equipment"?" primary":"")+'" onclick="S._addUnitTab=\'equipment\';renderFloatingPanel()" style="flex:1;font-size:11px;padding:5px 8px">Equipment</button>';
+  h+='<button class="btn'+(tab==="tasks"?" primary":"")+' onclick="S._addUnitTab=\'tasks\';renderFloatingPanel()" style="flex:1;font-size:11px;padding:5px 8px">Tasks</button>';
   h+='<button class="btn'+(tab==="draw"?" primary":"")+'" onclick="S._addUnitTab=\'draw\';renderFloatingPanel()" style="flex:1;font-size:11px;padding:5px 8px">Draw</button>';
   h+='</div>';
   if(tab==="draw"){
@@ -2276,12 +2595,80 @@ function renderAddUnitPanel(){
     const curAffEq=S._addUnitAff||"friendly";
     for(const[k,v]of Object.entries(AFFILIATIONS)){var abgE=curAffEq===k?v.fill:'transparent';var afgE=curAffEq===k?'#000':v.fill;h+='<button class="btn'+(curAffEq===k?' primary':'')+'" onclick="S._addUnitAff=\''+k+'\';renderFloatingPanel()" style="flex:1 1 22%;min-width:0;background:'+abgE+';color:'+afgE+';border:1.5px solid '+v.fill+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:6px 4px">'+v.label+'</button>'}
     h+='</div>';
-    var EQUIP_CATEGORIES=[{name:"Drones / UAS",types:[{id:"uav",label:"UAS"}]}];
+    var EQUIP_CATEGORIES=[
+      {name:"Armor",types:[
+        {id:"eq_tank",label:"Tank"},
+        {id:"eq_tank_wheeled",label:"Tank (Wheeled)"},
+        {id:"eq_apc",label:"APC"},
+        {id:"eq_ifv",label:"IFV"},
+        {id:"eq_recon_vehicle",label:"Recon Vehicle"}
+      ]},
+      {name:"Fires",types:[
+        {id:"eq_howitzer",label:"Howitzer"},
+        {id:"eq_mortar_eq",label:"Mortar"},
+        {id:"eq_mlrs",label:"MLRS"},
+        {id:"eq_atgm",label:"ATGM"}
+      ]},
+      {name:"Air Defense",types:[
+        {id:"eq_sam_system",label:"SAM System"},
+        {id:"eq_aaa",label:"AAA"}
+      ]},
+      {name:"Aviation",types:[
+        {id:"eq_helicopter_atk",label:"Atk Helicopter"},
+        {id:"eq_helicopter_util",label:"Util Helicopter"},
+        {id:"eq_helicopter_recon",label:"Recon Helicopter"},
+        {id:"eq_uav_eq",label:"UAS"},
+        {id:"eq_fixed_wing_ftr",label:"Fighter"}
+      ]},
+      {name:"Engineer",types:[
+        {id:"eq_engineer_vehicle",label:"Engr Vehicle"},
+        {id:"eq_bridge_layer",label:"Bridge Layer"},
+        {id:"eq_minelayer",label:"Minelayer"}
+      ]},
+      {name:"Logistics",types:[
+        {id:"eq_truck",label:"Truck"},
+        {id:"eq_fuel_vehicle",label:"Fuel Vehicle"},
+        {id:"eq_ambulance",label:"Ambulance"}
+      ]},
+      {name:"C2 / EW",types:[
+        {id:"eq_command_vehicle",label:"Command Vehicle"},
+        {id:"eq_ew_vehicle",label:"EW Vehicle"},
+        {id:"eq_radar",label:"Radar"}
+      ]}
+    ];
     EQUIP_CATEGORIES.forEach(function(cat,ci){
       h+='<div class="cat-header open" onclick="this.classList.toggle(\'open\');this.nextElementSibling.style.display=this.classList.contains(\'open\')?\'\':\'none\'">'+cat.name+'</div><div class="icon-grid">';
       cat.types.forEach(function(t){h+='<div class="icon-cell" onclick="startPlacement(\''+t.id+'\',\''+curAffEq+'\',true);togglePanel(null)"><canvas width="100" height="100" data-utype="'+t.id+'" data-uaff="'+curAffEq+'" data-equip="1"></canvas><div class="tooltip">'+t.label+'</div></div>'});
       h+='</div>'});
-    setTimeout(function(){document.querySelectorAll(".icon-cell canvas[data-equip]").forEach(function(cv){var c=cv.getContext("2d");drawUnitIcon(c,{type:cv.dataset.utype,affiliation:cv.dataset.uaff||"friendly",isEquipment:true},50,50,88)})},10);
+    setTimeout(function(){(function tryDrawEquipIcons(attempt){if(!_MS&&attempt<20){setTimeout(function(){tryDrawEquipIcons(attempt+1)},100);return;}redrawPanelIcons()})(0)},0);
+    return h;
+  }
+  if(tab==="tasks"){
+    var TT_CATS=[
+      {name:"Enemy Tasks",tasks:TACTICAL_TASKS.filter(function(t){return t.cat==="Enemy"})},
+      {name:"Friendly Tasks",tasks:TACTICAL_TASKS.filter(function(t){return t.cat==="Friendly"})},
+      {name:"Terrain Tasks",tasks:TACTICAL_TASKS.filter(function(t){return t.cat==="Terrain"})},
+    ];
+    TT_CATS.forEach(function(cat){
+      if(!cat.tasks.length)return;
+      h+='<div class="cat-header open" onclick="this.classList.toggle(\'open\');this.nextElementSibling.style.display=this.classList.contains(\'open\')?\'\':\'none\'">'+(cat.name)+'</div><div class="icon-grid">';
+      cat.tasks.forEach(function(t){
+        h+='<div class="icon-cell" onclick="startTacTask(\''+t.id+'\');togglePanel(null)">'
+          +'<canvas width="100" height="100" data-tactask="'+t.id+'"></canvas>'
+          +'<div class="tooltip">'+t.label+'</div></div>';
+      });
+      h+='</div>';
+    });
+    setTimeout(function(){
+      document.querySelectorAll('.icon-cell canvas[data-tactask]').forEach(function(cv){
+        var id=cv.dataset.tactask;
+        var fn=_TT_DRAW[id];
+        if(!fn)return;
+        var ctx=cv.getContext('2d');
+        ctx.clearRect(0,0,100,100);
+        fn(ctx,50,50,30,'#ff4444',2);
+      });
+    },0);
     return h;
   }
   /* Formations tab */
@@ -2293,10 +2680,20 @@ function renderAddUnitPanel(){
     h+=`<div class="cat-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'':'none'">${cat.name}</div><div class="icon-grid">`;
     cat.types.forEach(t=>{h+=`<div class="icon-cell" onclick="startPlacement('${t.id}','${curAff}');togglePanel(null)"><canvas width="100" height="100" data-utype="${t.id}" data-uaff="${curAff}"></canvas><div class="tooltip">${t.label}</div></div>`});
     h+='</div>'});
-  setTimeout(()=>{document.querySelectorAll(".icon-cell canvas[data-utype]").forEach(cv=>{const c=cv.getContext("2d");drawUnitIcon(c,{type:cv.dataset.utype,affiliation:cv.dataset.uaff||"friendly"},50,50,88)})},10);
+  setTimeout(function(){(function tryDrawAddIcons(attempt){if(!_MS&&attempt<20){setTimeout(function(){tryDrawAddIcons(attempt+1)},100);return;}redrawPanelIcons()})(0)},0);
   return h}
 
 
+function redrawPanelIcons(){
+  document.querySelectorAll(".icon-cell canvas[data-utype]:not([data-equip])").forEach(function(cv){
+    var c=cv.getContext("2d");c.clearRect(0,0,cv.width,cv.height);
+    drawUnitIcon(c,{type:cv.dataset.utype,affiliation:cv.dataset.uaff||"friendly"},50,50,88);
+  });
+  document.querySelectorAll(".icon-cell canvas[data-equip]").forEach(function(cv){
+    var c=cv.getContext("2d");c.clearRect(0,0,cv.width,cv.height);
+    drawUnitIcon(c,{type:cv.dataset.utype,affiliation:cv.dataset.uaff||"friendly",isEquipment:true},50,50,88);
+  });
+}
 function renderMapToolsPanel(){
   let h='<div class="section"><div class="section-title">Coordinate Search</div>';
   h+='<div style="display:flex;gap:4px;align-items:stretch"><input type="text" id="coord-search-input" placeholder="MGRS or lat,lon" autocomplete="off" autocorrect="off" spellcheck="false" style="flex:1;margin:0"><button class="btn primary" onclick="coordSearch()" style="margin:0;white-space:nowrap">Go</button></div>';
@@ -2350,6 +2747,9 @@ function renderMapToolsPanel(){
 
 /* ── IPB Wizard ── */
 /* ── Unified Operations Panel ── */
+
+// === 08_ops_ipb.js ===
+
 function renderOpsPanel(){
   var op=S._operation;
   var tab=S._opsTab||"syncmat";
@@ -2895,6 +3295,9 @@ var _toZoom=1;
 var _toZoomManual=false;
 var _toUndoStack=[];
 var _toMaxUndo=40;
+
+// === 09_taskorg.js ===
+
 function _toPushUndo(){
   if(!S._ipb)return;
   _toUndoStack.push({roster:JSON.parse(JSON.stringify(S._ipb.threatRoster||[])),hvtl:JSON.parse(JSON.stringify(S._ipb.hvtl||{})),sel:_toSelectedId});
@@ -3265,7 +3668,7 @@ function toRender(){
       if(u.customIcon&&u.useCustomIcon!==false){
         var cimg=getCustomIconImage(u.customIcon);
         if(cimg.complete&&cimg.naturalWidth>0){
-          /* Draw frame+echelon+labels with blank interior (type '_custom' matches nothing in drawTS) */
+          /* Draw milsymbol frame for hostile custom-icon overlay */
           drawUnitIcon(c,{type:'_custom',echelon:u.echelon,affiliation:'hostile',designation:u.designation||'',parentUnit:parentDesig,isHQ:u.type==='headquarters'},cv.width/2,cv.height/2,cv.width*0.5);
           /* Draw custom icon to fill the diamond frame interior */
           var sc=cv.width*0.5/110;
@@ -3909,7 +4312,9 @@ function ipbRemoveThreatUnit(uid){toRemoveUnit(uid);renderFloatingPanel()}
 function ipbToggleThreatTarget(uid){toToggleHVT(uid);renderFloatingPanel()}
 
 /* Unit placer - shows Step 3 roster as a placement menu */
-var _ipbPlacerOpen=false;
+
+// === 10_ipb_placer.js ===
+
 function ipbOpenUnitPlacer(){
   _ipbPlacerOpen=!_ipbPlacerOpen;
   if(_ipbPlacerOpen){
@@ -3920,7 +4325,7 @@ function ipbOpenUnitPlacer(){
   }
   renderIPBPlacerPanel();
 }
-var _placerPos={x:null,y:null,w:null,pinned:false};
+/* moved to 01_constants */
 function renderIPBPlacerPanel(){
   var roster=(S._ipb&&S._ipb.threatRoster)||[];
   var existing=document.getElementById('ipb-placer-panel');
@@ -4321,10 +4726,13 @@ function escAttr(s){return escHtml(s)}
 /* Sanitize + truncate user strings */
 function sanitizeStr(s,maxLen){s=String(s||"");if(maxLen&&s.length>maxLen)s=s.slice(0,maxLen);return s}
 /* Length limits for user input fields */
-const APP_VERSION="10.5";
+/* moved to 01_constants */
 function toggleFullscreen(){
   var d=document;
-  if(d.fullscreenElement||d.webkitFullscreenElement){
+
+// === 11_editor_layers.js ===
+
+if(d.fullscreenElement||d.webkitFullscreenElement){
     if(d.exitFullscreen)d.exitFullscreen();else if(d.webkitExitFullscreen)d.webkitExitFullscreen();
   }else{
     var e=d.documentElement;
@@ -4358,7 +4766,8 @@ function sanitizeUnit(u){
   if(u.rings&&Array.isArray(u.rings)){u.rings=u.rings.slice(0,20);u.rings.forEach(r=>{r.label=sanitizeStr(r.label,INPUT_LIMITS.ringLabel);r.radius=Math.max(0,Math.min(Number(r.radius)||0,1e7))})}
   if(typeof u.lat!=="number"||typeof u.lon!=="number")return null;
   u.lat=Math.max(-90,Math.min(90,u.lat));u.lon=Math.max(-180,Math.min(180,u.lon));
-  if(u.customIcon&&(typeof u.customIcon!=="string"||!/^data:image\//i.test(u.customIcon)||u.customIcon.length>500000))u.customIcon=null;
+  if(u.customIcon&&(typeof u.customIcon!=="string"||!/^data:image\//i.test(u.customIcon)||u.customIcon.length>2000000))u.customIcon=null;
+  if(u.customIcon)u.useCustomIcon=true;
   return u}
 /* Sanitize a graphic object */
 function sanitizeGraphic(g){
@@ -4537,8 +4946,8 @@ function bindPanelEvents(){
   if(el("set-pencilmode"))el("set-pencilmode").onchange=e=>{S.pencilMode=e.target.checked;localStorage.setItem("sm_pencilMode",e.target.checked)};
   if(el("set-gridmode"))el("set-gridmode").onchange=e=>{S.gridMode=e.target.value;requestRender()};
   if(el("set-coorddisp"))el("set-coorddisp").onchange=e=>{S.coordDisplay=e.target.value};
-  if(el("set-gridop")){trackFill(el("set-gridop"));el("set-gridop").oninput=e=>{S.gridOpacity=parseFloat(e.target.value);trackFill(e.target);requestRender()}};
-  if(el("set-uiscale")){trackFill(el("set-uiscale"));el("set-uiscale").oninput=e=>{applyUIScale(parseFloat(e.target.value));trackFill(e.target);if(el("uiscale-val"))el("uiscale-val").textContent=Math.round(S.uiScale*100)+"%"}};
+  if(el("set-gridcolor"))el("set-gridcolor").oninput=e=>{S.gridColor=e.target.value;requestRender()};
+  if(el("set-gridop")){trackFill(el("set-gridop"));el("set-gridop").oninput=e=>{S.gridOpacity=parseFloat(e.target.value);trackFill(e.target);var ov=el("set-gridop-val");if(ov)ov.textContent=Math.round(S.gridOpacity*100)+"%";requestRender()}};
   if(el("net-name"))el("net-name").onchange=e=>{var v=sanitizeStr(e.target.value,INPUT_LIMITS.callsign);S._net.peerName=v;localStorage.setItem("staffmaps_callsign",v)};
 
   if(el("net-djm"))el("net-djm").onchange=e=>{S._net.defaultJoinMode=e.target.checked?"view":"edit";renderFloatingPanel()};
@@ -4592,7 +5001,7 @@ function renderEditor(){
     h+='<input type="text" id="ed-glabel" value="'+escAttr(g.label||'')+'" placeholder="Label text" class="ed-input" maxlength="100">';
     h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">';
     h+='<label style="font-size:9px;opacity:.6;margin:0;min-width:28px">Size</label>';
-    h+='<input type="range" id="ed-gfontsize" min="8" max="48" step="1" value="'+(g.fontSize||14)+'" style="flex:1">';
+    h+='<input type="range" id="ed-gfontsize" min="8" max="200" step="1" value="'+(g.fontSize||14)+'" style="flex:1">';
     h+='<span id="ed-gfontsize-val" style="font-size:10px;min-width:28px;text-align:right">'+(g.fontSize||14)+'px</span>';
     h+='</div>';
     h+='<div style="display:flex;gap:8px;margin-bottom:6px">';
@@ -4630,7 +5039,7 @@ function renderEditor(){
       ECHELONS.forEach(function(e){h+='<button class="ed-btn'+((g.echelon||"brigade")===e.id?' active':'')+'" onclick="editGraphicProp(\''+g.id+'\',\'echelon\',\''+e.id+'\')">'+e.label+'</button>'});
       h+='</div>';
     }
-    if(!g._mcooEnabled&&(g.overlayType==="boundary"||g.overlayType==="pl"||g.overlayType==="ld")){
+    if(!g._mcooEnabled&&g.tool!=="tacTask"&&(g.overlayType==="boundary"||g.overlayType==="pl"||g.overlayType==="ld")){
       h+='<div class="ed-section-title" style="display:flex;justify-content:space-between;align-items:center">POINTS <button class="btn" onclick="addGraphicPoint(\''+g.id+'\')" style="padding:1px 6px;font-size:10px">+ Add</button></div>';
       g.points.forEach(function(pt,i){
         var mgrs=toMGRS(pt.lat,pt.lon);
@@ -4641,7 +5050,7 @@ function renderEditor(){
         h+='</div>'});
     }
     /* Grid points for polygons/rectangles/lines (not circles, not already shown above) */
-    if(!g._mcooEnabled&&g.tool!=="circle"&&g.overlayType!=="boundary"&&g.overlayType!=="pl"&&g.overlayType!=="ld"&&g.points&&g.points.length>=2){
+    if(!g._mcooEnabled&&g.tool!=="circle"&&g.tool!=="tacTask"&&g.overlayType!=="boundary"&&g.overlayType!=="pl"&&g.overlayType!=="ld"&&g.points&&g.points.length>=2){
       var showPts=S._showGfxPoints;
       h+='<div class="ed-section-title" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="S._showGfxPoints=!S._showGfxPoints;renderEditor()"><span>'+(showPts?'\u25bc':'\u25b6')+' POINTS ('+g.points.length+')</span><button class="btn" onclick="event.stopPropagation();addGraphicPoint(\''+g.id+'\')" style="padding:1px 6px;font-size:10px">+ Add</button></div>';
       if(showPts){
@@ -4759,6 +5168,8 @@ function renderEditor(){
     if(labelShadowIn)labelShadowIn.addEventListener("change",function(){g.labelShadow=this.checked;debouncedGfxSync();requestRender()});
     var grotIn=document.getElementById("ed-grotation");
     if(grotIn){trackFill(grotIn);grotIn.addEventListener("input",function(){g.rotation=parseInt(this.value);var v=document.getElementById("ed-grotation-val");if(v)v.textContent=g.rotation+"°";trackFill(this);debouncedGfxSync();requestRender()})}
+    var tactszIn=document.getElementById("ed-tactsz");
+    if(tactszIn){trackFill(tactszIn);tactszIn.addEventListener("input",function(){g.tacSz=parseInt(this.value);var v=document.getElementById("ed-tactsz-val");if(v)v.textContent=g.tacSz+"px";trackFill(this);debouncedGfxSync();requestRender()})}
     var labelBoldIn=document.getElementById("ed-glabelbold");
     if(labelBoldIn)labelBoldIn.addEventListener("change",function(){g.labelBold=this.checked;debouncedGfxSync();requestRender()});
     var arrowIn=document.getElementById("ed-garrow");
@@ -4801,7 +5212,6 @@ function renderEditor(){
     var _rr=(u.modifiers||[]).includes("reinforced")?"+":(u.modifiers||[]).includes("reduced")?"-":"";
     if((u.modifiers||[]).includes("reinforced")&&(u.modifiers||[]).includes("reduced"))_rr="+-";
     var _cap="";["airborne","air_assault","mountain","arctic","amphibious","light","heavy"].forEach(function(m){if((u.modifiers||[]).includes(m))_cap=m});
-    var _mob="";["wheeled","motorized","mechanized"].forEach(function(m){if((u.modifiers||[]).includes(m))_mob=m});
     h+='<div class="sym-layout">';
     /* TOP LEFT: DTG */
     h+='<div class="tl"><div class="sve-f right"><label>DTG (W)</label>';
@@ -4839,9 +5249,6 @@ function renderEditor(){
     h+='<div class="br">';
     h+='<div class="sve-f"><label>Capability</label><select id="sve-cap" style="width:78px"><option value="">None</option>';
     [["airborne","Airborne"],["air_assault","Air Assault"],["mountain","Mountain"],["arctic","Arctic"],["amphibious","Amphibious"],["light","Light"],["heavy","Heavy"]].forEach(function(c){h+='<option value="'+c[0]+'"'+(_cap===c[0]?' selected':'')+'>'+c[1]+'</option>'});
-    h+='</select></div>';
-    h+='<div class="sve-f"><label>Mobility</label><select id="sve-mob" style="width:78px"><option value="">None</option>';
-    [["wheeled","Wheeled"],["motorized","Motorized"],["mechanized","Mechanized"]].forEach(function(m){h+='<option value="'+m[0]+'"'+(_mob===m[0]?' selected':'')+'>'+m[1]+'</option>'});
     h+='</select></div>';
     h+='</div>';
     h+='</div>'; /* close sym-layout */
@@ -5034,7 +5441,7 @@ function renderEditor(){
 function hexToRGB(hex){var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return r+","+g+","+b}
 function sveUpdatePreview(u){
   var img=document.getElementById("sve-preview");if(!img||!_MS)return;
-  var sidc=buildSIDC(u.type,u.affiliation,u.echelon,u.isHQ);
+  var sidc=buildSIDC(u.type,u.affiliation,u.echelon,u.isHQ,u.modifiers);
   if(!sidc)return;
   var opts={size:110};
   if(u.designation)opts.uniqueDesignation=u.designation;
@@ -5075,12 +5482,6 @@ function sveBindEvents(u){
   if(el("sve-cap"))el("sve-cap").onchange=function(){
     var caps=["airborne","air_assault","mountain","arctic","amphibious","light","heavy"];
     var mods=(u.modifiers||[]).filter(function(m){return caps.indexOf(m)===-1});
-    if(this.value)mods.push(this.value);
-    editUnit(u.id,{modifiers:mods})};
-  /* Mobility dropdown — update modifiers */
-  if(el("sve-mob"))el("sve-mob").onchange=function(){
-    var mobs=["wheeled","motorized","mechanized"];
-    var mods=(u.modifiers||[]).filter(function(m){return mobs.indexOf(m)===-1});
     if(this.value)mods.push(this.value);
     editUnit(u.id,{modifiers:mods})};
   /* Render milsymbol preview */
@@ -5193,13 +5594,27 @@ function addGraphicPoint(id){var g=S.graphics.find(x=>x.id===id);if(!g||!g.point
 function removeGraphicPoint(id,idx){var g=S.graphics.find(x=>x.id===id);if(!g||!g.points||g.points.length<=2)return;g.points.splice(idx,1);requestRender();renderEditor()}
 
 // Drawing
-function getMinPoints(tool){return{line:2,arrow:2,polygon:3,circle:2,rectangle:2,text:1}[tool]||2}
+function getMinPoints(tool){return{line:2,arrow:2,polygon:3,circle:2,rectangle:2,text:1,tacTask:1}[tool]||2}
 function startDrawing(tool){deselectAll();S._activePanel=null;document.getElementById("float-panel").classList.remove("open");clearStackBtnActive();document.getElementById("sb-addunit").classList.add("active");S._drawMode={tool,points:[],color:GRAPHIC_COLORS[1],lineWidth:2,lineStyle:"solid",overlayType:"none",fill:false,label:"",arrowSize:1};showModeBar();requestRender()}
 function startOverlayDraw(type){deselectAll();S._activePanel=null;document.getElementById("float-panel").classList.remove("open");clearStackBtnActive();document.getElementById("sb-addunit").classList.add("active");const toolMap={pl:"line",ld:"line",boundary:"line",aa:"rectangle",axis:"line",route:"line"};S._drawMode={tool:toolMap[type]||"line",points:[],color:GRAPHIC_COLORS[0],lineWidth:2,lineStyle:"solid",overlayType:type,fill:type==="aa",label:"",arrowSize:1,echelon:type==="boundary"?"brigade":null,unitAbove:"",unitBelow:""};showModeBar();requestRender()}
+function startTacTask(taskId){
+  var task=TACTICAL_TASKS.find(function(t){return t.id===taskId});
+  if(!task)return;
+  deselectAll();S._activePanel=null;
+  document.getElementById('float-panel').classList.remove('open');
+  clearStackBtnActive();
+  document.getElementById('sb-addunit').classList.add('active');
+  S._tacTaskMode={taskId:taskId,task:task};
+  var mb=document.getElementById('mode-bar');
+  mb.style.display='flex';mb.classList.add('open');
+  mb.innerHTML='<span class="mode-info">CLICK MAP: '+task.label.toUpperCase()+'</span>'
+    +'<button class="btn danger" onclick="cancelDrawing()">✕ Cancel</button>';
+  requestRender()}
 function finishDrawing(){
   if(!S._drawMode)return;const dm=S._drawMode;
   if(dm.points.length<getMinPoints(dm.tool)){notify("Not enough points","error");return}
   const g={id:"g"+Date.now()+Math.random().toString(36).substr(2,4),tool:dm.tool,points:[...dm.points],color:dm.color,lineWidth:dm.lineWidth,lineStyle:dm.lineStyle,overlayType:dm.overlayType,fill:dm.fill,fillColor:dm.color,label:dm.label||"",layerId:S.activeLayerId,arrowSize:dm.arrowSize||1,rotation:dm.rotation||0};
+  if(dm.tool==="tacTask"){g.tacTask=dm.tacTask;g.tacSz=dm.tacSz||40;g.tacScale=dm.tacScale||1;g._zoomRef=S.zoom}
   /* For text tool: store font size as ground meters so it scales with the map */
   if(dm.tool==="text"&&dm.points.length){g.fontSize=dm.fontSize||14;g._zoomRef=S.zoom}
   S.graphics.push(g);S._drawMode=null;hideModeBar();document.getElementById("sb-addunit").classList.remove("active");selectGraphic(g.id);netBroadcast({type:"graphicAdd",graphic:g});requestRender();if(S._activePanel==="addunit")renderFloatingPanel();
@@ -5256,7 +5671,7 @@ function fitToGraphic(g){
     S.lat=sLat+(tLat-sLat)*e;S.lon=sLon+(tLon-sLon)*e;S.zoom=sZoom+(tZoom-sZoom)*e;
     requestRender();if(p<1)requestAnimationFrame(step)}
   requestAnimationFrame(step)}
-function cancelDrawing(){S._drawMode=null;hideModeBar();document.getElementById("sb-addunit").classList.remove("active");requestRender()}
+function cancelDrawing(){S._drawMode=null;S._tacTaskMode=null;hideModeBar();document.getElementById("sb-addunit").classList.remove("active");requestRender()}
 function undoDrawPoint(){if(!S._drawMode||!S._drawMode.points.length)return;S._drawMode.points.pop();updateModeBar();requestRender()}
 
 // Mode bar
@@ -5398,8 +5813,7 @@ function startPlacement(type,affiliation,isEquip){S._placementMode={type:type,af
 
 function detectLayout(){const w=window.innerWidth,h=window.innerHeight;S._isLandscape=w>h&&h<600;S._layout=S._overrides.layout&&S._overrides.layout!=="auto"?S._overrides.layout:Math.min(w,h)<500?"phone":w<900?"tablet":"desktop";document.body.setAttribute("data-layout",S._layout);document.body.setAttribute("data-orientation",S._isLandscape?"landscape":"portrait")}
 
-
-// === part_08_net_fileio_init.js ===
+// === 12_networking.js ===
 
 // ─── P2P NETWORKING ──────────────────────
 function toggleSharedLayer(layerId,prop){
@@ -6156,6 +6570,8 @@ function handleNetMsg(msg,fromPeer){
 }
 function updateNetDot(state){const dot=document.querySelector(".topbar-dot");if(dot)dot.className="topbar-dot"+(state?" "+state:"");const cb=document.getElementById("sb-comms");if(cb){cb.classList.remove("conn-blue","conn-green");if(S._net.mode==="hosting")cb.classList.add("conn-green");else if(S._net.mode==="connected")cb.classList.add("conn-blue")}}
 
+// === 13_fileio.js ===
+
 // ─── FILE I/O ────────────────────────────
 function dlBlob(blob,name){
   /* iOS PWA: blob downloads don't work in standalone mode, use Web Share API */
@@ -6629,12 +7045,29 @@ const IO={
       const aff=detectAff(pm,folderName);
       const mg=pm.getElementsByTagName("MultiGeometry")[0];
       if(mg){var st=resolveStyle(pm),ap=mg.getElementsByTagName("Polygon"),al=mg.getElementsByTagName("LineString");
-        if(ap.length>100){var bp=null,bl=0;for(var bi=0;bi<Math.min(ap.length,20);bi++){var bc=ap[bi].getElementsByTagName("coordinates")[0],bpts=_pcr(bc);if(bpts&&bpts.length>bl){bp=bpts;bl=bpts.length}}return bp?_bgo(pm,layerId,_derivedName||rawName,rawDesc,st,bp,true):null}
+        if(ap.length>100){
+          /* Large MultiGeometry: sort polygons by size, take largest up to 2000 total points */
+          var _polySizes=[];
+          for(var _pi=0;_pi<ap.length;_pi++){var _pc=ap[_pi].getElementsByTagName("coordinates")[0];var _pp=_pcr(_pc);if(_pp&&_pp.length>=3)_polySizes.push({pts:_pp,len:_pp.length})}
+          _polySizes.sort(function(a,b){return b.len-a.len});
+          var _res2=[],_totPts=0;
+          for(var _si=0;_si<_polySizes.length;_si++){
+            if(_totPts+_polySizes[_si].len>2000)continue;
+            _res2.push(_bgo(pm,layerId,_si===0?(_derivedName||rawName):"",rawDesc,st,_polySizes[_si].pts,true));
+            _totPts+=_polySizes[_si].len;
+            if(_totPts>=1800)break;
+          }
+          return _res2.length?_res2:null;
+        }
         var res=[];for(var mi=0;mi<ap.length;mi++){var sc=ap[mi].getElementsByTagName("coordinates")[0],sp=_pcr(sc);if(sp&&sp.length>=2)res.push(_bgo(pm,layerId,mi===0?(_derivedName||rawName):"",rawDesc,st,sp,true))}
         for(var mj=0;mj<al.length;mj++){var sc2=al[mj].getElementsByTagName("coordinates")[0],sp2=_pcr(sc2);if(sp2&&sp2.length>=2)res.push(_bgo(pm,layerId,mj===0&&!ap.length?(_derivedName||rawName):"",rawDesc,st,sp2,false))}
         return res.length?res:null}
       const polyEl=pm.getElementsByTagName("Polygon")[0],lineEl=pm.getElementsByTagName("LineString")[0];
-      if(polyEl||lineEl){var ce=polyEl?polyEl.getElementsByTagName("coordinates")[0]:lineEl.getElementsByTagName("coordinates")[0];var gp=_pcr(ce);if(!gp)return null;return _bgo(pm,layerId,_derivedName||rawName,rawDesc,resolveStyle(pm),gp,!!polyEl)}
+      if(polyEl||lineEl){var ce=polyEl?polyEl.getElementsByTagName("coordinates")[0]:lineEl.getElementsByTagName("coordinates")[0];var gp=_pcr(ce);if(!gp)return null;
+        /* Treat closed LineStrings (first==last before _pcr pop) as polygons */
+        var _isPoly=!!polyEl;
+        if(!_isPoly&&lineEl&&gp.length>=3){var _rc=lineEl.getElementsByTagName("coordinates")[0].textContent.trim().split(/\s+/);var _fp=_rc[0].split(","),_lp=_rc[_rc.length-1].split(",");if(Math.abs(parseFloat(_fp[0])-parseFloat(_lp[0]))<1e-8&&Math.abs(parseFloat(_fp[1])-parseFloat(_lp[1]))<1e-8)_isPoly=true}
+        return _bgo(pm,layerId,_derivedName||rawName,rawDesc,resolveStyle(pm),gp,_isPoly)}
       const parts=coords.textContent.trim().split(",");if(parts.length<2)return null;
       const lon=parseFloat(parts[0]),lat=parseFloat(parts[1]);if(isNaN(lat)||isNaN(lon))return null;
       const hasName=!!rawName,parseSource=rawName||rawDesc.replace(/<[^>]*>/g,"").trim();
@@ -6658,9 +7091,15 @@ const IO={
       if(!rawName&&!rawDesc&&!iconDataUrl){
         var _chkSt=resolveStyle(pm);if(_chkSt){var _chkIs=_chkSt.getElementsByTagName("IconStyle");if(_chkIs.length){var _chkIc=_chkIs[0].getElementsByTagName("Icon");if(_chkIc.length){var _chkHr=_chkIc[0].getElementsByTagName("href");if(_chkHr.length){var _hr=_chkHr[0].textContent.trim();if(_hr&&!/maps\.google\.com|earth\.google\.com/i.test(_hr))return null}}}}
       }
-      /* Unnamed points WITH embedded icon images — mark as label attachment for preceding graphic */
+      /* Unnamed points WITH embedded icon images — import as custom-icon units */
       if(!rawName&&!rawDesc&&iconDataUrl){
-        return{_isLabelPoint:true,lat,lon,customIcon:iconDataUrl}
+        var _uaff=detectAff(pm,folderName);
+        return{id:"u"+Date.now()+Math.random().toString(36).substr(2,4),lat,lon,
+          type:"_custom",affiliation:_uaff,
+          designation:"",echelon:null,modifiers:[],isHQ:false,layerId,rings:[],equipment:{},
+          customIcon:iconDataUrl,useCustomIcon:true,showCoords:false,
+          importNotes:"Imported icon (folder: "+folderName+")",originalName:"",
+          _useStructuredLabel:false,iconScale:1,rotation:0}
       }
       return{id:"u"+Date.now()+Math.random().toString(36).substr(2,4),lat,lon,
         type:iconDataUrl&&parsed.type==="infantry"?"waypoint":parsed.type,affiliation:finalAff,echelon:parsed.echelon,
@@ -6685,8 +7124,14 @@ const IO={
       var directPms=getDirectChildren(folder,"Placemark");
       if(directPms.length===0)return;
       var fname=getFolderName(folder)||"Unnamed";
-      var layerId="l"+Date.now()+Math.random().toString(36).substr(2,4);
-      var _cleanFname=fname.replace(/^(Polybezier\s*Area|Polybezier|PolyBezier|Polygon|Polyline|LineString|Path|Point|Circle|Ellipse|Rectangle|Rect|Freehand)\s*/i,'').trim();S.layers.push({id:layerId,name:_cleanFname||fname,visible:true,hasErrors:false,collapsed:true});
+      var _lMeta={};folder.querySelectorAll("ExtendedData > Data").forEach(function(d){var k=d.getAttribute("name");var v=(d.querySelector("value")||{}).textContent||"";if(k&&k.startsWith("sm:"))_lMeta[k.slice(3)]=v});
+      var layerId=_lMeta.layerId||"l"+Date.now()+Math.random().toString(36).substr(2,4);
+      if(S.layers.find(function(l){return l.id===layerId})){layerId="l"+Date.now()+Math.random().toString(36).substr(2,4);}
+      var _cleanFname=fname.replace(/^(Polybezier\s*Area|Polybezier|PolyBezier|Polygon|Polyline|LineString|Path|Point|Circle|Ellipse|Rectangle|Rect|Freehand)\s*/i,'').trim();
+      var _layerObj={id:layerId,name:_cleanFname||fname,visible:_lMeta.layerVisible!=="false",hasErrors:false,collapsed:true};
+      if(_lMeta.layerColor)_layerObj.color=_lMeta.layerColor;
+      if(_lMeta.layerOpacity!=null&&_lMeta.layerOpacity!=='')_layerObj.opacity=parseFloat(_lMeta.layerOpacity);
+      S.layers.push(_layerObj);
       var imported=0,ferr=0;
       var _folderLabelUsed=false;/* Only first graphic in a folder gets the folder-derived label */
       directPms.forEach(function(pm){
@@ -6695,7 +7140,7 @@ const IO={
         if(u){
           if(Array.isArray(u)){u.forEach(function(g){delete g._isGraphic;S.graphics.push(g);count++});imported+=u.length;_folderLabelUsed=true}
           else if(u._isGraphic){delete u._isGraphic;S.graphics.push(u);count++;imported++;_folderLabelUsed=true}
-          else if(u._isLabelPoint){/* Skip — label derived from folder name */}
+          else if(u._isLabelPoint){/* legacy — should not reach here */}
           else{S.units.push(u);count++;imported++;_folderLabelUsed=true}
         }else{ferr++;errors++}
       });
@@ -6988,7 +7433,7 @@ const IO={
       else{/* Render military symbol to canvas PNG for KMZ */var _ic=document.createElement("canvas");_ic.width=256;_ic.height=256;var _ix=_ic.getContext("2d");_ix.clearRect(0,0,256,256);drawUnitIcon(_ix,u,128,128,220);var iconFn="images/icon_"+(iconIdx++)+".png";iconFiles[iconFn]=_ic.toDataURL("image/png");styleBlock+='<IconStyle><scale>'+(u.iconScale||1)+'</scale><Icon><href>'+iconFn+'</href></Icon><hotSpot x="0.5" y="0.5" xunits="fraction" yunits="fraction"/></IconStyle>';}
       styleBlock+='<LabelStyle><scale>1</scale></LabelStyle></Style>\n';
     });
-    S.graphics.filter(g=>layerIds.has(g.layerId)&&g.points&&g.points.length>=2).forEach(function(g){
+    S.graphics.filter(g=>layerIds.has(g.layerId)&&g.points&&(g.points.length>=2||g.tool==="text")).forEach(function(g){
       var styleId="g_"+(g.id||"").replace(/[^a-zA-Z0-9]/g,"");
       var lineCol=hexToKml(g.color||"#ff4444",g.opacity!=null?g.opacity:1);var isP=g.tool==="polygon"||g.tool==="rectangle"||g.tool==="circle";
       styleBlock+='<Style id="'+styleId+'"><LineStyle><color>'+lineCol+'</color><width>'+(g.lineWidth||2)+'</width></LineStyle>';
@@ -7027,7 +7472,7 @@ const IO={
       d+='<b>Source:</b> StaffMaps';return d}
     function placemarkUnit(u){var cs=_callsign(u);var nm=esc(cs);var sid="u_"+(u.id||"").replace(/[^a-zA-Z0-9]/g,"");
       var desc='<description><![CDATA['+_takDesc(u)+']]></description>';
-      var ext=(function(){var x='<ExtendedData>';x+='<Data name="sm:type"><value>'+esc(u.type||'')+'</value></Data>';x+='<Data name="sm:affiliation"><value>'+esc(u.affiliation||'friendly')+'</value></Data>';x+='<Data name="sm:echelon"><value>'+esc(u.echelon||'')+'</value></Data>';x+='<Data name="sm:higherUnit"><value>'+esc(u.higherUnit||'')+'</value></Data>';x+='<Data name="sm:parentUnit"><value>'+esc(u.parentUnit||'')+'</value></Data>';x+='<Data name="sm:isHQ"><value>'+(u.isHQ?'true':'false')+'</value></Data>';x+='<Data name="sm:modifiers"><value>'+esc(JSON.stringify(u.modifiers||[]))+'</value></Data>';x+='<Data name="sm:label"><value>'+nm+'</value></Data>';if(u.iconScale&&u.iconScale!==1)x+='<Data name="sm:iconScale"><value>'+u.iconScale+'</value></Data>';if(u.rotation)x+='<Data name="sm:rotation"><value>'+u.rotation+'</value></Data>';if(u.dropShadow)x+='<Data name="sm:dropShadow"><value>true</value></Data>';if(u.rings&&u.rings.length)x+='<Data name="sm:rings"><value>'+esc(JSON.stringify(u.rings))+'</value></Data>';if(u.equipment&&Object.keys(u.equipment).length)x+='<Data name="sm:equipment"><value>'+esc(JSON.stringify(u.equipment))+'</value></Data>';if(u._rosterSource)x+='<Data name="sm:rosterSource"><value>'+esc(u._rosterSource)+'</value></Data>';x+='</ExtendedData>';return x})();
+      var ext=(function(){var x='<ExtendedData>';x+='<Data name="type"><value>'+esc(_cotType(u))+'</value></Data>';x+='<Data name="uid"><value>'+esc('StaffMaps.'+(u.id||''))+'</value></Data>';x+='<Data name="how"><value>h-g-i-g-o</value></Data>';x+='<Data name="sidc"><value>'+esc(buildSIDC(u.type||"infantry",u.affiliation||"friendly",u.echelon||null,u.isHQ||false,u.modifiers||[]))+'</value></Data>';x+='<Data name="sm:type"><value>'+esc(u.type||'')+'</value></Data>';x+='<Data name="sm:affiliation"><value>'+esc(u.affiliation||'friendly')+'</value></Data>';x+='<Data name="sm:echelon"><value>'+esc(u.echelon||'')+'</value></Data>';x+='<Data name="sm:higherUnit"><value>'+esc(u.higherUnit||'')+'</value></Data>';x+='<Data name="sm:parentUnit"><value>'+esc(u.parentUnit||'')+'</value></Data>';x+='<Data name="sm:isHQ"><value>'+(u.isHQ?'true':'false')+'</value></Data>';x+='<Data name="sm:modifiers"><value>'+esc(JSON.stringify(u.modifiers||[]))+'</value></Data>';x+='<Data name="sm:label"><value>'+nm+'</value></Data>';if(u.iconScale&&u.iconScale!==1)x+='<Data name="sm:iconScale"><value>'+u.iconScale+'</value></Data>';if(u.rotation)x+='<Data name="sm:rotation"><value>'+u.rotation+'</value></Data>';if(u.dropShadow)x+='<Data name="sm:dropShadow"><value>true</value></Data>';if(u.rings&&u.rings.length)x+='<Data name="sm:rings"><value>'+esc(JSON.stringify(u.rings))+'</value></Data>';if(u.equipment&&Object.keys(u.equipment).length)x+='<Data name="sm:equipment"><value>'+esc(JSON.stringify(u.equipment))+'</value></Data>';if(u._rosterSource)x+='<Data name="sm:rosterSource"><value>'+esc(u._rosterSource)+'</value></Data>';x+='</ExtendedData>';return x})();
       return'<Placemark><name>'+nm+'</name><styleUrl>#'+sid+'</styleUrl>'+desc+ext+'<Point><coordinates>'+u.lon+','+u.lat+',0</coordinates></Point></Placemark>\n'}
 
     function placemarkGfx(g){
@@ -7036,17 +7481,23 @@ const IO={
       var gExt=(function(){var x='<ExtendedData>';x+='<Data name="sm:lineStyle"><value>'+(g.lineStyle||'solid')+'</value></Data>';x+='<Data name="sm:tool"><value>'+(g.tool||'line')+'</value></Data>';x+='<Data name="sm:overlayType"><value>'+(g.overlayType||'none')+'</value></Data>';x+='<Data name="sm:label"><value>'+esc(g.label||'')+'</value></Data>';if(g.dropShadow)x+='<Data name="sm:dropShadow"><value>true</value></Data>';if(g.labelColor)x+='<Data name="sm:labelColor"><value>'+esc(g.labelColor)+'</value></Data>';if(g.labelSize)x+='<Data name="sm:labelSize"><value>'+g.labelSize+'</value></Data>';if(g.labelBold)x+='<Data name="sm:labelBold"><value>true</value></Data>';if(g.labelShadow)x+='<Data name="sm:labelShadow"><value>true</value></Data>';if(g.arrowSize!=null&&g.arrowSize!==1)x+='<Data name="sm:arrowSize"><value>'+g.arrowSize+'</value></Data>';if(g.rotation)x+='<Data name="sm:rotation"><value>'+g.rotation+'</value></Data>';if(g.opacity!=null&&g.opacity!==1)x+='<Data name="sm:opacity"><value>'+g.opacity+'</value></Data>';if(g.echelon)x+='<Data name="sm:echelon"><value>'+esc(g.echelon)+'</value></Data>';if(g.unitAbove)x+='<Data name="sm:unitAbove"><value>'+esc(g.unitAbove)+'</value></Data>';if(g.unitBelow)x+='<Data name="sm:unitBelow"><value>'+esc(g.unitBelow)+'</value></Data>';x+='</ExtendedData>';return x})();
       var gDesc=nm?'<description><![CDATA[<b>'+nm+'</b><br/>Source: StaffMaps]]></description>':'';
       var h='<Placemark><name>'+nm+'</name><styleUrl>#'+sid+'</styleUrl>'+gExt;
-      if(g.tool==="rectangle"&&g.points.length===2){h+='<Polygon><outerBoundaryIs><LinearRing><coordinates>'+rectToCoords(g)+'</coordinates></LinearRing></outerBoundaryIs></Polygon>';}
+      if(g.tool==="text"&&g.points&&g.points.length>=1){h+='<Point><coordinates>'+g.points[0].lon+','+g.points[0].lat+',0</coordinates></Point>';}
+      else if(g.tool==="rectangle"&&g.points.length===2){h+='<Polygon><outerBoundaryIs><LinearRing><coordinates>'+rectToCoords(g)+'</coordinates></LinearRing></outerBoundaryIs></Polygon>';}
       else if(g.tool==="circle"&&g.points.length>=2){h+='<Polygon><outerBoundaryIs><LinearRing><coordinates>'+circleToCoords(g)+'</coordinates></LinearRing></outerBoundaryIs></Polygon>';}
       else if(g.tool==="polygon"){var c=g.points.map(p=>p.lon+","+p.lat+",0").join(" ");h+='<Polygon><outerBoundaryIs><LinearRing><coordinates>'+c+" "+g.points[0].lon+","+g.points[0].lat+',0</coordinates></LinearRing></outerBoundaryIs></Polygon>';}
       else{var c=g.points.map(p=>p.lon+","+p.lat+",0").join(" ");h+='<LineString><tessellate>1</tessellate><coordinates>'+c+'</coordinates></LineString>';}
       return h+'</Placemark>\n';
     }
     function layerFolder(l){
-      var h='<Folder><name>'+esc(l.name)+'</name>\n';
+      var lMeta='<ExtendedData><Data name="sm:layerId"><value>'+esc(l.id)+'</value></Data>'
+        +'<Data name="sm:layerVisible"><value>'+(l.visible!==false?'true':'false')+'</value></Data>'
+        +(l.color?'<Data name="sm:layerColor"><value>'+esc(l.color)+'</value></Data>':'')
+        +(l.opacity!=null?'<Data name="sm:layerOpacity"><value>'+l.opacity+'</value></Data>':'')
+        +'</ExtendedData>';
+      var h='<Folder><n>'+esc(l.name)+'</n>\\n'+lMeta+'\\n';
       S.units.filter(u=>u.layerId===l.id).forEach(u=>{h+=placemarkUnit(u)});
-      S.graphics.filter(g=>g.layerId===l.id&&g.points&&g.points.length>=2).forEach(g=>{h+=placemarkGfx(g)});
-      return h+'</Folder>\n';
+      S.graphics.filter(g=>g.layerId===l.id&&g.points&&(g.points.length>=2||g.tool==="text")).forEach(g=>{h+=placemarkGfx(g)});
+      return h+'</Folder>\\n';
     }
     var _pkgLayerIds=pkgLayerIds||new Set();
     var kml='<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document>\n<name>StaffMaps Export</name>\n'+styleBlock;
@@ -7126,17 +7577,23 @@ const IO={
       else if(isP){h+='<PolyStyle><fill>0</fill></PolyStyle>';}
       h+='</Style>';
       h+=gDesc+gExt;
-      if(g.tool==="rectangle"&&g.points.length===2){h+='<Polygon><outerBoundaryIs><LinearRing><coordinates>'+rectToCoords(g)+'</coordinates></LinearRing></outerBoundaryIs></Polygon>';}
+      if(g.tool==="text"&&g.points&&g.points.length>=1){h+='<Point><coordinates>'+g.points[0].lon+','+g.points[0].lat+',0</coordinates></Point>';}
+      else if(g.tool==="rectangle"&&g.points.length===2){h+='<Polygon><outerBoundaryIs><LinearRing><coordinates>'+rectToCoords(g)+'</coordinates></LinearRing></outerBoundaryIs></Polygon>';}
       else if(g.tool==="circle"&&g.points.length>=2){h+='<Polygon><outerBoundaryIs><LinearRing><coordinates>'+circleToCoords(g)+'</coordinates></LinearRing></outerBoundaryIs></Polygon>';}
       else if(g.tool==="polygon"){var c=g.points.map(p=>p.lon+","+p.lat+",0").join(" ");h+='<Polygon><outerBoundaryIs><LinearRing><coordinates>'+c+" "+g.points[0].lon+","+g.points[0].lat+',0</coordinates></LinearRing></outerBoundaryIs></Polygon>';}
       else{var c=g.points.map(p=>p.lon+","+p.lat+",0").join(" ");h+='<LineString><tessellate>1</tessellate><coordinates>'+c+'</coordinates></LineString>';}
       return h+'</Placemark>\n';
     }
     function layerFolder(l){
-      var h='<Folder><name>'+esc(l.name)+'</name>\n';
+      var lMeta='<ExtendedData><Data name="sm:layerId"><value>'+esc(l.id)+'</value></Data>'
+        +'<Data name="sm:layerVisible"><value>'+(l.visible!==false?'true':'false')+'</value></Data>'
+        +(l.color?'<Data name="sm:layerColor"><value>'+esc(l.color)+'</value></Data>':'')
+        +(l.opacity!=null?'<Data name="sm:layerOpacity"><value>'+l.opacity+'</value></Data>':'')
+        +'</ExtendedData>';
+      var h='<Folder><n>'+esc(l.name)+'</n>\\n'+lMeta+'\\n';
       S.units.filter(u=>u.layerId===l.id).forEach(u=>{h+=placemarkUnit(u)});
-      S.graphics.filter(g=>g.layerId===l.id&&g.points&&g.points.length>=2).forEach(g=>{h+=placemarkGfx(g)});
-      return h+'</Folder>\n';
+      S.graphics.filter(g=>g.layerId===l.id&&g.points&&(g.points.length>=2||g.tool==="text")).forEach(g=>{h+=placemarkGfx(g)});
+      return h+'</Folder>\\n';
     }
     var _pkgLayerIds=pkgLayerIds||new Set();
     var kml='<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document>\n<name>StaffMaps Export</name>\n';
@@ -7152,10 +7609,65 @@ const IO={
     var total=S.units.filter(u=>layerIds.has(u.layerId)).length+S.graphics.filter(g=>layerIds.has(g.layerId)).length;
     var blob=new Blob([kml],{type:"application/vnd.google-earth.kml+xml"});dlBlob(blob,"staffmaps-export.kml");IO.notify("Exported "+total+" features as KML")
   },
-  autosave(){try{if(S._operation)opSyncToOperation();localStorage.setItem("staffmaps_autosave",JSON.stringify({v:"4.7",units:S.units,graphics:S.graphics,layers:S.layers,packages:S.packages,importGroups:S.importGroups||[],lat:S.lat,lon:S.lon,zoom:S.zoom,tileSource:S.tileSource,gridColor:S.gridColor,gridOpacity:S.gridOpacity,showLabels:S.showLabels,autoCenter:S.autoCenter,persistentRoom:S._net.persistentRoom,sharedLayers:S._net.sharedLayers,sharedEditLayer:S._net.sharedEditLayer,operation:S._operation||null,ipb:S._ipb||null}))}catch(e){}},
-  autorestore(){try{const d=localStorage.getItem("staffmaps_autosave");if(d){const s=JSON.parse(d);if(!s.v||s.v<"4.5"){localStorage.removeItem("staffmaps_autosave");return false}if(s.units&&s.units.length||s.operation){S.units=(s.units||[]).slice(0,2000).map(u=>sanitizeUnit(u)).filter(Boolean);S.graphics=(s.graphics||[]).slice(0,1000).map(g=>sanitizeGraphic(g)).filter(Boolean);S.layers=(s.layers||S.layers).slice(0,50);S.layers.forEach(l=>{l.name=sanitizeStr(l.name,INPUT_LIMITS.layerName)});S.packages=s.packages||[];S.importGroups=s.importGroups||[];S.lat=s.lat||S.lat;S.lon=s.lon||S.lon;S.zoom=s.zoom||S.zoom;S.tileSource=s.tileSource||S.tileSource;S.gridColor=s.gridColor||S.gridColor;S.gridOpacity=s.gridOpacity!==undefined?s.gridOpacity:S.gridOpacity;if(s.showLabels!==undefined)S.showLabels=s.showLabels;if(s.autoCenter!==undefined)S.autoCenter=s.autoCenter;if(s.persistentRoom)S._net.persistentRoom=s.persistentRoom;if(s.sharedLayers)S._net.sharedLayers=s.sharedLayers;if(s.sharedEditLayer)S._net.sharedEditLayer=s.sharedEditLayer;if(s.ipb)S._ipb=s.ipb;if(s.operation){S._operation=s.operation;/* Migrate: if Operation has map data inside, it's the source of truth */if(s.operation.units){S.units=s.operation.units.slice(0,2000).map(u=>sanitizeUnit(u)).filter(Boolean);S.graphics=(s.operation.graphics||[]).slice(0,1000).map(g=>sanitizeGraphic(g)).filter(Boolean);S.layers=(s.operation.layers||S.layers).slice(0,50);S.layers.forEach(l=>{l.name=sanitizeStr(l.name,INPUT_LIMITS.layerName)});S.packages=s.operation.packages||[];if(s.operation.ipb)S._ipb=s.operation.ipb;if(s.operation.map){S.lat=s.operation.map.lat||S.lat;S.lon=s.operation.map.lon||S.lon;S.zoom=s.operation.map.zoom||S.zoom;if(s.operation.map.tileSource)S.tileSource=s.operation.map.tileSource}}}return true}}}catch(e){}return false},
+  autosave(){
+    try{if(S._operation)opSyncToOperation()}catch(e){}
+    try{Object.keys(localStorage).filter(function(k){return k.startsWith("sm_icon_")}).forEach(function(k){localStorage.removeItem(k)})}catch(e){}
+    function _storeIcons(units){return(units||[]).map(function(u){
+      if(!u||!u.customIcon)return u;
+      try{localStorage.setItem("sm_icon_"+u.id,u.customIcon)}catch(e){}
+      var c=Object.assign({},u);c.customIcon="__icon__";return c})}
+    try{
+      var _sv={v:"4.7",
+        units:_storeIcons(S.units),
+        graphics:S.graphics,layers:S.layers,packages:S.packages,
+        importGroups:S.importGroups||[],lat:S.lat,lon:S.lon,zoom:S.zoom,
+        tileSource:S.tileSource,gridColor:S.gridColor,gridOpacity:S.gridOpacity,
+        showLabels:S.showLabels,autoCenter:S.autoCenter,
+        persistentRoom:S._net.persistentRoom,sharedLayers:S._net.sharedLayers,
+        sharedEditLayer:S._net.sharedEditLayer,
+        operation:S._operation?Object.assign({},S._operation,{units:_storeIcons(S._operation.units)}):null,
+        ipb:S._ipb||null};
+      localStorage.setItem("staffmaps_autosave",JSON.stringify(_sv));
+    }catch(e){}},
+  autorestore(){try{const d=localStorage.getItem("staffmaps_autosave");if(d){const s=JSON.parse(d);if(!s.v||s.v<"4.5"){localStorage.removeItem("staffmaps_autosave");return false}if(s.units&&s.units.length||s.operation){
+/* Restore icons from sidecar localStorage keys */
+function _resolveIcons(units){(units||[]).forEach(function(u){
+  if(!u)return;
+  if(u.customIcon==="__icon__"||u.customIcon==null){
+    try{var _id=localStorage.getItem("sm_icon_"+u.id);
+    if(_id){u.customIcon=_id;u.useCustomIcon=true}
+    else{u.customIcon=null}}
+    catch(e){u.customIcon=null}}})}
+_resolveIcons(s.units);
+if(s.operation&&s.operation.units)_resolveIcons(s.operation.units);
+      S.units=(s.units||[]).slice(0,2000).map(u=>sanitizeUnit(u)).filter(Boolean);
+      S.graphics=(s.graphics||[]).slice(0,1000).map(g=>sanitizeGraphic(g)).filter(Boolean);
+      S.layers=(s.layers||S.layers).slice(0,50);
+      S.layers.forEach(l=>{l.name=sanitizeStr(l.name,INPUT_LIMITS.layerName)});
+      S.packages=s.packages||[];S.importGroups=s.importGroups||[];
+      S.lat=s.lat||S.lat;S.lon=s.lon||S.lon;S.zoom=s.zoom||S.zoom;
+      S.tileSource=s.tileSource||S.tileSource;S.gridColor=s.gridColor||S.gridColor;
+      S.gridOpacity=s.gridOpacity!==undefined?s.gridOpacity:S.gridOpacity;
+      if(s.showLabels!==undefined)S.showLabels=s.showLabels;
+      if(s.autoCenter!==undefined)S.autoCenter=s.autoCenter;
+      if(s.persistentRoom)S._net.persistentRoom=s.persistentRoom;
+      if(s.sharedLayers)S._net.sharedLayers=s.sharedLayers;
+      if(s.sharedEditLayer)S._net.sharedEditLayer=s.sharedEditLayer;
+      if(s.ipb)S._ipb=s.ipb;
+      if(s.operation){S._operation=s.operation;
+        if(s.operation.units){
+          S.units=s.operation.units.slice(0,2000).map(u=>sanitizeUnit(u)).filter(Boolean);
+          S.graphics=(s.operation.graphics||[]).slice(0,1000).map(g=>sanitizeGraphic(g)).filter(Boolean);
+          S.layers=(s.operation.layers||S.layers).slice(0,50);
+          S.layers.forEach(l=>{l.name=sanitizeStr(l.name,INPUT_LIMITS.layerName)});
+          S.packages=s.operation.packages||[];
+          if(s.operation.ipb)S._ipb=s.operation.ipb;
+          if(s.operation.map){S.lat=s.operation.map.lat||S.lat;S.lon=s.operation.map.lon||S.lon;S.zoom=s.operation.map.zoom||S.zoom;if(s.operation.map.tileSource)S.tileSource=s.operation.map.tileSource}}}
+      return true}}}catch(e){}return false},
   autosaveClear(){localStorage.removeItem("staffmaps_autosave")},
 };
+
+// === 14_ops_syncmat.js ===
 
 // ─── KEYBOARD SHORTCUTS ──────────────────
 function onKeyDown(e){
@@ -8023,6 +8535,8 @@ function init(){
 document.addEventListener("DOMContentLoaded",init);
 window.onerror=function(msg,url,line,col,err){document.title="ERR:"+line+":"+msg;console.error("STAFFMAPS ERROR at line",line,":",msg)};
 
+// === 15_versioncontrol.js ===
+
 // ─── VERSION CONTROL ENGINE ──────────────────────────────────────────────────
 function vcChecksum(){var s='';S.units.forEach(function(u){s+=u.id+(u.lat||0).toFixed(4)+(u.lon||0).toFixed(4)});S.graphics.forEach(function(g){s+=g.id+(g.tool||'')+(g.points?g.points.length:0)});var h=0;for(var i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0}return h.toString(16)}
 function vcStamp(msg){var vc=S._net._vc;if(S._net.isHost)vc.seq++;msg._seq=vc.seq;msg._did=S._net.peer?S._net.peer.id:'local';vc.log.push({seq:vc.seq,deviceId:msg._did,type:msg.type,ts:Date.now()});if(vc.log.length>500)vc.log.shift();return msg}
@@ -8041,6 +8555,8 @@ function vcOnSessionStart(){vcStartConsistencyTimer();S._net._vc.seq=0;S._net._v
 function vcOnSessionEnd(){vcStopConsistencyTimer();S._net._vc.locks={};S._net._vc._heavyOp=false;vcShowSyncIndicator(false)}
 setInterval(vcExpireLocks,5000);
 // ─── END VERSION CONTROL ENGINE ──────────────────────────────────────────────
+
+// === 16_emcon.js ===
 
 // ─── EMCON / FIELD MODE ENGINE ──────────────────────────────────────────────
 (function(){
@@ -8712,6 +9228,8 @@ setInterval(vcExpireLocks,5000);
 })();
 // ─── END EMCON / FIELD MODE ENGINE ──────────────────────────────────────────
 
+// === 17_connector.js ===
+
 // ─── STAFFMAPS CONNECTOR (Bluetooth Bridge) ───────────────────────────────────
 (function(){
   var DISMISS_KEY='sm_connector_banner_dismissed';
@@ -8815,7 +9333,6 @@ setInterval(vcExpireLocks,5000);
   setTimeout(function(){if(!_extensionPresent&&snoozeExpired())buildBanner('not-installed')},800);
 })();
 // ─── END CONNECTOR ────────────────────────────────────────────────────────────
-
 </script>
 </body>
 </html>
